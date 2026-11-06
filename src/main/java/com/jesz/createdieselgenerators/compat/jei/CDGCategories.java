@@ -1,6 +1,7 @@
 package com.jesz.createdieselgenerators.compat.jei;
 
 import com.google.common.base.Suppliers;
+import com.jesz.createdieselgenerators.client.render.gui.CDGGuiMachines;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGDataComponents;
 import com.jesz.createdieselgenerators.CDGItems;
@@ -26,6 +27,8 @@ import com.zurrtum.create.content.processing.recipe.HeatCondition;
 import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
 import com.zurrtum.create.content.processing.recipe.SizedIngredient;
 import com.zurrtum.create.foundation.fluid.FluidIngredient;
+import com.zurrtum.create.foundation.fluid.FluidStackIngredient;
+import com.zurrtum.create.infrastructure.component.SandPaperItemComponent;
 import com.zurrtum.create.foundation.recipe.CreateSingleStackRollableRecipe;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -38,7 +41,12 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import org.joml.Matrix3x2f;
@@ -47,10 +55,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * PORT-NOTE(26.1): JEI categories on Create Fly's CreateCategory/BasinCategory, with upstream's slot layouts. Upstream's
- * animated machine elements (AnimatedKinetics, GuiGameElement) have no 26.1 equivalent short of one picture-in-picture
- * renderer per machine: Create Fly's basin, press and blaze burner renderers are reused where they fit, the rest draw a
- * scaled item of the machine (see PORTING-26.1.md TODO).
+ * PORT-NOTE(26.1): JEI categories on Create Fly's CreateCategory/BasinCategory, with upstream's slot, arrow, shadow and heat
+ * bar coordinates and upstream's category sizes (177 x 100, distillation 200, tools 55). The machine drawings are
+ * picture-in-picture states of client/render/gui/CDGGuiMachines (upstream: AnimatedKinetics elements) drawn at upstream's
+ * coordinates; the blaze burner and the mechanical press are Create Fly's own, at the same place upstream's
+ * AnimatedBlazeBurner / AnimatedPress were (the burner's box starts 14 pixels under upstream's y, as in Create Fly's
+ * BasinCategory). The hammer and wire cutters are drawn as items, so their item models animate them.
  */
 public final class CDGCategories {
     private CDGCategories() {
@@ -60,23 +70,27 @@ public final class CDGCategories {
         return Component.translatable(CreateDieselGenerators.ID + ".recipe." + name);
     }
 
-    private static void drawMachine(GuiGraphicsExtractor graphics, ItemLike item, int x, int y, float scale) {
+    private static void drawMachine(GuiGraphicsExtractor graphics, ItemStack stack, int x, int y, float scale) {
         graphics.pose().pushMatrix();
         graphics.pose().translate(x, y);
         graphics.pose().scale(scale, scale);
-        graphics.item(new ItemStack(item), 0, 0);
+        graphics.item(stack, 0, 0);
         graphics.pose().popMatrix();
     }
 
-    /** The heat bar, its label and the blaze burner, at upstream's height offset. */
-    private static void drawHeat(GuiGraphicsExtractor graphics, HeatCondition heat, int yOffset) {
+    /**
+     * The shadow (or light), blaze burner, heat bar and its label, as every upstream category of this mod drew them:
+     * {@code shadowY} is the shadow's y with no heat (it is 20 lower with heat), {@code burnerY} the y upstream passed to
+     * {@code AnimatedBlazeBurner.draw}, {@code barY} the heat bar's.
+     */
+    private static void drawHeat(GuiGraphicsExtractor graphics, HeatCondition heat, int shadowY, int burnerY, int barY) {
         boolean noHeat = heat == HeatCondition.NONE;
-        (noHeat ? AllGuiTextures.JEI_SHADOW : AllGuiTextures.JEI_LIGHT).render(graphics, 81, yOffset + (noHeat ? -12 : 8));
-        (noHeat ? AllGuiTextures.JEI_NO_HEAT_BAR : AllGuiTextures.JEI_HEAT_BAR).render(graphics, 4, yOffset);
+        (noHeat ? AllGuiTextures.JEI_SHADOW : AllGuiTextures.JEI_LIGHT).render(graphics, 81, shadowY + (noHeat ? 10 : 30));
         if (!noHeat)
             graphics.guiRenderState.addPicturesInPictureState(new BasinBlazeBurnerRenderState(
-                    new Matrix3x2f(graphics.pose()), 91, yOffset - 11, heat.visualizeAsBlazeBurner()));
-        graphics.text(net.minecraft.client.Minecraft.getInstance().font, CreateLang.translateDirect(heat.getTranslationKey()), 9, yOffset + 6, heat.getColor(), false);
+                    new Matrix3x2f(graphics.pose()), 91, burnerY + 14, heat.visualizeAsBlazeBurner()));
+        (noHeat ? AllGuiTextures.JEI_NO_HEAT_BAR : AllGuiTextures.JEI_HEAT_BAR).render(graphics, 4, barY);
+        graphics.text(net.minecraft.client.Minecraft.getInstance().font, CreateLang.translateDirect(heat.getTranslationKey()), 9, barY + 6, heat.getColor(), false);
     }
 
     private static void addHeatSlots(IRecipeLayoutBuilder builder, HeatCondition heat, int y) {
@@ -92,7 +106,31 @@ public final class CDGCategories {
         return stack;
     }
 
-    public static class BasinFermenting extends BasinCategory<BasinFermentingRecipe> {
+    /** The ingredient slots of the two fermenting categories: three to a row from the bottom, centred under three. */
+    private static void addFermentingIngredients(IRecipeLayoutBuilder builder, List<SizedIngredient> ingredients, List<FluidIngredient> fluidIngredients, int x) {
+        int size = ingredients.size() + fluidIngredients.size();
+        int xOffset = size < 3 ? (3 - size) * 19 / 2 : 0;
+        int i = 0;
+        Supplier<ContextMap> context = Suppliers.memoize(CreateCategory::createIngredientContext);
+        for (SizedIngredient ingredient : ingredients) {
+            builder.addInputSlot(x + xOffset + (i % 3) * 19, 41 - (i / 3) * 19).setBackground(CreateCategory.SLOT, -1, -1)
+                    .addItemStacks(CreateCategory.getStacks(ingredient, context));
+            i++;
+        }
+        for (FluidIngredient fluidIngredient : fluidIngredients) {
+            CreateCategory.addFluidSlot(builder, x + xOffset + (i % 3) * 19, 41 - (i / 3) * 19, fluidIngredient).setBackground(CreateCategory.SLOT, -1, -1);
+            i++;
+        }
+    }
+
+    private static void addFermentingResults(IRecipeLayoutBuilder builder, List<ProcessingOutput> results, List<FluidStack> fluidResults) {
+        int resultSize = results.size();
+        int size = resultSize + fluidResults.size();
+        BasinCategory.addResultSlots(builder, results, 0, size - 1, 51, size % 2 != 0);
+        BasinCategory.addFluidResultSlots(builder, fluidResults, resultSize, size - 1, 51, size % 2 != 0);
+    }
+
+    public static class BasinFermenting extends CreateCategory<RecipeHolder<BasinFermentingRecipe>> {
         @Override
         public IRecipeType<RecipeHolder<BasinFermentingRecipe>> getRecipeType() {
             return CDGJEI.BASIN_FERMENTING;
@@ -109,22 +147,24 @@ public final class CDGCategories {
         }
 
         @Override
+        public int getHeight() {
+            return 100;
+        }
+
+        @Override
         public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<BasinFermentingRecipe> entry, IFocusGroup focuses) {
             BasinFermentingRecipe recipe = entry.value();
-            addIngredientSlots(builder, recipe);
-            int resultSize = recipe.results().size();
-            int size = resultSize + recipe.fluidResults().size();
-            addResultSlots(builder, recipe.results(), 0, size - 1, 51, size % 2 != 0);
-            addFluidResultSlots(builder, recipe.fluidResults(), resultSize, size - 1, 51, size % 2 != 0);
-            addHeatSlots(builder, recipe);
+            addFermentingIngredients(builder, recipe.ingredients(), recipe.fluidIngredients(), 17);
+            addFermentingResults(builder, recipe.results(), recipe.fluidResults());
+            addHeatSlots(builder, recipe.heat(), 81);
         }
 
         @Override
         public void draw(RecipeHolder<BasinFermentingRecipe> entry, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
-            BasinFermentingRecipe recipe = entry.value();
-            drawBackground(recipe, graphics, recipe.results().size() + recipe.fluidResults().size());
-            drawMachine(graphics, AllItems.BASIN, 75, 42, 2);
-            drawMachine(graphics, CDGBlocks.BASIN_LID.asItem(), 75, 22, 2);
+            HeatCondition heat = entry.value().heat();
+            AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, 20);
+            drawHeat(graphics, heat, 58, 55, 80);
+            graphics.guiRenderState.addPicturesInPictureState(CDGGuiMachines.BasinFermentingState.at(new Matrix3x2f(graphics.pose()), 91, 47));
         }
     }
 
@@ -142,6 +182,11 @@ public final class CDGCategories {
         @Override
         public IDrawable getIcon() {
             return new TwoIconRenderer(AllItems.MECHANICAL_PRESS, CDGItems.MOLD.get());
+        }
+
+        @Override
+        public int getHeight() {
+            return 100;
         }
 
         @Override
@@ -175,42 +220,27 @@ public final class CDGCategories {
 
         @Override
         public IDrawable getIcon() {
-            return new IconRenderer(CDGBlocks.BULK_FERMENTER.asItem());
+            return new TwoIconRenderer(CDGBlocks.BULK_FERMENTER.asItem(), Items.CLOCK);
         }
 
         @Override
         public int getHeight() {
-            return 103;
+            return 100;
         }
 
         @Override
         public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<BulkFermentingRecipe> entry, IFocusGroup focuses) {
             BulkFermentingRecipe recipe = entry.value();
-            int size = recipe.ingredients().size() + recipe.fluidIngredients().size();
-            int xOffset = size < 3 ? 12 + (3 - size) * 19 / 2 : 12;
-            int i = 0;
-            Supplier<ContextMap> context = Suppliers.memoize(CreateCategory::createIngredientContext);
-            for (SizedIngredient ingredient : recipe.ingredients()) {
-                builder.addInputSlot(xOffset + (i % 3) * 19, 51 - (i / 3) * 19).setBackground(SLOT, -1, -1)
-                        .addItemStacks(getStacks(ingredient, context));
-                i++;
-            }
-            for (FluidIngredient fluidIngredient : recipe.fluidIngredients()) {
-                addFluidSlot(builder, xOffset + (i % 3) * 19, 51 - (i / 3) * 19, fluidIngredient).setBackground(SLOT, -1, -1);
-                i++;
-            }
-            int resultSize = recipe.results().size();
-            int outputs = resultSize + recipe.fluidResults().size();
-            BasinCategory.addResultSlots(builder, recipe.results(), 0, outputs - 1, 51, outputs % 2 != 0);
-            BasinCategory.addFluidResultSlots(builder, recipe.fluidResults(), resultSize, outputs - 1, 51, outputs % 2 != 0);
+            addFermentingIngredients(builder, recipe.ingredients(), recipe.fluidIngredients(), 2);
+            addFermentingResults(builder, recipe.results(), recipe.fluidResults());
             addHeatSlots(builder, recipe.heat(), 81);
         }
 
         @Override
         public void draw(RecipeHolder<BulkFermentingRecipe> entry, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
-            AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, 32);
-            drawHeat(graphics, entry.value().heat(), 80);
-            drawMachine(graphics, CDGBlocks.BULK_FERMENTER.asItem(), 75, 38, 2);
+            AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, 20);
+            drawHeat(graphics, entry.value().heat(), 58, 55, 80);
+            graphics.guiRenderState.addPicturesInPictureState(CDGGuiMachines.BulkFermenterState.at(new Matrix3x2f(graphics.pose()), 91, 27));
         }
     }
 
@@ -251,10 +281,9 @@ public final class CDGCategories {
         public void draw(RecipeHolder<DistillationRecipe> entry, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
             DistillationRecipe recipe = entry.value();
             AllGuiTextures.JEI_ARROW.render(graphics, 40, 150);
-            drawHeat(graphics, recipe.heat(), 170);
-            int layers = recipe.fluidResults().size() + 1;
-            for (int i = 0; i < layers; i++)
-                drawMachine(graphics, AllItems.FLUID_TANK, 75, 130 - i * 24, 1.5f);
+            drawHeat(graphics, recipe.heat(), 153, 150, 170);
+            graphics.guiRenderState.addPicturesInPictureState(CDGGuiMachines.DistillationState.at(
+                    new Matrix3x2f(graphics.pose()), 91, 142, recipe.fluidResults().size()));
         }
     }
 
@@ -276,7 +305,7 @@ public final class CDGCategories {
 
         @Override
         public int getHeight() {
-            return 103;
+            return 100;
         }
 
         @Override
@@ -291,20 +320,33 @@ public final class CDGCategories {
 
         @Override
         public void draw(RecipeHolder<CastingRecipe> entry, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+            CastingRecipe recipe = entry.value();
             AllGuiTextures.JEI_SHADOW.render(graphics, 81, 68);
-            AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, 32);
-            drawMachine(graphics, AllItems.BASIN, 75, 42, 2);
-            drawMachine(graphics, AllItems.SPOUT, 75, 10, 2);
+            int vRows = (1 + recipe.results().size()) / 2;
+            if (vRows <= 2)
+                AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, -19 * (vRows - 1) + 32);
+            // Upstream showed the first fluid of the ingredient
+            Fluid fluid = Fluids.EMPTY;
+            DataComponentPatch components = DataComponentPatch.EMPTY;
+            List<Fluid> fluids = recipe.fluidIngredient().getMatchingFluids();
+            if (!fluids.isEmpty())
+                fluid = fluids.getFirst();
+            if (recipe.fluidIngredient() instanceof FluidStackIngredient stackIngredient)
+                components = stackIngredient.components();
+            graphics.guiRenderState.addPicturesInPictureState(CDGGuiMachines.CastingState.at(
+                    new Matrix3x2f(graphics.pose()), getWidth() / 2 + 3, 34, fluid, components));
         }
     }
 
     private abstract static class Tool<T extends CreateSingleStackRollableRecipe> extends CreateCategory<RecipeHolder<T>> {
         private final String name;
-        private final ItemLike tool;
+        private final Item tool;
+        private final Item secondIcon;
 
-        Tool(String name, ItemLike tool) {
+        Tool(String name, Item tool, Item secondIcon) {
             this.name = name;
             this.tool = tool;
+            this.secondIcon = secondIcon;
         }
 
         @Override
@@ -314,7 +356,7 @@ public final class CDGCategories {
 
         @Override
         public IDrawable getIcon() {
-            return new IconRenderer(tool.asItem());
+            return secondIcon == null ? new IconRenderer(tool) : new TwoIconRenderer(tool, secondIcon);
         }
 
         @Override
@@ -334,13 +376,19 @@ public final class CDGCategories {
         public void draw(RecipeHolder<T> entry, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
             AllGuiTextures.JEI_SHADOW.render(graphics, 61, 21);
             AllGuiTextures.JEI_LONG_ARROW.render(graphics, 52, 32);
-            drawMachine(graphics, tool, getWidth() / 2 - 16, 0, 2);
+            List<ItemStack> matching = getStacks(entry.value().ingredient(), Suppliers.memoize(CreateCategory::createIngredientContext));
+            if (matching.isEmpty())
+                return;
+            // The tool's item model animates the hammering / cutting while the processing item is set, in the GUI too
+            ItemStack rendered = new ItemStack(tool);
+            rendered.set(CDGDataComponents.PROCESSING_ITEM, new SandPaperItemComponent(matching.getFirst()));
+            drawMachine(graphics, rendered, getWidth() / 2 - 16, 0, 2);
         }
     }
 
     public static class Hammering extends Tool<HammerRecipe> {
         public Hammering() {
-            super("hammering", CDGItems.HAMMER.get());
+            super("hammering", CDGItems.HAMMER.get(), AllItems.IRON_SHEET);
         }
 
         @Override
@@ -351,7 +399,7 @@ public final class CDGCategories {
 
     public static class WireCutting extends Tool<WireCuttingRecipe> {
         public WireCutting() {
-            super("wire_cutting", CDGItems.WIRE_CUTTERS.get());
+            super("wire_cutting", CDGItems.WIRE_CUTTERS.get(), null);
         }
 
         @Override
