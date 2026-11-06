@@ -193,7 +193,15 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.PUMPJACK_HOLE.get(),
-                (be, side) -> be.tank.getCapability()
+                (be, side) -> {
+                    if (side == null || (side.getAxis().isHorizontal() && be.getBlockState().getValue(
+                            side == Direction.NORTH ? NORTH :
+                            side == Direction.EAST ? EAST :
+                            side == Direction.WEST ? WEST : SOUTH
+                    )))
+                        return be.tank.getCapability();
+                    return null;
+                }
         );
     }
 }

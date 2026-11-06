@@ -17,6 +17,7 @@ import com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScr
 import com.zurrtum.create.infrastructure.fluids.FluidInventory;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
@@ -58,7 +59,22 @@ public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity implem
         // PORT-NOTE(26.1): the capability shim registers side-less; the upstream port sides are not enforced
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.DIESEL_ENGINE.get(),
-                (be, side) -> be.tank.getCapability());
+                (be, side) -> {
+                    if (side == null)
+                        return be.tank.getCapability();
+                    Direction facing = be.getBlockState().getValue(FACING);
+                    if (facing.getAxis().isVertical()) {
+                        Direction.Axis portAxis = (facing == Direction.DOWN)
+                                ? Direction.Axis.X
+                                : Direction.Axis.Z;
+                        if (side.getAxis() == portAxis)
+                            return be.tank.getCapability();
+                    } else {
+                        if (side == Direction.DOWN)
+                            return be.tank.getCapability();
+                    }
+                    return null;
+                });
     }
 
     // PORT-NOTE(26.1): was DieselEngineBlock.onRemove (drop the installed upgrade)

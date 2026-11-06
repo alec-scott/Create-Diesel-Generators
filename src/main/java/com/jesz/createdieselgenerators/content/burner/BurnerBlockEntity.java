@@ -17,6 +17,7 @@ import com.jesz.createdieselgenerators.fuel_type.FuelType;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -193,7 +194,11 @@ public class BurnerBlockEntity extends KineticBlockEntity implements IHaveGoggle
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.BURNER.get(),
-                (be, context) -> be.tank
+                (be, context) -> {
+                    if (context != Direction.UP)
+                        return be.tank;
+                    return null;
+                }
         );
     }
 

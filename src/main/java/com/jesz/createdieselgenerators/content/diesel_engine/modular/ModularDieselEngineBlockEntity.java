@@ -98,10 +98,11 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.MODULAR_DIESEL_ENGINE.get(),
                 (be, side) -> {
-                    // PORT-NOTE(26.1): side-less through the shim; upstream exposed only the top of PIPE blocks
                     if (be.fluidCapability == null)
                         be.refreshCapability();
-                    return be.fluidCapability;
+                    if (side == null || (side == Direction.UP && be.getBlockState().getValue(PIPE)))
+                        return be.fluidCapability;
+                    return null;
                 });
     }
 

@@ -16,6 +16,7 @@ import com.zurrtum.create.AllSoundEvents;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
 import com.zurrtum.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,7 +57,11 @@ public class ChemicalTurretBlockEntity extends TurretBlockEntity implements IHav
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.CHEMICAL_TURRET.get(),
-                (be, side) -> be.tank.getCapability()
+                (be, side) -> {
+                    if (side == null || side == Direction.DOWN)
+                        return be.tank.getCapability();
+                    return null;
+                }
         );
         // PORT-NOTE(26.1): the CC peripheral is registered by compat/computercraft/CCProxy when CC:Tweaked is loaded
     }

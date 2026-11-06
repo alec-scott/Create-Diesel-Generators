@@ -41,11 +41,12 @@ public final class RegisterCapabilitiesEvent {
 
     private static <T extends SmartBlockEntity> void registerItems(BlockEntityType<T> type, BiFunction<T, Direction, Container> provider) {
         BlockEntityBehaviour.add(type, (T be) -> new CachedInventoryBehaviour<>(be, b -> provider.apply(b, null)));
-        ItemStorage.SIDED.registerForBlockEntity(CachedInventoryBehaviour::get, type);
+        // The provider decides per side, as NeoForge capabilities did; a null side always asks for the whole inventory.
+        ItemStorage.SIDED.registerForBlockEntity((be, side) -> provider.apply(be, side) == null ? null : CachedInventoryBehaviour.get(be, side), type);
     }
 
     private static <T extends SmartBlockEntity> void registerFluids(BlockEntityType<T> type, BiFunction<T, Direction, FluidInventory> provider) {
         BlockEntityBehaviour.add(type, (T be) -> new CachedFluidInventoryBehaviour<>(be, b -> provider.apply(b, null)));
-        FluidStorage.SIDED.registerForBlockEntity(CachedFluidInventoryBehaviour::get, type);
+        FluidStorage.SIDED.registerForBlockEntity((be, side) -> provider.apply(be, side) == null ? null : CachedFluidInventoryBehaviour.get(be, side), type);
     }
 }

@@ -6,7 +6,6 @@
       "type": "fluid_tag"
     }
   ],
-  "heat_requirement": "heated",
   "ingredients": [
     "minecraft:gravel",
     "minecraft:gravel",

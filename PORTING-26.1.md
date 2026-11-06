@@ -49,8 +49,7 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - **Item fluids**: `fluid_contents` component is `port/neoforge/SimpleFluidContent` (immutable record; Create Fly's
   FluidStack has no equals). `FueledToolItem.Storage` is a Fabric `SingleVariantItemStorage` on `FluidStorage.ITEM`.
 - **Capabilities**: `port/neoforge/capabilities` shim (items and fluids, no energy) over Create Fly's cached inventory
-  behaviours. It registers side-less, so upstream's side restrictions (engine ports, modular PIPE top, burner top, hole
-  sides, turret bottom) are **not enforced**. Multiblocks reset the cache in `refreshCapability` (was
+  behaviours. Providers decide per side as upstream did (engine ports, modular PIPE top, burner not top, hole sides, turret bottom). Multiblocks reset the cache in `refreshCapability` (was
   `invalidateCapabilities`).
 - **Recipes**: Create Fly-style records, plain registry fields in `CDGRecipes`, serializers synced when JEI is loaded.
   JSON shapes (resource commit `b64aeaf`): `hammering`, `wire_cutting` = `{ingredient, results}`; `casting` =
@@ -138,7 +137,7 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - [ ] Item visuals: lighter open/ignited and skins, mold types, hammer and wire cutters animations (static models now;
       lighter state and mold type could be `minecraft:select` item models). Molds in a basin render as plain items.
 - [ ] Turret operator hat layer (`IEntity.getTurretPos` is not synced to clients anyway).
-- [ ] Fluid side restrictions (see Capabilities), if they matter in play: engines accept fluid from every side now.
+- [x] Fluid side restrictions restored from upstream (engine ports, modular PIPE top, burner not top, hole sides, turret bottom).
 - [ ] Bulk fermenter "no new slot" rule is `canPlaceItem` on the wrapper: check Create Fly's insert honours it. Packager
       unpacking uses `packagerMode`.
 - [ ] Check in game: gauges (dial offsets were moved from the pose stack into the buffers), crank rod angles, huge engine

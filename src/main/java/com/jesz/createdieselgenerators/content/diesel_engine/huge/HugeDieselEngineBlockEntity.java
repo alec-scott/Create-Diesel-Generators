@@ -195,7 +195,11 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.HUGE_DIESEL_ENGINE.get(),
-                (be, side) -> be.tank.getCapability());
+                (be, side) -> {
+                    if (side == null || side.getAxis() != be.getBlockState().getValue(FACING).getAxis())
+                        return be.tank.getCapability();
+                    return null;
+                });
     }
 
     @Override
