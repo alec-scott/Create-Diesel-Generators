@@ -29,7 +29,7 @@ import java.util.*;
 /**
  * PORT-NOTE(26.1): NeoForge game-bus subscribers became Fabric callbacks, registered from {@link #register()}. The
  * client tick and item tooltip handlers are in {@code CreateDieselGeneratorsClient}/{@code ClientEvents}. The
- * toolsmith lighter trade is gone (26.1 villager trades are data-driven; see PORTING-26.1.md TODO). Explosions come
+ * toolsmith lighter trade is data now (data/createdieselgenerators/villager_trade, added through the minecraft:villager_trade/toolsmith/level_2 tag). Explosions come
  * from {@code ServerExplosionMixin} (Fabric has no explosion event).
  */
 public class GameEvents {
