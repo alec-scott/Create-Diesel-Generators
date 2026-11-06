@@ -7,13 +7,13 @@ import com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDies
 import com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDieselEngineBlockEntity;
 import com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import dev.engine_room.flywheel.lib.model.baked.PartialModel;
-import net.createmod.catnip.render.CachedBuffers;
+import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
+import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
+import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;

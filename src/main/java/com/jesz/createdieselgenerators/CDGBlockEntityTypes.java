@@ -22,10 +22,10 @@ import com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelBlockEntity;
 import com.jesz.createdieselgenerators.content.pumpjack.*;
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretBlockEntity;
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretRenderer;
-import com.simibubi.create.AllPartialModels;
-import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
+import com.zurrtum.create.client.AllPartialModels;
+import com.zurrtum.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.simibubi.create.content.kinetics.base.*;
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.BlockEntityEntry;
 
 import java.util.ArrayList;
 

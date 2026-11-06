@@ -1,8 +1,8 @@
 package com.jesz.createdieselgenerators.content.basin_lid;
 
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.content.processing.basin.BasinBlockEntity;
-import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
+import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
+import com.zurrtum.create.content.processing.basin.BasinOperatingBlockEntity;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

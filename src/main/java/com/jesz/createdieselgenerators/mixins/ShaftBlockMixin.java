@@ -1,7 +1,7 @@
 package com.jesz.createdieselgenerators.mixins;
 
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.PoweredEngineShaftBlock;
-import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
+import com.zurrtum.create.content.kinetics.simpleRelays.ShaftBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;

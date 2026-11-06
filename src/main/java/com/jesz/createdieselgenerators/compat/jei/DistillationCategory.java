@@ -1,21 +1,21 @@
 package com.jesz.createdieselgenerators.compat.jei;
 
 import com.jesz.createdieselgenerators.content.distillation.DistillationRecipe;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.AllItems;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedBlazeBurner;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.content.processing.recipe.HeatCondition;
-import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.utility.CreateLang;
+import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
+import com.zurrtum.create.content.processing.recipe.HeatCondition;
+import com.zurrtum.create.client.foundation.gui.AllGuiTextures;
+import com.zurrtum.create.client.foundation.utility.CreateLang;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import javax.annotation.ParametersAreNonnullByDefault;

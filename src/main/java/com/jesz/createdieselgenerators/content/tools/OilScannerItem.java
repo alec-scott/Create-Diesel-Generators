@@ -5,10 +5,10 @@ import com.jesz.createdieselgenerators.CDGDataComponents;
 import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.world.OilChunksSavedData;
-import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.item.TooltipHelper;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
+import com.zurrtum.create.AllSoundEvents;
+import com.zurrtum.create.client.foundation.item.TooltipHelper;
+import com.jesz.createdieselgenerators.port.registrate.providers.DataGenContext;
+import com.jesz.createdieselgenerators.port.registrate.providers.RegistrateItemModelProvider;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -26,8 +26,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.jesz.createdieselgenerators.port.porting_lib.models.generators.ItemModelBuilder;
+import com.jesz.createdieselgenerators.port.porting_lib.models.generators.ModelFile;
 
 public class OilScannerItem extends Item {
     public OilScannerItem(Properties properties) {

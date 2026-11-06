@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.content.concrete.ConcreteBucketItem;
 import com.jesz.createdieselgenerators.content.concrete.ConcreteFluid;
-import com.tterrag.registrate.util.entry.FluidEntry;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.FluidEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -133,7 +133,6 @@ public class CDGFluids {
                     REGISTRATE.fluid(color.getName() + "_cement",
                                     CreateDieselGenerators.rl("block/cement/" + color.getName() + "_still"),
                                     CreateDieselGenerators.rl("block/cement/" + color.getName() + "_flow"))
-                            .lang(StringUtils.capitalize(color.getName()) + " Concrete")
                     .properties(b -> b.viscosity(1500)
                             .density(500))
                     .fluidProperties(p -> p.levelDecreasePerBlock(8)

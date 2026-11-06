@@ -1,8 +1,8 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.mojang.serialization.MapCodec;
-import com.simibubi.create.content.contraptions.actors.AttachedActorBlock;
-import com.simibubi.create.content.contraptions.actors.harvester.HarvesterBlock;
+import com.zurrtum.create.content.contraptions.actors.AttachedActorBlock;
+import com.zurrtum.create.content.contraptions.actors.harvester.HarvesterBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;

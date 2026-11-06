@@ -4,7 +4,7 @@ import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.CDGTags;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.compat.kubejs.CDGKubeJSPlugin;
-import net.createmod.catnip.nbt.NBTHelper;
+import com.zurrtum.create.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

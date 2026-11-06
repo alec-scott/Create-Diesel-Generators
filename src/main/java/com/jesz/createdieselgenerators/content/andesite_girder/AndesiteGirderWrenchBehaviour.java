@@ -1,14 +1,14 @@
 package com.jesz.createdieselgenerators.content.andesite_girder;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.AllItems;
-import com.simibubi.create.content.decoration.girder.GirderBlock;
-import net.createmod.catnip.data.Iterate;
-import net.createmod.catnip.data.Pair;
-import net.createmod.catnip.math.VecHelper;
-import net.createmod.catnip.outliner.Outliner;
-import net.createmod.catnip.placement.IPlacementHelper;
-import net.createmod.catnip.theme.Color;
+import com.zurrtum.create.AllItems;
+import com.zurrtum.create.content.decoration.girder.GirderBlock;
+import com.zurrtum.create.catnip.data.Iterate;
+import com.zurrtum.create.catnip.data.Pair;
+import com.zurrtum.create.catnip.math.VecHelper;
+import com.zurrtum.create.client.catnip.outliner.Outliner;
+import com.zurrtum.create.catnip.placement.IPlacementHelper;
+import com.zurrtum.create.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

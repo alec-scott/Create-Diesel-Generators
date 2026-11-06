@@ -2,9 +2,9 @@ package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterMenu;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterScreen;
-import com.tterrag.registrate.builders.MenuBuilder;
-import com.tterrag.registrate.util.entry.MenuEntry;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import com.jesz.createdieselgenerators.port.registrate.builders.MenuBuilder;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.MenuEntry;
+import com.jesz.createdieselgenerators.port.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;

@@ -1,26 +1,26 @@
 package com.jesz.createdieselgenerators.compat.jei;
 
 import com.jesz.createdieselgenerators.content.bulk_fermenter.BulkFermentingRecipe;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.AllItems;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedBlazeBurner;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.content.processing.recipe.HeatCondition;
-import com.simibubi.create.content.processing.recipe.ProcessingOutput;
-import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.item.ItemHelper;
-import com.simibubi.create.foundation.utility.CreateLang;
+import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
+import com.zurrtum.create.content.processing.recipe.HeatCondition;
+import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
+import com.zurrtum.create.client.foundation.gui.AllGuiTextures;
+import com.zurrtum.create.foundation.item.ItemHelper;
+import com.zurrtum.create.client.foundation.utility.CreateLang;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.createmod.catnip.data.Pair;
+import com.zurrtum.create.catnip.data.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.apache.commons.lang3.mutable.MutableInt;
 

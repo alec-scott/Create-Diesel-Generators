@@ -1,0 +1,258 @@
+com.simibubi.create.AllBlockEntityTypes	com.zurrtum.create.AllBlockEntityTypes	path
+com.simibubi.create.AllBlocks	com.zurrtum.create.AllBlocks	path
+com.simibubi.create.AllDataComponents	com.zurrtum.create.AllDataComponents	path
+com.simibubi.create.AllEnchantments	com.zurrtum.create.AllEnchantments	path
+com.simibubi.create.AllFluids	com.zurrtum.create.AllFluids	path
+com.simibubi.create.AllItems	com.zurrtum.create.AllItems	path
+com.simibubi.create.AllKeys	com.zurrtum.create.client.AllKeys	path
+com.simibubi.create.AllPackets	com.zurrtum.create.AllPackets	path
+com.simibubi.create.AllPartialModels	com.zurrtum.create.client.AllPartialModels	path
+com.simibubi.create.AllShapes	com.zurrtum.create.AllShapes	path
+com.simibubi.create.AllSoundEvents	com.zurrtum.create.AllSoundEvents	path
+com.simibubi.create.AllSpecialTextures	com.zurrtum.create.client.AllSpecialTextures	path
+com.simibubi.create.AllTags		unresolved
+com.simibubi.create.CreateClient		unresolved
+com.simibubi.create.api.behaviour.display.DisplaySource	com.zurrtum.create.api.behaviour.display.DisplaySource	path
+com.simibubi.create.api.behaviour.movement.MovementBehaviour	com.zurrtum.create.api.behaviour.movement.MovementBehaviour	path
+com.simibubi.create.api.behaviour.spouting.BlockSpoutingBehaviour	com.zurrtum.create.api.behaviour.spouting.BlockSpoutingBehaviour	path
+com.simibubi.create.api.boiler.BoilerHeater	com.zurrtum.create.api.boiler.BoilerHeater	path
+com.simibubi.create.api.connectivity.ConnectivityHandler	com.zurrtum.create.api.connectivity.ConnectivityHandler	path
+com.simibubi.create.api.contraption.storage.SyncedMountedStorage	com.zurrtum.create.api.contraption.storage.SyncedMountedStorage	path
+com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType	com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType	path
+com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType.mountedFluidStorage	com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType.mountedFluidStorage	path
+com.simibubi.create.api.contraption.storage.fluid.WrapperMountedFluidStorage	com.zurrtum.create.api.contraption.storage.fluid.WrapperMountedFluidStorage	path
+com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation	com.zurrtum.create.client.api.goggles.IHaveGoggleInformation	moved
+com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation	com.zurrtum.create.client.api.goggles.IHaveHoveringInformation	moved
+com.simibubi.create.api.packager.unpacking.UnpackingHandler	com.zurrtum.create.api.packager.unpacking.UnpackingHandler	path
+com.simibubi.create.api.schematic.requirement.SpecialBlockItemRequirement	com.zurrtum.create.api.schematic.requirement.SpecialBlockItemRequirement	path
+com.simibubi.create.api.stress.BlockStressValues	com.zurrtum.create.api.stress.BlockStressValues	path
+com.simibubi.create.compat.Mods	com.zurrtum.create.compat.Mods	path
+com.simibubi.create.compat.computercraft.AbstractComputerBehaviour	com.zurrtum.create.compat.computercraft.AbstractComputerBehaviour	path
+com.simibubi.create.compat.computercraft.FallbackComputerBehaviour		unresolved
+com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral	com.zurrtum.create.compat.computercraft.implementation.peripherals.SyncedPeripheral	path
+com.simibubi.create.compat.jei		unresolved
+com.simibubi.create.compat.jei.category.BasinCategory	com.zurrtum.create.client.compat.jei.category.BasinCategory	path
+com.simibubi.create.compat.jei.category.CreateRecipeCategory		unresolved
+com.simibubi.create.compat.jei.category.animations.AnimatedBlazeBurner		unresolved
+com.simibubi.create.compat.jei.category.animations.AnimatedKinetics		unresolved
+com.simibubi.create.compat.jei.category.animations.AnimatedPress		unresolved
+com.simibubi.create.content.contraptions.AssemblyException	com.zurrtum.create.content.contraptions.AssemblyException	path
+com.simibubi.create.content.contraptions.Contraption	com.zurrtum.create.content.contraptions.Contraption	path
+com.simibubi.create.content.contraptions.ControlledContraptionEntity	com.zurrtum.create.content.contraptions.ControlledContraptionEntity	path
+com.simibubi.create.content.contraptions.actors.AttachedActorBlock	com.zurrtum.create.content.contraptions.actors.AttachedActorBlock	path
+com.simibubi.create.content.contraptions.actors.harvester.HarvesterBlock	com.zurrtum.create.content.contraptions.actors.harvester.HarvesterBlock	path
+com.simibubi.create.content.contraptions.actors.seat.SeatEntity	com.zurrtum.create.content.contraptions.actors.seat.SeatEntity	path
+com.simibubi.create.content.contraptions.bearing.BearingBlock	com.zurrtum.create.content.contraptions.bearing.BearingBlock	path
+com.simibubi.create.content.contraptions.bearing.BearingContraption	com.zurrtum.create.content.contraptions.bearing.BearingContraption	path
+com.simibubi.create.content.contraptions.bearing.IBearingBlockEntity	com.zurrtum.create.content.contraptions.bearing.IBearingBlockEntity	path
+com.simibubi.create.content.contraptions.bearing.MechanicalBearingBlockEntity	com.zurrtum.create.content.contraptions.bearing.MechanicalBearingBlockEntity	path
+com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity	com.zurrtum.create.content.contraptions.bearing.WindmillBearingBlockEntity	path
+com.simibubi.create.content.contraptions.behaviour.MovementContext	com.zurrtum.create.content.contraptions.behaviour.MovementContext	path
+com.simibubi.create.content.contraptions.render.ContraptionMatrices		unresolved
+com.simibubi.create.content.decoration.copycat.CopycatBlock	com.zurrtum.create.content.decoration.copycat.CopycatBlock	path
+com.simibubi.create.content.decoration.copycat.CopycatBlockEntity	com.zurrtum.create.content.decoration.copycat.CopycatBlockEntity	path
+com.simibubi.create.content.decoration.girder.GirderBlock	com.zurrtum.create.content.decoration.girder.GirderBlock	path
+com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock	com.zurrtum.create.content.decoration.girder.GirderEncasedShaftBlock	path
+com.simibubi.create.content.decoration.girder.GirderPlacementHelper	com.zurrtum.create.content.decoration.girder.GirderPlacementHelper	path
+com.simibubi.create.content.decoration.girder.GirderWrenchBehavior	com.zurrtum.create.content.decoration.girder.GirderWrenchBehavior	path
+com.simibubi.create.content.equipment.blueprint.BlueprintOverlayRenderer	com.zurrtum.create.client.content.equipment.blueprint.BlueprintOverlayRenderer	path
+com.simibubi.create.content.equipment.goggles.GogglesItem	com.zurrtum.create.content.equipment.goggles.GogglesItem	path
+com.simibubi.create.content.equipment.sandPaper.SandPaperItemComponent	com.zurrtum.create.infrastructure.component.SandPaperItemComponent	moved
+com.simibubi.create.content.equipment.wrench.IWrenchable	com.zurrtum.create.content.equipment.wrench.IWrenchable	path
+com.simibubi.create.content.fluids.FluidFX	com.zurrtum.create.client.content.fluids.FluidFX	path
+com.simibubi.create.content.fluids.FluidPropagator	com.zurrtum.create.content.fluids.FluidPropagator	path
+com.simibubi.create.content.fluids.pipes.AxisPipeBlock	com.zurrtum.create.content.fluids.pipes.AxisPipeBlock	path
+com.simibubi.create.content.fluids.pipes.EncasedPipeBlock	com.zurrtum.create.content.fluids.pipes.EncasedPipeBlock	path
+com.simibubi.create.content.fluids.pipes.FluidPipeBlock	com.zurrtum.create.content.fluids.pipes.FluidPipeBlock	path
+com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity	com.zurrtum.create.content.fluids.pipes.FluidPipeBlockEntity	path
+com.simibubi.create.content.fluids.pipes.GlassFluidPipeBlock	com.zurrtum.create.content.fluids.pipes.GlassFluidPipeBlock	path
+com.simibubi.create.content.fluids.pump.PumpBlock	com.zurrtum.create.content.fluids.pump.PumpBlock	path
+com.simibubi.create.content.fluids.spout.SpoutBlockEntity	com.zurrtum.create.content.fluids.spout.SpoutBlockEntity	path
+com.simibubi.create.content.fluids.tank.FluidTankBlock	com.zurrtum.create.content.fluids.tank.FluidTankBlock	path
+com.simibubi.create.content.fluids.tank.FluidTankBlockEntity	com.zurrtum.create.content.fluids.tank.FluidTankBlockEntity	path
+com.simibubi.create.content.fluids.tank.storage.FluidTankMountedStorageType	com.zurrtum.create.content.fluids.tank.storage.FluidTankMountedStorageType	path
+com.simibubi.create.content.kinetics.base		unresolved
+com.simibubi.create.content.kinetics.base.DirectionalKineticBlock	com.zurrtum.create.content.kinetics.base.DirectionalKineticBlock	path
+com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING	com.zurrtum.create.content.kinetics.base.DirectionalKineticBlock.FACING	path
+com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity	com.zurrtum.create.content.kinetics.base.GeneratingKineticBlockEntity	path
+com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock	com.zurrtum.create.content.kinetics.base.HorizontalAxisKineticBlock	path
+com.simibubi.create.content.kinetics.base.HorizontalKineticBlock	com.zurrtum.create.content.kinetics.base.HorizontalKineticBlock	path
+com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING	com.zurrtum.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING	path
+com.simibubi.create.content.kinetics.base.IRotate	com.zurrtum.create.content.kinetics.base.IRotate	path
+com.simibubi.create.content.kinetics.base.KineticBlock	com.zurrtum.create.content.kinetics.base.KineticBlock	path
+com.simibubi.create.content.kinetics.base.KineticBlockEntity	com.zurrtum.create.content.kinetics.base.KineticBlockEntity	path
+com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer	com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer	path
+com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer.kineticRotationTransform	com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer.kineticRotationTransform	path
+com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual	com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityVisual	path
+com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS	com.zurrtum.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS	path
+com.simibubi.create.content.kinetics.base.RotatingInstance	com.zurrtum.create.client.content.kinetics.base.RotatingInstance	path
+com.simibubi.create.content.kinetics.base.ShaftRenderer	com.zurrtum.create.client.content.kinetics.base.ShaftRenderer	path
+com.simibubi.create.content.kinetics.deployer.ItemApplicationRecipe	com.zurrtum.create.content.kinetics.deployer.ItemApplicationRecipe	path
+com.simibubi.create.content.kinetics.deployer.ItemApplicationRecipeParams		unresolved
+com.simibubi.create.content.kinetics.mixer.CompactingRecipe	com.zurrtum.create.content.kinetics.mixer.CompactingRecipe	path
+com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity	com.zurrtum.create.content.kinetics.press.MechanicalPressBlockEntity	path
+com.simibubi.create.content.kinetics.simpleRelays.ICogWheel	com.zurrtum.create.content.kinetics.simpleRelays.ICogWheel	path
+com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock	com.zurrtum.create.content.kinetics.simpleRelays.ShaftBlock	path
+com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlock	com.zurrtum.create.content.kinetics.steamEngine.PoweredShaftBlock	path
+com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlockEntity	com.zurrtum.create.content.kinetics.steamEngine.PoweredShaftBlockEntity	path
+com.simibubi.create.content.kinetics.steamEngine.SteamEngineBlock	com.zurrtum.create.content.kinetics.steamEngine.SteamEngineBlock	path
+com.simibubi.create.content.logistics.filter.AbstractFilterMenu	com.zurrtum.create.content.logistics.filter.AbstractFilterMenu	path
+com.simibubi.create.content.logistics.filter.AbstractFilterScreen	com.zurrtum.create.client.content.logistics.filter.AbstractFilterScreen	path
+com.simibubi.create.content.logistics.filter.AttributeFilterMenu	com.zurrtum.create.content.logistics.filter.AttributeFilterMenu	path
+com.simibubi.create.content.logistics.filter.AttributeFilterWhitelistMode	com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode	moved
+com.simibubi.create.content.logistics.filter.FilterItem	com.zurrtum.create.content.logistics.filter.FilterItem	path
+com.simibubi.create.content.logistics.filter.FilterScreenPacket	com.zurrtum.create.infrastructure.packet.c2s.FilterScreenPacket	moved
+com.simibubi.create.content.logistics.item.filter.attribute.ItemAttribute	com.zurrtum.create.content.logistics.item.filter.attribute.ItemAttribute	path
+com.simibubi.create.content.logistics.stockTicker.PackageOrderWithCrafts	com.zurrtum.create.infrastructure.component.PackageOrderWithCrafts	moved
+com.simibubi.create.content.processing.basin.BasinBlockEntity	com.zurrtum.create.content.processing.basin.BasinBlockEntity	path
+com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity	com.zurrtum.create.content.processing.basin.BasinOperatingBlockEntity	path
+com.simibubi.create.content.processing.basin.BasinRecipe	com.zurrtum.create.content.processing.basin.BasinRecipe	path
+com.simibubi.create.content.processing.basin.BasinRenderer	com.zurrtum.create.client.content.processing.basin.BasinRenderer	path
+com.simibubi.create.content.processing.burner.BlazeBurnerBlock	com.zurrtum.create.content.processing.burner.BlazeBurnerBlock	path
+com.simibubi.create.content.processing.recipe.HeatCondition	com.zurrtum.create.content.processing.recipe.HeatCondition	path
+com.simibubi.create.content.processing.recipe.ProcessingOutput	com.zurrtum.create.content.processing.recipe.ProcessingOutput	path
+com.simibubi.create.content.processing.recipe.ProcessingRecipe		unresolved
+com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder		unresolved
+com.simibubi.create.content.processing.recipe.ProcessingRecipeParams		unresolved
+com.simibubi.create.content.processing.recipe.StandardProcessingRecipe		unresolved
+com.simibubi.create.content.redstone.displayLink.DisplayLinkContext	com.zurrtum.create.content.redstone.displayLink.DisplayLinkContext	path
+com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource	com.zurrtum.create.content.redstone.displayLink.source.SingleLineDisplaySource	path
+com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats	com.zurrtum.create.content.redstone.displayLink.target.DisplayTargetStats	path
+com.simibubi.create.content.schematics.requirement.ItemRequirement	com.zurrtum.create.content.schematics.requirement.ItemRequirement	path
+com.simibubi.create.content.trains.entity.CarriageContraption	com.zurrtum.create.content.trains.entity.CarriageContraption	path
+com.simibubi.create.content.trains.entity.CarriageContraptionEntity	com.zurrtum.create.content.trains.entity.CarriageContraptionEntity	path
+com.simibubi.create.content.trains.schedule.hat.TrainHatInfo	com.zurrtum.create.client.content.trains.schedule.hat.TrainHatInfo	path
+com.simibubi.create.content.trains.schedule.hat.TrainHatInfoReloadListener	com.zurrtum.create.client.content.trains.schedule.hat.TrainHatInfoReloadListener	path
+com.simibubi.create.content.trains.track		unresolved
+com.simibubi.create.content.trains.track.ITrackBlock	com.zurrtum.create.content.trains.track.ITrackBlock	path
+com.simibubi.create.content.trains.track.TrackBlockItem	com.zurrtum.create.content.trains.track.TrackBlockItem	path
+com.simibubi.create.content.trains.track.TrackPlacement	com.zurrtum.create.content.trains.track.TrackPlacement	path
+com.simibubi.create.foundation.block.IBE	com.zurrtum.create.foundation.block.IBE	path
+com.simibubi.create.foundation.block.ProperWaterloggedBlock	com.zurrtum.create.foundation.block.ProperWaterloggedBlock	path
+com.simibubi.create.foundation.block.connected.AllCTTypes	com.zurrtum.create.client.foundation.block.connected.AllCTTypes	path
+com.simibubi.create.foundation.block.connected.CTModel	com.zurrtum.create.client.infrastructure.model.CTModel	moved
+com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry	com.zurrtum.create.client.foundation.block.connected.CTSpriteShiftEntry	path
+com.simibubi.create.foundation.block.connected.CTSpriteShifter	com.zurrtum.create.client.foundation.block.connected.CTSpriteShifter	path
+com.simibubi.create.foundation.block.connected.CTType	com.zurrtum.create.client.foundation.block.connected.CTType	path
+com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour	com.zurrtum.create.client.foundation.block.connected.ConnectedTextureBehaviour	path
+com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer	com.zurrtum.create.foundation.blockEntity.IMultiBlockEntityContainer	path
+com.simibubi.create.foundation.blockEntity.SmartBlockEntity	com.zurrtum.create.foundation.blockEntity.SmartBlockEntity	path
+com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType	com.zurrtum.create.foundation.blockEntity.behaviour.BehaviourType	path
+com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour	com.zurrtum.create.api.behaviour.BlockEntityBehaviour	moved
+com.simibubi.create.foundation.blockEntity.behaviour.ValueBox	com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBox	path
+com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxRenderer	com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxRenderer	path
+com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform	com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxTransform	path
+com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour	com.zurrtum.create.client.foundation.blockEntity.behaviour.filtering.FilteringBehaviour	path
+com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringRenderer	com.zurrtum.create.client.foundation.blockEntity.behaviour.filtering.FilteringRenderer	path
+com.simibubi.create.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour	com.zurrtum.create.client.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour	path
+com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour	com.zurrtum.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour	path
+com.simibubi.create.foundation.blockEntity.behaviour.inventory.VersionedInventoryWrapper		unresolved
+com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions	com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions	path
+com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour	com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour	path
+com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer		unresolved
+com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer	com.zurrtum.create.client.foundation.blockEntity.renderer.SmartBlockEntityRenderer	path
+com.simibubi.create.foundation.data.AssetLookup		unresolved
+com.simibubi.create.foundation.data.BlockStateGen		unresolved
+com.simibubi.create.foundation.data.CreateRegistrate		unresolved
+com.simibubi.create.foundation.data.CreateRegistrate.connectedTextures		unresolved
+com.simibubi.create.foundation.data.SharedProperties		unresolved
+com.simibubi.create.foundation.data.SpecialBlockStateGen		unresolved
+com.simibubi.create.foundation.data.TagGen.axeOnly		unresolved
+com.simibubi.create.foundation.data.TagGen.pickaxeOnly		unresolved
+com.simibubi.create.foundation.fluid.FluidHelper	com.zurrtum.create.foundation.fluid.FluidHelper	path
+com.simibubi.create.foundation.fluid.SmartFluidTank		unresolved
+com.simibubi.create.foundation.gui.AllGuiTextures	com.zurrtum.create.client.foundation.gui.AllGuiTextures	path
+com.simibubi.create.foundation.gui.AllGuiTextures.PLAYER_INVENTORY	com.zurrtum.create.client.foundation.gui.AllGuiTextures.PLAYER_INVENTORY	path
+com.simibubi.create.foundation.gui.AllIcons	com.zurrtum.create.client.foundation.gui.AllIcons	path
+com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen	com.zurrtum.create.client.foundation.gui.menu.AbstractSimiContainerScreen	path
+com.simibubi.create.foundation.gui.widget.IconButton	com.zurrtum.create.client.foundation.gui.widget.IconButton	path
+com.simibubi.create.foundation.gui.widget.Indicator	com.zurrtum.create.client.foundation.gui.widget.Indicator	path
+com.simibubi.create.foundation.gui.widget.Label	com.zurrtum.create.client.foundation.gui.widget.Label	path
+com.simibubi.create.foundation.gui.widget.SelectionScrollInput	com.zurrtum.create.client.foundation.gui.widget.SelectionScrollInput	path
+com.simibubi.create.foundation.item.CustomArmPoseItem		unresolved
+com.simibubi.create.foundation.item.ItemDescription	com.zurrtum.create.client.foundation.item.ItemDescription	path
+com.simibubi.create.foundation.item.ItemHelper	com.zurrtum.create.foundation.item.ItemHelper	path
+com.simibubi.create.foundation.item.KineticStats	com.zurrtum.create.client.foundation.item.KineticStats	path
+com.simibubi.create.foundation.item.SmartInventory		unresolved
+com.simibubi.create.foundation.item.TooltipHelper	com.zurrtum.create.client.foundation.item.TooltipHelper	path
+com.simibubi.create.foundation.item.TooltipModifier	com.zurrtum.create.client.foundation.item.TooltipModifier	path
+com.simibubi.create.foundation.item.render.CustomRenderedItemModel		unresolved
+com.simibubi.create.foundation.item.render.CustomRenderedItemModelRenderer		unresolved
+com.simibubi.create.foundation.item.render.PartialItemModelRenderer		unresolved
+com.simibubi.create.foundation.item.render.SimpleCustomRenderer		unresolved
+com.simibubi.create.foundation.mixin.accessor.AgeableListModelAccessor		unresolved
+com.simibubi.create.foundation.mixin.accessor.EntityRenderDispatcherAccessor		unresolved
+com.simibubi.create.foundation.model.BakedModelWrapperWithData		unresolved
+com.simibubi.create.foundation.placement.PoleHelper	com.zurrtum.create.foundation.placement.PoleHelper	path
+com.simibubi.create.foundation.ponder		unresolved
+com.simibubi.create.foundation.ponder.CreateSceneBuilder	com.zurrtum.create.client.foundation.ponder.CreateSceneBuilder	path
+com.simibubi.create.foundation.recipe.IRecipeTypeInfo		unresolved
+com.simibubi.create.foundation.recipe.RecipeFinder	com.zurrtum.create.foundation.recipe.RecipeFinder	path
+com.simibubi.create.foundation.render.AllInstanceTypes	com.zurrtum.create.client.foundation.render.AllInstanceTypes	path
+com.simibubi.create.foundation.utility.BlockHelper	com.zurrtum.create.foundation.utility.BlockHelper	path
+com.simibubi.create.foundation.utility.CreateLang	com.zurrtum.create.client.foundation.utility.CreateLang	path
+com.simibubi.create.foundation.utility.FilesHelper	com.zurrtum.create.foundation.utility.FilesHelper	path
+com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld	com.zurrtum.create.client.foundation.virtualWorld.VirtualRenderWorld	path
+com.simibubi.create.impl.unpacking.BasinUnpackingHandler	com.zurrtum.create.impl.unpacking.BasinUnpackingHandler	path
+com.simibubi.create.infrastructure.config.AllConfigs	com.zurrtum.create.infrastructure.config.AllConfigs	path
+com.simibubi.create.infrastructure.config.CKinetics	com.zurrtum.create.infrastructure.config.CKinetics	path
+com.simibubi.create.infrastructure.config.CRecipes	com.zurrtum.create.infrastructure.config.CRecipes	path
+com.simibubi.create.infrastructure.ponder.AllCreatePonderTags	com.zurrtum.create.client.infrastructure.ponder.AllCreatePonderTags	path
+dev.engine_room.flywheel.api.backend.Backend	com.zurrtum.create.client.flywheel.api.backend.Backend	path
+dev.engine_room.flywheel.api.instance.Instance	com.zurrtum.create.client.flywheel.api.instance.Instance	path
+dev.engine_room.flywheel.api.visual.DynamicVisual	com.zurrtum.create.client.flywheel.api.visual.DynamicVisual	path
+dev.engine_room.flywheel.api.visualization.VisualizationContext	com.zurrtum.create.client.flywheel.api.visualization.VisualizationContext	path
+dev.engine_room.flywheel.api.visualization.VisualizationManager	com.zurrtum.create.client.flywheel.api.visualization.VisualizationManager	path
+dev.engine_room.flywheel.lib.instance.InstanceTypes	com.zurrtum.create.client.flywheel.lib.instance.InstanceTypes	path
+dev.engine_room.flywheel.lib.instance.OrientedInstance	com.zurrtum.create.client.flywheel.lib.instance.OrientedInstance	path
+dev.engine_room.flywheel.lib.instance.TransformedInstance	com.zurrtum.create.client.flywheel.lib.instance.TransformedInstance	path
+dev.engine_room.flywheel.lib.model.Models	com.zurrtum.create.client.flywheel.lib.model.Models	path
+dev.engine_room.flywheel.lib.model.baked.PartialModel	com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel	path
+dev.engine_room.flywheel.lib.transform.PoseTransformStack	com.zurrtum.create.client.flywheel.lib.transform.PoseTransformStack	path
+dev.engine_room.flywheel.lib.transform.TransformStack	com.zurrtum.create.client.flywheel.lib.transform.TransformStack	path
+dev.engine_room.flywheel.lib.visual.AbstractBlockEntityVisual	com.zurrtum.create.client.flywheel.lib.visual.AbstractBlockEntityVisual	path
+dev.engine_room.flywheel.lib.visual.SimpleDynamicVisual	com.zurrtum.create.client.flywheel.lib.visual.SimpleDynamicVisual	path
+net.createmod.catnip.animation.AnimationTickHolder	com.zurrtum.create.client.catnip.animation.AnimationTickHolder	path
+net.createmod.catnip.animation.LerpedFloat	com.zurrtum.create.catnip.animation.LerpedFloat	path
+net.createmod.catnip.codecs.CatnipCodecUtils	com.zurrtum.create.catnip.codecs.CatnipCodecUtils	path
+net.createmod.catnip.codecs.CatnipCodecs	com.zurrtum.create.catnip.codecs.CatnipCodecs	path
+net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders	com.zurrtum.create.catnip.codecs.stream.CatnipStreamCodecBuilders	path
+net.createmod.catnip.data.Couple	com.zurrtum.create.catnip.data.Couple	path
+net.createmod.catnip.data.Iterate	com.zurrtum.create.catnip.data.Iterate	path
+net.createmod.catnip.data.Pair	com.zurrtum.create.catnip.data.Pair	path
+net.createmod.catnip.gui.UIRenderHelper	com.zurrtum.create.client.catnip.gui.UIRenderHelper	path
+net.createmod.catnip.gui.element.GuiGameElement	com.zurrtum.create.client.catnip.gui.element.GuiGameElement	path
+net.createmod.catnip.lang.FontHelper	com.zurrtum.create.client.catnip.lang.FontHelper	path
+net.createmod.catnip.lang.Lang	com.zurrtum.create.client.catnip.lang.Lang	path
+net.createmod.catnip.lang.LangBuilder	com.zurrtum.create.client.catnip.lang.LangBuilder	path
+net.createmod.catnip.math.AngleHelper	com.zurrtum.create.catnip.math.AngleHelper	path
+net.createmod.catnip.math.Pointing	com.zurrtum.create.catnip.math.Pointing	path
+net.createmod.catnip.math.VecHelper	com.zurrtum.create.catnip.math.VecHelper	path
+net.createmod.catnip.nbt.NBTHelper	com.zurrtum.create.catnip.nbt.NBTHelper	path
+net.createmod.catnip.net.base.BasePacketPayload		unresolved
+net.createmod.catnip.net.base.CatnipPacketRegistry		unresolved
+net.createmod.catnip.net.base.ServerboundPacketPayload		unresolved
+net.createmod.catnip.outliner.Outliner	com.zurrtum.create.client.catnip.outliner.Outliner	path
+net.createmod.catnip.placement.IPlacementHelper	com.zurrtum.create.catnip.placement.IPlacementHelper	path
+net.createmod.catnip.placement.PlacementHelpers	com.zurrtum.create.catnip.placement.PlacementHelpers	path
+net.createmod.catnip.placement.PlacementOffset	com.zurrtum.create.catnip.placement.PlacementOffset	path
+net.createmod.catnip.platform.CatnipServices		unresolved
+net.createmod.catnip.platform.NeoForgeCatnipServices		unresolved
+net.createmod.catnip.render.CachedBuffers	com.zurrtum.create.client.catnip.render.CachedBuffers	path
+net.createmod.catnip.render.SuperByteBuffer	com.zurrtum.create.client.catnip.render.SuperByteBuffer	path
+net.createmod.catnip.theme.Color	com.zurrtum.create.catnip.theme.Color	path
+net.createmod.ponder.api.PonderPalette	com.zurrtum.create.client.ponder.api.PonderPalette	path
+net.createmod.ponder.api.element.ElementLink	com.zurrtum.create.client.ponder.api.element.ElementLink	path
+net.createmod.ponder.api.element.EntityElement	com.zurrtum.create.client.ponder.api.element.EntityElement	path
+net.createmod.ponder.api.element.ParrotPose	com.zurrtum.create.client.ponder.api.element.ParrotPose	path
+net.createmod.ponder.api.element.WorldSectionElement	com.zurrtum.create.client.ponder.api.element.WorldSectionElement	path
+net.createmod.ponder.api.registration.PonderPlugin	com.zurrtum.create.client.ponder.api.registration.PonderPlugin	path
+net.createmod.ponder.api.registration.PonderSceneRegistrationHelper	com.zurrtum.create.client.ponder.api.registration.PonderSceneRegistrationHelper	path
+net.createmod.ponder.api.registration.PonderTagRegistrationHelper	com.zurrtum.create.client.ponder.api.registration.PonderTagRegistrationHelper	path
+net.createmod.ponder.api.scene.SceneBuilder	com.zurrtum.create.client.ponder.api.scene.SceneBuilder	path
+net.createmod.ponder.api.scene.SceneBuildingUtil	com.zurrtum.create.client.ponder.api.scene.SceneBuildingUtil	path
+net.createmod.ponder.api.scene.Selection	com.zurrtum.create.client.ponder.api.scene.Selection	path
+net.createmod.ponder.foundation.PonderIndex	com.zurrtum.create.client.ponder.foundation.PonderIndex	path
+net.createmod.ponder.foundation.PonderScene	com.zurrtum.create.client.ponder.foundation.PonderScene	path
+net.createmod.ponder.foundation.element.InputWindowElement	com.zurrtum.create.client.ponder.foundation.element.InputWindowElement	path
+net.createmod.ponder.foundation.instruction.TickingInstruction	com.zurrtum.create.client.ponder.foundation.instruction.TickingInstruction	path

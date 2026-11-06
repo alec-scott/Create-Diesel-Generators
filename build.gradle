@@ -1,191 +1,98 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.89'
-    id 'idea'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
-tasks.named('wrapper', Wrapper).configure {
-    distributionType = Wrapper.DistributionType.BIN
-}
-
-version = mod_version
-group = mod_group_id
+version = "${mod_version}+fabric-mc${minecraft_version}"
+group = maven_group
+base { archivesName = archives_base_name }
 
 repositories {
-    mavenLocal()
-}
-
-base {
-    archivesName = mod_id
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-neoForge {
-
-    version = project.neo_version
-
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
-
-    runs {
-        client {
-            client()
-
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    mavenCentral()
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/' }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
         }
-
-        server {
-            server()
-
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        gameTestServer {
-            type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            data()
-
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-            logLevel = org.slf4j.event.Level.DEBUG
-        }
-    }
-
-    mods {
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
-        }
+        filter { includeGroup 'maven.modrinth' }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
+loom {
+    accessWidenerPath = file('src/main/resources/createdieselgenerators.accesswidener')
 }
 
-repositories {
-    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
-    maven { url = "https://mvn.devos.one/snapshots" } // Registrate
-    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
-    maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
-    maven { url = "https://maven.theillusivec4.top/" } // Curios API
-    maven { url = "https://maven.blamejared.com/" } // JEI
-    maven { url = "https://maven.ryanhcode.dev/releases" } // Sable, Simulated
-    maven { url = "https://cursemaven.com" }
-    maven { url = "https://api.modrinth.com/maven" }
-//    maven { url = "https://maven.azmod.net/releases" } // Strut your Stuff
-    maven {
-        url = "https://maven.latvian.dev/releases"
-        content {
-            includeGroup "dev.latvian.mods"
+sourceSets {
+    main {
+        resources.srcDir 'src/generated/resources'
+        java {
+            // Datagen is stubbed (the committed src/generated/resources are used); see PORTING-26.1.md.
+            exclude 'com/jesz/createdieselgenerators/events/datagen/**'
+            // Compat for mods with no Fabric 26.1 build (KubeJS, Strut Your Stuff, Every Compat): see PORTING-26.1.md.
+            exclude 'com/jesz/createdieselgenerators/compat/kubejs/**'
+            exclude 'com/jesz/createdieselgenerators/compat/strut_your_stuff/**'
+            exclude 'com/jesz/createdieselgenerators/compat/EveryCompatCompat.java'
+            // TEMP: JEI and CC:Tweaked compat are ported after the main code compiles.
+            exclude 'com/jesz/createdieselgenerators/compat/jei/**'
+            exclude 'com/jesz/createdieselgenerators/compat/computercraft/**'
         }
     }
 }
-
 
 dependencies {
-    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
-    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
-    implementation("com.tterrag.registrate:Registrate:${registrate_version}")
-//    implementation("curse.maven:createaddition-439890:6445614")
+    // 26.1 is unobfuscated: no mappings, and Loom no longer remaps (non-remap "fabric-loom" plugin).
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forgeconfigapiport_version}"
 
-    compileOnly("curse.maven:kubejs-238086:5810100")
-//    implementation("dev.latvian.mods:kubejs-neoforge:2101.7.2-build.200")
+    implementation files(create_fly_jar)
 
-//    implementation("curse.maven:rhino-416294:6184623")
-    implementation("dev.latvian.mods:rhino:2101.2.7-build.74")
+    // Optional: CC:Tweaked peripherals (only touched when the mod is loaded)
+    compileOnly "maven.modrinth:cc-tweaked:${computercraft_tweaked_version}"
+    // Optional: compat/jei is only loaded by JEI itself via the jei_mod_plugin entrypoint.
+    compileOnly "maven.modrinth:jei:${jei_version}"
+    // Optional Sable compat, only touched when the "sable" mod is loaded (see PORTING-26.1.md)
+    compileOnly files(sable_jar)
 
-    implementation("curse.maven:architectury-api-419699:5786327")
-
-    implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
-    implementation("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
-
-    implementation "curse.maven:selene-499980:7522321"
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-
-    // Strut your stuff
-//    implementation("com.cake.struts:struts:1.3.0")
-    implementation("maven.modrinth:sHO3MhQx:Nrn7hYca")
-
-    implementation("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:[${sable_version},)")
-    implementation("dev.eriksonn.aeronautics:aeronautics-neoforge-${minecraft_version}:${aeronautics_version}")
-    implementation("dev.simulated_team.simulated:simulated-neoforge-${minecraft_version}:${simulated_version}")
-    runtimeOnly("dev.ryanhcode.offroad:offroad-neoforge-${minecraft_version}:${offroad_version}")
-
-    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-${project.minecraft_version}:[${project.sable_companion_version},)") {
-        version {
-            prefer project.sable_companion_version
-        }
-    })
+    // Used by the relocated Registrate port (com.jesz.createdieselgenerators.port.registrate)
+    compileOnly "org.projectlombok:lombok:1.18.42"
+    annotationProcessor "org.projectlombok:lombok:1.18.42"
 }
 
-var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            neo_version_range      : neo_version_range,
-            loader_version_range   : loader_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-            mod_description        : mod_description,
-            create_version_range   : create_version_range
+processResources {
+    // Hand-crafted resources take priority over datagen output (as upstream).
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    def props = [
+            version                   : project.version,
+            minecraft_version         : minecraft_version,
+            fabric_loader_version     : fabric_loader_version,
+            fabric_api_version        : fabric_api_version,
+            forgeconfigapiport_version: forgeconfigapiport_version,
+            create_fly_version_range  : create_fly_version_range
     ]
-    inputs.properties replaceProperties
-    expand replaceProperties
-    from "src/main/templates"
-    into "build/generated/sources/modMetadata"
+    inputs.properties(props)
+    filesMatching('fabric.mod.json') { expand props }
 }
 
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
-
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+    withSourcesJar()
 }
 
 tasks.withType(JavaCompile).configureEach {
+    options.release = java_version as int
     options.encoding = 'UTF-8'
+    options.compilerArgs.addAll(['-Xmaxerrs', '10000'])
+}
+
+tasks.withType(Jar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 jar {
-    manifest.attributes([
-            "MixinConfigs": "${mod_id}.mixins.json",
-    ])
-}
-
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
+    from('LICENSE') { rename { "LICENSE_createdieselgenerators" } }
 }

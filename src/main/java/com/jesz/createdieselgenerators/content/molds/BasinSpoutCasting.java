@@ -1,15 +1,15 @@
 package com.jesz.createdieselgenerators.content.molds;
 
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.api.behaviour.spouting.BlockSpoutingBehaviour;
-import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
-import com.simibubi.create.content.processing.basin.BasinBlockEntity;
+import com.zurrtum.create.api.behaviour.spouting.BlockSpoutingBehaviour;
+import com.zurrtum.create.content.fluids.spout.SpoutBlockEntity;
+import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
 import java.util.List;
 

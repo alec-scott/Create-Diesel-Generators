@@ -1,0 +1,9 @@
+// Diagnostic only: write each project's compile classpath to <scratchpad>/cp-<project>.txt
+allprojects {
+    tasks.register('printCompileClasspath') {
+        doLast {
+            def out = new File(System.getProperty('cpOutDir'), "cp-${project.name}.txt")
+            out.text = (project.sourceSets.main.compileClasspath + project.sourceSets.main.output).asPath
+        }
+    }
+}

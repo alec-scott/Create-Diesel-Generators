@@ -2,11 +2,11 @@ package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.kinetics.base.ShaftRenderer;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
-import net.createmod.catnip.math.AngleHelper;
-import net.createmod.catnip.render.CachedBuffers;
-import net.createmod.catnip.render.SuperByteBuffer;
+import com.zurrtum.create.client.content.kinetics.base.ShaftRenderer;
+import com.zurrtum.create.client.flywheel.api.visualization.VisualizationManager;
+import com.zurrtum.create.catnip.math.AngleHelper;
+import com.zurrtum.create.client.catnip.render.CachedBuffers;
+import com.zurrtum.create.client.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 
-import static com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
+import static com.zurrtum.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
 
 public class PumpjackCrankRenderer extends ShaftRenderer<PumpjackCrankBlockEntity> {
     public PumpjackCrankRenderer(BlockEntityRendererProvider.Context context) {

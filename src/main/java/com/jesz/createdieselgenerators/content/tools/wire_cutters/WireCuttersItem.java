@@ -2,10 +2,10 @@ package com.jesz.createdieselgenerators.content.tools.wire_cutters;
 
 import com.jesz.createdieselgenerators.CDGDataComponents;
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.content.equipment.sandPaper.SandPaperItemComponent;
+import com.zurrtum.create.infrastructure.component.SandPaperItemComponent;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-import net.createmod.catnip.animation.AnimationTickHolder;
-import net.createmod.catnip.math.VecHelper;
+import com.zurrtum.create.client.catnip.animation.AnimationTickHolder;
+import com.zurrtum.create.catnip.math.VecHelper;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;

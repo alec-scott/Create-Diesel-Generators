@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators.content.canister;
 
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.content.tools.FueledToolItem;
-import com.simibubi.create.AllEnchantments;
+import com.zurrtum.create.AllEnchantments;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
 import java.util.List;
 

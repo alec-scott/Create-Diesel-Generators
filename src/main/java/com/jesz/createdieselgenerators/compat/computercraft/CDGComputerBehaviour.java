@@ -2,8 +2,8 @@ package com.jesz.createdieselgenerators.compat.computercraft;
 
 import com.jesz.createdieselgenerators.compat.computercraft.peripherals.ChemicalTurretPeripheral;
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretBlockEntity;
-import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.zurrtum.create.compat.computercraft.AbstractComputerBehaviour;
+import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.registries.BuiltInRegistries;
 

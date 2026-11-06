@@ -1,9 +1,9 @@
 package com.jesz.createdieselgenerators.content.bulk_fermenter;
 
 import com.jesz.createdieselgenerators.CDGSpriteShifts;
-import com.simibubi.create.api.connectivity.ConnectivityHandler;
-import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
-import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
+import com.zurrtum.create.api.connectivity.ConnectivityHandler;
+import com.zurrtum.create.client.foundation.block.connected.CTSpriteShiftEntry;
+import com.zurrtum.create.client.foundation.block.connected.ConnectedTextureBehaviour;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -2,8 +2,8 @@ package com.jesz.createdieselgenerators.mixins;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelBlock;
-import com.simibubi.create.content.decoration.copycat.CopycatBlock;
-import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
+import com.zurrtum.create.content.decoration.copycat.CopycatBlock;
+import com.zurrtum.create.content.decoration.copycat.CopycatBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

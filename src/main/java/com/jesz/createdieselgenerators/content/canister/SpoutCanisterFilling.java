@@ -1,12 +1,12 @@
 package com.jesz.createdieselgenerators.content.canister;
 
 import com.jesz.createdieselgenerators.CDGConfig;
-import com.simibubi.create.api.behaviour.spouting.BlockSpoutingBehaviour;
-import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
+import com.zurrtum.create.api.behaviour.spouting.BlockSpoutingBehaviour;
+import com.zurrtum.create.content.fluids.spout.SpoutBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class SpoutCanisterFilling implements BlockSpoutingBehaviour {

@@ -2,9 +2,9 @@ package com.jesz.createdieselgenerators.content.diesel_engine.normal;
 
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
-import com.simibubi.create.content.kinetics.base.ShaftRenderer;
-import net.createmod.catnip.render.CachedBuffers;
+import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
+import com.zurrtum.create.client.content.kinetics.base.ShaftRenderer;
+import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

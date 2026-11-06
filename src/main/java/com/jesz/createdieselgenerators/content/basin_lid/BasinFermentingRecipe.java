@@ -1,7 +1,7 @@
 package com.jesz.createdieselgenerators.content.basin_lid;
 
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.content.processing.basin.BasinRecipe;
+import com.zurrtum.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeParams;
 
 public class BasinFermentingRecipe extends BasinRecipe {

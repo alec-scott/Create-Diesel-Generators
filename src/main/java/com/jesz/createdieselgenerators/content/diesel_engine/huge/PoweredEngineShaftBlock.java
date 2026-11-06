@@ -2,11 +2,11 @@ package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
-import com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlock;
-import com.simibubi.create.content.kinetics.steamEngine.SteamEngineBlock;
-import net.createmod.catnip.data.Iterate;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.content.kinetics.simpleRelays.ShaftBlock;
+import com.zurrtum.create.content.kinetics.steamEngine.PoweredShaftBlock;
+import com.zurrtum.create.content.kinetics.steamEngine.SteamEngineBlock;
+import com.zurrtum.create.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;

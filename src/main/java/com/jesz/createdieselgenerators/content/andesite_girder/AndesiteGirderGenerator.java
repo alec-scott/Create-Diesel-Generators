@@ -1,14 +1,14 @@
 package com.jesz.createdieselgenerators.content.andesite_girder;
 
-import com.simibubi.create.content.decoration.girder.GirderBlock;
-import com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock;
-import com.simibubi.create.foundation.data.AssetLookup;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import net.createmod.catnip.data.Iterate;
+import com.zurrtum.create.content.decoration.girder.GirderBlock;
+import com.zurrtum.create.content.decoration.girder.GirderEncasedShaftBlock;
+import com.jesz.createdieselgenerators.port.create.foundation.data.AssetLookup;
+import com.jesz.createdieselgenerators.port.registrate.providers.DataGenContext;
+import com.jesz.createdieselgenerators.port.registrate.providers.RegistrateBlockstateProvider;
+import com.zurrtum.create.catnip.data.Iterate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import com.jesz.createdieselgenerators.port.porting_lib.models.generators.MultiPartBlockStateBuilder;
 
 public class AndesiteGirderGenerator {
     public static void blockStateWithShaft(DataGenContext<Block, AndesiteGirderEncasedShaftBlock> c,

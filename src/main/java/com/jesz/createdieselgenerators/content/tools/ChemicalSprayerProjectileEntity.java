@@ -3,9 +3,9 @@ package com.jesz.createdieselgenerators.content.tools;
 import com.jesz.createdieselgenerators.CDGEntityTypes;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
-import com.simibubi.create.AllFluids;
-import com.simibubi.create.content.fluids.FluidFX;
-import com.simibubi.create.foundation.fluid.FluidHelper;
+import com.zurrtum.create.AllFluids;
+import com.zurrtum.create.client.content.fluids.FluidFX;
+import com.zurrtum.create.foundation.fluid.FluidHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -35,7 +35,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
 public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
     public FluidStack stack;

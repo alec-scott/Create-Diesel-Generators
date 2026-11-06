@@ -1,11 +1,11 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
-import com.simibubi.create.foundation.gui.AllIcons;
-import net.createmod.catnip.lang.Lang;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
+import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
+import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
+import com.zurrtum.create.client.foundation.gui.AllIcons;
+import com.zurrtum.create.client.catnip.lang.Lang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;

@@ -1,9 +1,9 @@
 package com.jesz.createdieselgenerators.content.burner;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.foundation.block.IBE;
+import com.zurrtum.create.content.kinetics.base.HorizontalAxisKineticBlock;
+import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
+import com.zurrtum.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

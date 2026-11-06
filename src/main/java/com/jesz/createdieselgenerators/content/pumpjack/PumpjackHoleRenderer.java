@@ -3,7 +3,7 @@ package com.jesz.createdieselgenerators.content.pumpjack;
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import net.createmod.catnip.render.CachedBuffers;
+import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

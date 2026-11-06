@@ -3,7 +3,7 @@ package com.jesz.createdieselgenerators.compat.kubejs;
 import com.jesz.createdieselgenerators.content.molds.MoldType;
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import dev.latvian.mods.kubejs.typings.Info;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;

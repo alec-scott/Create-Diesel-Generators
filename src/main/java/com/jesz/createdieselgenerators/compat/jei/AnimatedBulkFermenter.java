@@ -3,7 +3,7 @@ package com.jesz.createdieselgenerators.compat.jei;
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.simibubi.create.AllPartialModels;
+import com.zurrtum.create.client.AllPartialModels;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
 import net.minecraft.client.gui.GuiGraphics;
 

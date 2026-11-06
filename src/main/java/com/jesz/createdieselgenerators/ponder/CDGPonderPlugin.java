@@ -3,13 +3,13 @@ package com.jesz.createdieselgenerators.ponder;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
-import com.simibubi.create.infrastructure.ponder.AllCreatePonderTags;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.createmod.ponder.api.registration.PonderPlugin;
-import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
-import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
-import net.minecraft.resources.ResourceLocation;
+import com.zurrtum.create.client.infrastructure.ponder.AllCreatePonderTags;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.ItemProviderEntry;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.RegistryEntry;
+import com.zurrtum.create.client.ponder.api.registration.PonderPlugin;
+import com.zurrtum.create.client.ponder.api.registration.PonderSceneRegistrationHelper;
+import com.zurrtum.create.client.ponder.api.registration.PonderTagRegistrationHelper;
+import net.minecraft.resources.Identifier;
 
 public class CDGPonderPlugin implements PonderPlugin {
     @Override

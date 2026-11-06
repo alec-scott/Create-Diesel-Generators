@@ -1,10 +1,10 @@
 package com.jesz.createdieselgenerators.content.tools.lighter;
 
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
-import com.simibubi.create.foundation.utility.CreateLang;
+import com.zurrtum.create.client.foundation.utility.CreateLang;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent;
 
 import java.util.ArrayList;

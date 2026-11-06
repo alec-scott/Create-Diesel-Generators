@@ -1,7 +1,7 @@
 package com.jesz.createdieselgenerators.compat.computercraft.peripherals;
 
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretBlockEntity;
-import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
+import com.zurrtum.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
 import dan200.computercraft.api.lua.LuaFunction;
 import net.minecraft.util.Mth;
 

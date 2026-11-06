@@ -2,11 +2,11 @@ package com.jesz.createdieselgenerators.content.andesite_girder;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.content.decoration.girder.GirderBlock;
-import com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.schematics.requirement.ItemRequirement;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.content.decoration.girder.GirderBlock;
+import com.zurrtum.create.content.decoration.girder.GirderEncasedShaftBlock;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.content.schematics.requirement.ItemRequirement;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

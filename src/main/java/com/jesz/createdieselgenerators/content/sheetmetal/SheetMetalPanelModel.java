@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators.content.sheetmetal;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
-import net.createmod.catnip.data.Iterate;
+import com.zurrtum.create.catnip.data.Iterate;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;

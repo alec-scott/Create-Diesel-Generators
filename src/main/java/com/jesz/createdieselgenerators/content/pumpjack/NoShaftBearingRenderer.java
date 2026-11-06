@@ -1,22 +1,22 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.AllPartialModels;
-import com.simibubi.create.content.contraptions.bearing.IBearingBlockEntity;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.client.AllPartialModels;
+import com.zurrtum.create.content.contraptions.bearing.IBearingBlockEntity;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
-import dev.engine_room.flywheel.lib.model.baked.PartialModel;
-import net.createmod.catnip.math.AngleHelper;
-import net.createmod.catnip.render.CachedBuffers;
-import net.createmod.catnip.render.SuperByteBuffer;
+import com.zurrtum.create.client.flywheel.api.visualization.VisualizationManager;
+import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
+import com.zurrtum.create.catnip.math.AngleHelper;
+import com.zurrtum.create.client.catnip.render.CachedBuffers;
+import com.zurrtum.create.client.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import static com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer.kineticRotationTransform;
+import static com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer.kineticRotationTransform;
 
 public class NoShaftBearingRenderer<T extends KineticBlockEntity & IBearingBlockEntity> extends SafeBlockEntityRenderer<T> {
 

@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators.content.andesite_girder;
 
 import com.google.common.base.Predicates;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.content.decoration.girder.GirderPlacementHelper;
+import com.zurrtum.create.content.decoration.girder.GirderPlacementHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 

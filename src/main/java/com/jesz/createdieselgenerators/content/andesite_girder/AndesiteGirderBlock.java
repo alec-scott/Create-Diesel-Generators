@@ -1,14 +1,14 @@
 package com.jesz.createdieselgenerators.content.andesite_girder;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
-import com.simibubi.create.content.decoration.girder.GirderBlock;
-import com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock;
-import com.simibubi.create.content.decoration.girder.GirderWrenchBehavior;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import net.createmod.catnip.placement.IPlacementHelper;
-import net.createmod.catnip.placement.PlacementHelpers;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.AllItems;
+import com.zurrtum.create.content.decoration.girder.GirderBlock;
+import com.zurrtum.create.content.decoration.girder.GirderEncasedShaftBlock;
+import com.zurrtum.create.content.decoration.girder.GirderWrenchBehavior;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.catnip.placement.IPlacementHelper;
+import com.zurrtum.create.catnip.placement.PlacementHelpers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;

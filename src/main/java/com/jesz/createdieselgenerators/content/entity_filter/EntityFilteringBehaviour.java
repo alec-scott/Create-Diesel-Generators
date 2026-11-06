@@ -1,16 +1,16 @@
 package com.jesz.createdieselgenerators.content.entity_filter;
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
-import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.logistics.filter.FilterItem;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
-import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.item.ItemHelper;
-import com.simibubi.create.foundation.utility.CreateLang;
-import net.createmod.catnip.math.VecHelper;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.AllItems;
+import com.zurrtum.create.AllSoundEvents;
+import com.zurrtum.create.content.logistics.filter.FilterItem;
+import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
+import com.zurrtum.create.foundation.blockEntity.behaviour.BehaviourType;
+import com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.zurrtum.create.client.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import com.zurrtum.create.foundation.item.ItemHelper;
+import com.zurrtum.create.client.foundation.utility.CreateLang;
+import com.zurrtum.create.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;

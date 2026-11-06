@@ -1,8 +1,8 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.content.contraptions.bearing.BearingBlock;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.zurrtum.create.content.contraptions.bearing.BearingBlock;
+import com.zurrtum.create.content.equipment.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;

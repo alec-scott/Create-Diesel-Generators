@@ -3,16 +3,16 @@ package com.jesz.createdieselgenerators.content.entity_filter;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.packets.EntityFilterScreenPacket;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.logistics.filter.AbstractFilterScreen;
-import com.simibubi.create.content.logistics.filter.AttributeFilterWhitelistMode;
-import com.simibubi.create.content.logistics.filter.FilterScreenPacket;
-import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.gui.widget.Indicator;
-import com.simibubi.create.foundation.gui.widget.Label;
-import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
-import net.createmod.catnip.gui.element.GuiGameElement;
+import com.zurrtum.create.client.content.logistics.filter.AbstractFilterScreen;
+import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
+import com.zurrtum.create.infrastructure.packet.c2s.FilterScreenPacket;
+import com.zurrtum.create.client.foundation.gui.AllGuiTextures;
+import com.zurrtum.create.client.foundation.gui.AllIcons;
+import com.zurrtum.create.client.foundation.gui.widget.IconButton;
+import com.zurrtum.create.client.foundation.gui.widget.Indicator;
+import com.zurrtum.create.client.foundation.gui.widget.Label;
+import com.zurrtum.create.client.foundation.gui.widget.SelectionScrollInput;
+import com.zurrtum.create.client.catnip.gui.element.GuiGameElement;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.simibubi.create.foundation.gui.AllGuiTextures.PLAYER_INVENTORY;
+import static com.zurrtum.create.client.foundation.gui.AllGuiTextures.PLAYER_INVENTORY;
 
 public class EntityFilterScreen extends AbstractFilterScreen<EntityFilterMenu> {
     IconButton whitelistCon, whitelistDis, blacklist, add, addInverted;

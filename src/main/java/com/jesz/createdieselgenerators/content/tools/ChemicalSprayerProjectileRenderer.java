@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators.content.tools;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ChemicalSprayerProjectileRenderer extends EntityRenderer<ChemicalSprayerProjectileEntity> {
     public ChemicalSprayerProjectileRenderer(EntityRendererProvider.Context p_174008_) {

@@ -3,8 +3,8 @@ package com.jesz.createdieselgenerators;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredHolder;
+import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredRegister;
 
 public class CDGSoundEvents {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =

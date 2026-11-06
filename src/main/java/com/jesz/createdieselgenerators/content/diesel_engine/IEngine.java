@@ -4,9 +4,9 @@ import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineBlock;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
-import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public interface IEngine {

@@ -1,9 +1,9 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
-import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import net.createmod.catnip.data.Couple;
-import net.createmod.catnip.data.Pair;
-import net.createmod.catnip.nbt.NBTHelper;
+import com.zurrtum.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.zurrtum.create.catnip.data.Couple;
+import com.zurrtum.create.catnip.data.Pair;
+import com.zurrtum.create.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlock.FACING;
-import static com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS;
+import static com.zurrtum.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS;
 
 public class PoweredEngineShaftBlockEntity extends GeneratingKineticBlockEntity {
     float stressCapacity;

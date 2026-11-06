@@ -3,7 +3,7 @@ package com.jesz.createdieselgenerators.events.datagen;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.compat.strut_your_stuff.StrutYourStuffRegistryEntries;
-import com.simibubi.create.AllItems;
+import com.zurrtum.create.AllItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;

@@ -3,16 +3,16 @@ package com.jesz.createdieselgenerators.compat.jei;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllPartialModels;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.client.AllPartialModels;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
-import net.createmod.catnip.animation.AnimationTickHolder;
-import net.createmod.catnip.gui.UIRenderHelper;
+import com.zurrtum.create.client.catnip.animation.AnimationTickHolder;
+import com.zurrtum.create.client.catnip.gui.UIRenderHelper;
 import net.createmod.catnip.platform.NeoForgeCatnipServices;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
 import java.util.List;
 

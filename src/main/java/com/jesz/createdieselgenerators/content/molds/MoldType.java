@@ -2,7 +2,7 @@ package com.jesz.createdieselgenerators.content.molds;
 
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 

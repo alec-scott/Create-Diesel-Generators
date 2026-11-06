@@ -9,8 +9,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredHolder;
+import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredRegister;
 
 public class CDGCreativeTab {
 

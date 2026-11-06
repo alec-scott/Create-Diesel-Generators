@@ -2,15 +2,15 @@ package com.jesz.createdieselgenerators.packets;
 
 import com.jesz.createdieselgenerators.content.entity_filter.EntityAttribute;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterMenu;
-import com.simibubi.create.content.logistics.filter.AttributeFilterWhitelistMode;
-import com.simibubi.create.content.logistics.filter.FilterScreenPacket;
+import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
+import com.zurrtum.create.infrastructure.packet.c2s.FilterScreenPacket;
 import io.netty.buffer.ByteBuf;
-import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import com.zurrtum.create.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record EntityFilterScreenPacket(FilterScreenPacket.Option option, EntityAttribute attribute) implements ServerboundPacketPayload {

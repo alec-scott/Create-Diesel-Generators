@@ -1,8 +1,8 @@
 package com.jesz.createdieselgenerators.mixins;
 
 import com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelBlockEntity;
-import com.simibubi.create.content.contraptions.Contraption;
-import net.createmod.catnip.nbt.NBTHelper;
+import com.zurrtum.create.content.contraptions.Contraption;
+import com.zurrtum.create.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;

@@ -2,8 +2,8 @@ package com.jesz.createdieselgenerators.content.tools;
 
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.CDGDataComponents;
-import com.simibubi.create.AllEnchantments;
-import com.simibubi.create.foundation.utility.CreateLang;
+import com.zurrtum.create.AllEnchantments;
+import com.zurrtum.create.client.foundation.utility.CreateLang;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 

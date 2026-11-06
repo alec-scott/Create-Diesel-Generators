@@ -1,10 +1,10 @@
 package com.jesz.createdieselgenerators.content.entity_filter;
 
 import com.jesz.createdieselgenerators.CDGDataComponents;
-import com.simibubi.create.AllDataComponents;
-import com.simibubi.create.content.logistics.filter.AbstractFilterMenu;
-import com.simibubi.create.content.logistics.filter.AttributeFilterWhitelistMode;
-import com.simibubi.create.content.logistics.item.filter.attribute.ItemAttribute;
+import com.zurrtum.create.AllDataComponents;
+import com.zurrtum.create.content.logistics.filter.AbstractFilterMenu;
+import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
+import com.zurrtum.create.content.logistics.item.filter.attribute.ItemAttribute;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;

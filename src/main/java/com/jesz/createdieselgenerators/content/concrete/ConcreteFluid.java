@@ -1,10 +1,10 @@
 package com.jesz.createdieselgenerators.content.concrete;
 
 import com.jesz.createdieselgenerators.CDGFluids;
-import com.tterrag.registrate.util.entry.FluidEntry;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.FluidEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;

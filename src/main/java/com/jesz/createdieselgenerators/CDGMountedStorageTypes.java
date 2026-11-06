@@ -1,9 +1,9 @@
 package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelMountedStorageType;
-import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType;
-import com.simibubi.create.content.fluids.tank.storage.FluidTankMountedStorageType;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType;
+import com.zurrtum.create.content.fluids.tank.storage.FluidTankMountedStorageType;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.RegistryEntry;
 
 import java.util.function.Supplier;
 

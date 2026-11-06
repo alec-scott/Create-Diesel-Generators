@@ -2,8 +2,8 @@ package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.content.contraptions.bearing.BearingBlock;
-import com.simibubi.create.foundation.block.IBE;
+import com.zurrtum.create.content.contraptions.bearing.BearingBlock;
+import com.zurrtum.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

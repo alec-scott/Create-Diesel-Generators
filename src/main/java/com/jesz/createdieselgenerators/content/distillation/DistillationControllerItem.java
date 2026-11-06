@@ -2,11 +2,11 @@ package com.jesz.createdieselgenerators.content.distillation;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGConfig;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.api.connectivity.ConnectivityHandler;
-import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
-import net.createmod.catnip.math.VecHelper;
+import com.zurrtum.create.AllBlocks;
+import com.zurrtum.create.AllSoundEvents;
+import com.zurrtum.create.api.connectivity.ConnectivityHandler;
+import com.zurrtum.create.content.fluids.tank.FluidTankBlockEntity;
+import com.zurrtum.create.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -20,8 +20,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
+import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;

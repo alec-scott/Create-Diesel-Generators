@@ -2,11 +2,11 @@ package com.jesz.createdieselgenerators.content.pumpjack;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
-import com.simibubi.create.foundation.block.IBE;
-import net.createmod.catnip.placement.IPlacementHelper;
-import net.createmod.catnip.placement.PlacementHelpers;
-import net.createmod.catnip.placement.PlacementOffset;
+import com.zurrtum.create.content.kinetics.base.HorizontalKineticBlock;
+import com.zurrtum.create.foundation.block.IBE;
+import com.zurrtum.create.catnip.placement.IPlacementHelper;
+import com.zurrtum.create.catnip.placement.PlacementHelpers;
+import com.zurrtum.create.catnip.placement.PlacementOffset;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

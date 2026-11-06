@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.jesz.createdieselgenerators.CDGRecipes;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
-import com.simibubi.create.content.kinetics.mixer.CompactingRecipe;
+import com.zurrtum.create.content.kinetics.mixer.CompactingRecipe;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;

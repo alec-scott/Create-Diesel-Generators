@@ -1,7 +1,7 @@
 package com.jesz.createdieselgenerators.mixins;
 
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
+import com.zurrtum.create.content.kinetics.press.MechanicalPressBlockEntity;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.spongepowered.asm.mixin.Mixin;
