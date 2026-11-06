@@ -35,7 +35,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.Vec3;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
@@ -48,6 +50,8 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
     public static final BooleanProperty TOP = BooleanProperty.create("top");
     public static final BooleanProperty BOTTOM = BooleanProperty.create("bottom");
     public static final EnumProperty<FluidTankBlock.Shape> SHAPE = EnumProperty.create("shape", FluidTankBlock.Shape.class);
+    // PORT-NOTE(26.1): fluid glow as Create Fly's tanks: a block state property read by lightLevel (blockstate variants omit it)
+    public static final IntegerProperty LIGHT_LEVEL = BlockStateProperties.LEVEL;
 
     public DistillationTankBlock(Properties properties) {
         super(properties);
@@ -55,6 +59,10 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
 
     public static boolean isTank(BlockState state) {
         return state.getBlock() instanceof DistillationTankBlock;
+    }
+
+    public static int getLight(BlockState state) {
+        return state.getValue(LIGHT_LEVEL);
     }
 
     @Override
@@ -106,7 +114,7 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TOP, BOTTOM, SHAPE);
+        builder.add(TOP, BOTTOM, SHAPE, LIGHT_LEVEL);
     }
     @Override
     public Class<DistillationTankBlockEntity> getBlockEntityClass() {

@@ -37,6 +37,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -48,8 +50,8 @@ import java.util.Objects;
 /**
  * PORT-NOTE(26.1): the tank is a Create Fly {@link FluidTank} (droplets). Recipes are looked up on the server only;
  * the client gets {@code Progress} and {@code RecipeDuration} through the update packet for the gauge. The ambient
- * bubbling sound is a client behaviour ({@code client/CDGBlockEntityBehaviours}). Fluid luminosity is dropped (26.1
- * has no per-block-entity light emission without a block state property).
+ * bubbling sound is a client behaviour ({@code client/CDGBlockEntityBehaviours}). Fluid luminosity is stored in the
+ * {@link DistillationTankBlock#LIGHT_LEVEL} block state property, as Create Fly does for its tanks.
  */
 public class DistillationTankBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Fluid, IHaveGoggleInformation, IHaveHoveringInformation {
     private static final int MAX_SIZE = 3;
@@ -66,6 +68,7 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
     protected int width;
     protected int height;
     boolean tanksFull = false;
+    protected int luminosity;
 
     private static final int SYNC_RATE = 8;
     protected int syncCooldown;
@@ -345,7 +348,15 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
         if (!tankInventory.isEmpty() && isController() && isBottom() && !level.isClientSide())
             checkForRecipes();
 
+        FluidVariant variant = FluidVariant.of(newFluidStack.getFluid());
+        int luminosity = newFluidStack.isEmpty() ? 0 : (int) (FluidVariantAttributes.getLuminance(variant) / 1.2f);
+        boolean reversed = !newFluidStack.isEmpty() && FluidVariantAttributes.isLighterThanAir(variant);
+        int maxY = (int) ((getFillState() * height) + 1);
+
         for (int yOffset = 0; yOffset < height; yOffset++) {
+            boolean isBright = reversed ? (height - yOffset <= maxY) : (yOffset < maxY);
+            int actualLuminosity = isBright ? luminosity : luminosity > 0 ? 1 : 0;
+
             for (int xOffset = 0; xOffset < width; xOffset++) {
                 for (int zOffset = 0; zOffset < width; zOffset++) {
                     BlockPos pos = this.worldPosition.offset(xOffset, yOffset, zOffset);
@@ -353,6 +364,9 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
                     if (tankAt == null)
                         continue;
                     level.updateNeighbourForOutputSignal(pos, tankAt.getBlockState().getBlock());
+                    if (tankAt.luminosity == actualLuminosity)
+                        continue;
+                    tankAt.setLuminosity(actualLuminosity);
                 }
             }
         }
@@ -367,6 +381,29 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
                 fluidLevel = LerpedFloat.linear().startWithValue(getFillState());
             fluidLevel.chase(getFillState(), .5f, LerpedFloat.Chaser.EXP);
         }
+    }
+
+    protected void setLuminosity(int luminosity) {
+        if (level.isClientSide())
+            return;
+        if (this.luminosity == luminosity)
+            return;
+        this.luminosity = luminosity;
+        updateStateLuminosity();
+        sendData();
+    }
+
+    protected void updateStateLuminosity() {
+        if (level.isClientSide())
+            return;
+        int actualLuminosity = luminosity;
+        DistillationTankBlockEntity controllerBE = getControllerBE();
+        if (controllerBE == null || !controllerBE.window)
+            actualLuminosity = 0;
+        refreshBlockState();
+        BlockState state = getBlockState();
+        if (state.getValue(DistillationTankBlock.LIGHT_LEVEL) != actualLuminosity)
+            level.setBlock(worldPosition, state.setValue(DistillationTankBlock.LIGHT_LEVEL, actualLuminosity), 23);
     }
 
     @SuppressWarnings("unchecked")
@@ -455,6 +492,8 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
                             shape = FluidTankBlock.Shape.WINDOW;
                     }
                     level.setBlock(pos, blockState.setValue(DistillationTankBlock.SHAPE, shape), 22);
+                    if (level.getBlockEntity(pos) instanceof DistillationTankBlockEntity tankAt)
+                        tankAt.updateStateLuminosity();
                     level.getChunkSource().getLightEngine().checkBlock(pos);
                 }
             }
@@ -514,7 +553,9 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
         BlockPos controllerBefore = controller;
         int prevSize = width;
         int prevHeight = height;
+        int prevLum = luminosity;
         tanksFull = tag.getBooleanOr("TanksFull", false);
+        luminosity = tag.getIntOr("Luminosity", 0);
 
         updateConnectivity = tag.getBooleanOr("Uninitialized", false);
         lastKnownPos = tag.read("LastKnownPos", BlockPos.CODEC).orElse(null);
@@ -553,6 +594,9 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
             fluidLevel.chase(fillState, 0.5f, LerpedFloat.Chaser.EXP);
         }
 
+        if (luminosity != prevLum && hasLevel())
+            level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+
         if (tag.getBooleanOr("LazySync", false))
             fluidLevel.chase(fluidLevel.getChaseTarget(), 0.125f, LerpedFloat.Chaser.EXP);
     }
@@ -567,6 +611,7 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
         super.write(tag, clientPacket);
         if (tanksFull)
             tag.putBoolean("TanksFull", true);
+        tag.putInt("Luminosity", luminosity);
         if (updateConnectivity)
             tag.putBoolean("Uninitialized", true);
         if (lastKnownPos != null)

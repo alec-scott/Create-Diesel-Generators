@@ -156,6 +156,7 @@ public class CDGBlocks {
     public static final BlockEntry<DistillationTankBlock> DISTILLATION_TANK = REGISTRATE.block("distillation_tank", DistillationTankBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(BlockBehaviour.Properties::noOcclusion)
+            .properties(p -> p.lightLevel(DistillationTankBlock::getLight))
             .properties(p -> p.isRedstoneConductor((p1, p2, p3) -> true))
             .transform(pickaxeOnly())
             .onRegister(CreateRegistrate.blockModel(() -> DistillationTankModel::new))
