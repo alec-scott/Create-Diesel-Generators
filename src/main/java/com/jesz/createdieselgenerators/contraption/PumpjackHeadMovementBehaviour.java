@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.contraption;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.content.pumpjack.PumpjackBearingBBlock;
 import com.jesz.createdieselgenerators.content.pumpjack.PumpjackBearingBlockEntity;
 import com.jesz.createdieselgenerators.content.pumpjack.PumpjackHoleBlockEntity;
@@ -22,8 +24,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import static com.jesz.createdieselgenerators.CDGPartialModels.PUMPJACK_ROPE;
@@ -45,7 +45,6 @@ public class PumpjackHeadMovementBehaviour implements MovementBehaviour {
         return context.world.getBlockEntity(context.contraption.anchor.relative(((BearingContraption) context.contraption).getFacing().getOpposite())) instanceof PumpjackBearingBlockEntity;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld, ContraptionMatrices matrices, MultiBufferSource buffer) {
         BlockPos hole = NBTHelper.readBlockPos(context.data, "HolePos");
@@ -72,7 +71,7 @@ public class PumpjackHeadMovementBehaviour implements MovementBehaviour {
                     .rotateXDegrees((float) angle)
                     .scale(1, distanceFromHole, 1)
                     .useLevelLight(context.world, matrices.getWorld())
-                    .renderInto(matrices.getViewProjection(), buffer.getBuffer(RenderType.cutoutMipped()));
+                    .renderInto(matrices.getViewProjection(), buffer.getBuffer(RenderTypes.cutoutMipped()));
             return;
         }
 
@@ -89,7 +88,7 @@ public class PumpjackHeadMovementBehaviour implements MovementBehaviour {
                 .rotateZDegrees((float) angle)
                 .scale(1, distanceFromHole, 1)
                 .useLevelLight(context.world, matrices.getWorld())
-                .renderInto(matrices.getViewProjection(), buffer.getBuffer(RenderType.cutoutMipped()));
+                .renderInto(matrices.getViewProjection(), buffer.getBuffer(RenderTypes.cutoutMipped()));
     }
 
     BlockPos holePos;

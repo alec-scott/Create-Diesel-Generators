@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
 import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
@@ -22,8 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -36,9 +38,7 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
     public BlockPos bearingPos;
     public WeakReference<PumpjackBearingBlockEntity> bearing = new WeakReference<>(null);
     public float inPonderAngle = Integer.MIN_VALUE;
-    @OnlyIn(Dist.CLIENT)
     protected AbstractTickableSoundInstance rumbleInstance;
-    @OnlyIn(Dist.CLIENT)
     protected AbstractTickableSoundInstance hissInstance;
     private float lastSoundAngle = 0;
     public PumpjackCrankBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
@@ -46,19 +46,19 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
 
-        angle = compound.getFloat("Angle");
+        angle = compound.getFloatOr("Angle", 0f);
         crankBearingLocation = new Vec3(
-                compound.getDouble("BackPosX"),
-                compound.getDouble("BackPosY"),
-                compound.getDouble("BackPosZ"));
+                compound.getDoubleOr("BackPosX", 0d),
+                compound.getDoubleOr("BackPosY", 0d),
+                compound.getDoubleOr("BackPosZ", 0d));
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putFloat("Angle", angle);
         compound.putDouble("BackPosX", crankBearingLocation.x);
         compound.putDouble("BackPosY", crankBearingLocation.y);
@@ -102,14 +102,14 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
         if(getSpeed() != 0)
             angle += Mth.clamp(Math.abs(getSpeed()), 0, 64) / 10;
 
-        if (level.isClientSide)
+        if (level.isClientSide())
             CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
     }
     public Vec3 crankBearingLocation = new Vec3(0, -100, 0);
 
     public ScrollOptionBehaviour<CrankSize> crankSize;
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         crankSize = new ScrollOptionBehaviour<>(CrankSize.class,
                 Component.translatable("createdieselgenerators.pumpjack_crank.crank_size"), this, new PumpjackCrankValueBox());
         crankSize.withCallback($ -> onSizeChanged());
@@ -138,7 +138,6 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected void tickClient() {
         boolean isActive = getSpeed() != 0 && getBearing() != null;
 
@@ -193,7 +192,6 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class CrankSoundInstance extends AbstractTickableSoundInstance {
         public CrankSoundInstance(SoundEvent event, float volume, float pitch, Vec3 pos) {
             super(event, SoundSource.BLOCKS, RandomSource.create());

@@ -1,5 +1,11 @@
 package com.jesz.createdieselgenerators.content.canister;
 
+import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.CDGDataComponents;
@@ -18,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import com.jesz.createdieselgenerators.port.neoforge.SimpleFluidContent;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +48,7 @@ public class CanisterBlockEntity extends SmartBlockEntity implements IHaveGoggle
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         tank = CapacityEnchantedFluidTankBehaviour.single(this, Math.abs((CDGConfig.CANISTER_CAPACITY.get())), CDGConfig.CANISTER_CAPACITY_ENCHANTMENT.get());
         behaviours.add(tank);
     }
@@ -56,18 +62,18 @@ public class CanisterBlockEntity extends SmartBlockEntity implements IHaveGoggle
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putInt("CapacityEnchantment", capacityEnchantLevel);
-        compound.put("Components", CatnipCodecUtils.encode(DataComponentPatch.CODEC, registries, componentPatch)
+        CDGValueIO.put(compound, "Components", CatnipCodecUtils.encode(DataComponentPatch.CODEC, registries, componentPatch)
                 .orElse(new CompoundTag()));
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
-        capacityEnchantLevel = compound.getInt("CapacityEnchantment");
-        componentPatch = CatnipCodecUtils.decode(DataComponentPatch.CODEC, registries, compound.getCompound("Components")).orElse(DataComponentPatch.EMPTY);
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
+        capacityEnchantLevel = compound.getIntOr("CapacityEnchantment", 0);
+        componentPatch = CatnipCodecUtils.decode(DataComponentPatch.CODEC, registries, CDGValueIO.getCompound(compound, "Components")).orElse(DataComponentPatch.EMPTY);
     }
 
     public void setCapacityEnchantLevel(int capacityEnchantLevel) {
@@ -104,10 +110,10 @@ public class CanisterBlockEntity extends SmartBlockEntity implements IHaveGoggle
         }
 
         @Override
-        public void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-            super.read(compound, registries, clientPacket);
-            if(compound.contains("CapacityEnchantment"))
-                getPrimaryHandler().setCapacity(baseCapacity + compound.getInt("CapacityEnchantment") * capacityAddition);
+        public void read(ValueInput compound, boolean clientPacket) {
+            super.read(compound, clientPacket);
+            if(CDGValueIO.contains(compound, "CapacityEnchantment"))
+                getPrimaryHandler().setCapacity(baseCapacity + compound.getIntOr("CapacityEnchantment", 0) * capacityAddition);
         }
 
     }

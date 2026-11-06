@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.client.AllPartialModels;
 import com.zurrtum.create.content.contraptions.bearing.IBearingBlockEntity;
@@ -41,6 +43,6 @@ public class NoShaftBearingRenderer<T extends KineticBlockEntity & IBearingBlock
                 .isHorizontal())
             superBuffer.rotateCentered(AngleHelper.rad(AngleHelper.horizontalAngle(facing.getOpposite())), Direction.UP);
         superBuffer.rotateCentered(AngleHelper.rad(-90 - AngleHelper.verticalAngle(facing)), Direction.EAST);
-        superBuffer.light(light).renderInto(ms, buffer.getBuffer(RenderType.solid()));
+        superBuffer.light(light).renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
     }
 }

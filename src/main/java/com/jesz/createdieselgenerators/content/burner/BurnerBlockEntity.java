@@ -1,5 +1,11 @@
 package com.jesz.createdieselgenerators.content.burner;
 
+import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
@@ -54,7 +60,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
 
         if (valveState == 0 || !containsValidFuel) {
             heat = -1;
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (ignited)
                     level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3f, level.getRandom().nextFloat() * 0.4F + 0.7F);
 
@@ -64,7 +70,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
         }
         if (containsValidFuel && valveOrRedstoneState != 0) {
             heat = (valveOrRedstoneState + 1) * multiplier;
-            if (level.isClientSide)
+            if (level.isClientSide())
                 return;
             if (tick % 5 == 0) {
                 if(!ignited){
@@ -80,7 +86,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
                 setChanged();
             }
         }
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         if (getBlockState().getValue(BurnerBlock.HEAT_LEVEL) != calculateHeatLevel(heat)) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(BurnerBlock.HEAT_LEVEL, calculateHeatLevel(heat)).setValue(BurnerBlock.LIT, heat > 0));
@@ -159,27 +165,27 @@ public class BurnerBlockEntity extends KineticBlockEntity {
     }
 
     @Override
-    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+    protected void write(ValueOutput tag, boolean clientPacket) {
         tag.putFloat("ValveState", valveState);
         tag.putFloat("Heat", heat);
         tag.putInt("Tick", tick);
-        tag.put("FluidContent", tank.writeToNBT(registries, new CompoundTag()));
+        CDGValueIO.put(tag, "FluidContent", tank.writeToNBT(registries, new CompoundTag()));
         tag.putInt("RedstonePower", redstonePower);
         tag.putByte("RedstoneOutput", (byte) redstoneOutput);
-        super.write(tag, registries, clientPacket);
+        super.write(tag, clientPacket);
     }
 
     @Override
-    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        valveState = tag.getFloat("ValveState");
-        heat = tag.getFloat("Heat");
-        tick = tag.getInt("Tick");
-        tank.readFromNBT(registries, tag.getCompound("FluidContent"));
-        redstonePower = tag.getInt("RedstonePower");
-        if (tag.getBoolean("RedstonePower"))
+    protected void read(ValueInput tag, boolean clientPacket) {
+        valveState = tag.getFloatOr("ValveState", 0f);
+        heat = tag.getFloatOr("Heat", 0f);
+        tick = tag.getIntOr("Tick", 0);
+        tank.readFromNBT(registries, CDGValueIO.getCompound(tag, "FluidContent"));
+        redstonePower = tag.getIntOr("RedstonePower", 0);
+        if (tag.getBooleanOr("RedstonePower", false))
             redstonePower = 15;
-        redstoneOutput = tag.getByte("RedstoneOutput");
-        super.read(tag, registries, clientPacket);
+        redstoneOutput = tag.getByteOr("RedstoneOutput", (byte) 0);
+        super.read(tag, clientPacket);
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {

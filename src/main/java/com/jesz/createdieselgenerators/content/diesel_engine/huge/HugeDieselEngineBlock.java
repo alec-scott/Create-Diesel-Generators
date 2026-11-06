@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
+import net.minecraft.world.item.ItemStack;
+
+import net.minecraft.world.level.redstone.Orientation;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGConfig;
@@ -20,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,7 +38,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
@@ -51,7 +54,7 @@ import static com.jesz.createdieselgenerators.content.diesel_engine.normal.Diese
 import static com.zurrtum.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS;
 
 public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngineBlockEntity>, IWrenchable {
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
     private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
 
@@ -66,7 +69,7 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
         return true;
     }
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         for (EngineUpgrades upgrade : EngineUpgrades.allUpgrades) {
             if (upgrade == EngineUpgrades.EMPTY)
                 continue;
@@ -83,7 +86,7 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
                     be.sendData();
                     IWrenchable.playRotateSound(level, pos);
                 });
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -93,37 +96,37 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
                     .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
 
         if (!CDGConfig.ENGINES_FILLED_WITH_ITEMS.get() || stack.isEmpty() || !(level.getBlockEntity(pos) instanceof SmartBlockEntity be))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
         if (tank == null)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         if (stack.getItem() instanceof BucketItem || stack.getItem() instanceof MilkBucketItem) {
             Fluid fluid = stack.getItem() instanceof BucketItem bi ? bi.content : NeoForgeMod.MILK.get();
 
             if (!tank.getFluidInTank(0).isEmpty())
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
 
             tank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
             if (!player.isCreative())
                 player.setItemInHand(hand, new ItemStack(Items.BUCKET));
 
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         IFluidHandlerItem itemTank = Capabilities.FluidHandler.ITEM.getCapability(stack, null);
         if(itemTank == null)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         itemTank.drain(tank.fill(itemTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
         withBlockEntityDo(context.getLevel(), context.getClickedPos(), be -> {
             if(be.upgrade != EngineUpgrades.EMPTY){
-                if(!context.getLevel().isClientSide) {
+                if(!context.getLevel().isClientSide()) {
                     if (!context.getPlayer().isCreative())
                         context.getPlayer().getInventory().placeItemBackInInventory(be.upgrade.getItem());
                     be.upgrade = EngineUpgrades.EMPTY;
@@ -142,7 +145,7 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos otherPos, boolean moving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moving) {
         level.setBlockAndUpdate(pos, state.setValue(POWERED, level.hasNeighborSignal(pos)));
 
         if (CDGConfig.ANALOG_SPEED_CONTROL.get()) {
@@ -156,7 +159,7 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
             }
         }
 
-        super.neighborChanged(state, level, pos, block, otherPos, moving);
+        super.neighborChanged(state, level, pos, block, orientation, moving);
     }
 
     public Direction getPreferredFacing(BlockPlaceContext context) {
@@ -200,22 +203,6 @@ public class HugeDieselEngineBlock extends Block implements IBE<HugeDieselEngine
                 level.setBlock(shaftPos, PoweredEngineShaftBlock.getEquivalent(shaftState), 3);
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock()) && !isMoving) {
-            withBlockEntityDo(level, pos, be -> {
-                if (be.upgrade != EngineUpgrades.EMPTY)
-                    popResource(level, pos, be.upgrade.getItem());
-            });
-            BlockPos shaftPos = pos.relative(state.getValue(FACING), 2);
-            BlockState shaftState = level.getBlockState(shaftPos);
-            if (CDGBlocks.POWERED_ENGINE_SHAFT.has(shaftState))
-                level.scheduleTick(shaftPos, shaftState.getBlock(), 1);
-        }
-
-        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity()))
-            level.removeBlockEntity(pos);
-    }
 
     @Override
     public BlockState rotate(BlockState state, Rotation rotation) {

@@ -1,23 +1,24 @@
 package com.jesz.createdieselgenerators;
 
-import com.jesz.createdieselgenerators.compat.strut_your_stuff.StrutYourStuffRegistryEntries;
 import com.jesz.createdieselgenerators.content.molds.MoldType;
 import com.jesz.createdieselgenerators.content.track_layers_bag.TrackLayersBagItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
-import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredHolder;
-import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredRegister;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 
 public class CDGCreativeTab {
 
-    private static final DeferredRegister<CreativeModeTab> TAB_REGISTER =
-            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "createdieselgenerators");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = TAB_REGISTER.register("cdg_creative_tab",
-            () -> CreativeModeTab.builder()
+    public static final ResourceKey<CreativeModeTab> CREATIVE_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, CreateDieselGenerators.rl("cdg_creative_tab"));
+
+    // PORT-NOTE(26.1): Fabric tab registration (was a NeoForge DeferredRegister). Strut Your Stuff entries dropped (no
+    // Fabric build).
+    public static void register() {
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB, FabricCreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.cdg_creative_tab"))
                     .icon(CDGBlocks.DIESEL_ENGINE::asStack)
                     .displayItems((pParameters, output) -> {
@@ -48,8 +49,6 @@ public class CDGCreativeTab {
                         output.accept(CDGBlocks.ASPHALT_SLAB.get());
                         output.accept(CDGBlocks.BULK_FERMENTER.get());
                         output.accept(CDGBlocks.ANDESITE_GIRDER.get());
-                        if (ModList.get().isLoaded("struts"))
-                            StrutYourStuffRegistryEntries.fillCreativeTab(output);
                         output.accept(CDGBlocks.BURNER.get());
                         output.accept(CDGBlocks.CHEMICAL_TURRET.get());
                         output.accept(CDGBlocks.SHEET_METAL_PANEL.get());
@@ -75,9 +74,6 @@ public class CDGCreativeTab {
                             output.accept(fluid.getBucket().orElseThrow());
                     })
                     .build());
-
-    public static void register(IEventBus modEventBus) {
-        TAB_REGISTER.register(modEventBus);
     }
 
 }

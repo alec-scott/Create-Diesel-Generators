@@ -17,7 +17,7 @@ public class SpoutCanisterFilling implements BlockSpoutingBehaviour {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof CanisterBlockEntity){
             IFluidHandler handler = ((CanisterBlockEntity) blockEntity).tank.getCapability();
-            if(FluidStack.isSameFluidSameComponents(handler.getFluidInTank(0), availableFluid) || handler.getFluidInTank(0).isEmpty())
+            if(FluidStack.areFluidsAndComponentsEqual(handler.getFluidInTank(0), availableFluid) || handler.getFluidInTank(0).isEmpty())
                 return handler.fill(availableFluid, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
         }
         return 0;

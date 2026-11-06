@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ShaftBlock.class)
 public class ShaftBlockMixin {
 
-    @Inject(method = "pickCorrectShaftType", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "pickCorrectShaftType", at = @At("HEAD"), cancellable = true)
     private static void pickCorrectShaftType(BlockState stateForPlacement, Level level, BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (PoweredEngineShaftBlock.stillValid(stateForPlacement, level, pos))
             cir.setReturnValue(PoweredEngineShaftBlock.getEquivalent(stateForPlacement));

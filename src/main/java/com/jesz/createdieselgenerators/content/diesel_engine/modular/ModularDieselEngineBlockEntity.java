@@ -1,5 +1,11 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
+import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGConfig;
@@ -32,8 +38,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
@@ -80,7 +84,7 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         movementDirection = new ScrollOptionBehaviour<>(WindmillBearingBlockEntity.RotationDirection.class,
                 CreateLang.translateDirect("contraptions.windmill.rotation_direction"), this, new ModularDieselEngineValueBox());
         movementDirection.withCallback(this::onDirectionChanged);
@@ -180,7 +184,7 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
             sendData();
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             float currentCapacity = 0;
             float currentSpeed = 0;
             if (validFS()) {
@@ -207,15 +211,13 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
             fuelDebt -= 1f;
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected EngineSoundInstance soundInstance;
 
-    @OnlyIn(Dist.CLIENT)
     protected void tickClient() {
         if (enabled() && getThrottle() > 0 && !isOverStressed()) {
             Vec3 pos = Vec3.atCenterOf(getBlockPos());
@@ -251,7 +253,7 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
 
     public void updateConnectivity() {
         updateConnectivity = false;
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         if (!isController())
             return;
@@ -300,7 +302,7 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
 
     @Override
     public void setController(BlockPos controller) {
-        if (level.isClientSide && !isVirtual())
+        if (level.isClientSide() && !isVirtual())
             return;
         if (controller.equals(this.controller))
             return;
@@ -312,7 +314,7 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
 
     @Override
     public void removeController(boolean keepContents) {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         updateConnectivity = true;
         controller = null;
@@ -325,28 +327,28 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
 
         BlockPos controllerBefore = controller;
         int prevHeight = length;
 
-        updateConnectivity = compound.contains("Uninitialized");
-        upgrade = EngineUpgrades.get(ResourceLocation.parse(compound.getString("Upgrade")));
+        updateConnectivity = CDGValueIO.contains(compound, "Uninitialized");
+        upgrade = EngineUpgrades.get(Identifier.parse(compound.getStringOr("Upgrade", "")));
         controller = null;
         lastKnownPos = null;
 
-        if (compound.contains("LastKnownPos"))
+        if (CDGValueIO.contains(compound, "LastKnownPos"))
             lastKnownPos = NBTHelper.readBlockPos(compound, "LastKnownPos");
-        if (compound.contains("Controller"))
+        if (CDGValueIO.contains(compound, "Controller"))
             controller = NBTHelper.readBlockPos(compound, "Controller");
 
         if (isController()) {
-            length = compound.getInt("Height");
-            tankInventory.readFromNBT(registries, compound.getCompound("TankContent"));
+            length = compound.getIntOr("Height", 0);
+            tankInventory.readFromNBT(registries, CDGValueIO.getCompound(compound, "TankContent"));
             if (tankInventory.getSpace() < 0)
                 tankInventory.drain(-tankInventory.getSpace(), IFluidHandler.FluidAction.EXECUTE);
-            analogSignal = compound.contains("AnalogSignal") ? compound.getInt("AnalogSignal") : 0;
+            analogSignal = CDGValueIO.contains(compound, "AnalogSignal") ? compound.getIntOr("AnalogSignal", 0) : 0;
             fuelDebt = 0f;
             invalidateFuelCache();
         }
@@ -367,18 +369,18 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
 
         if (updateConnectivity)
             compound.putBoolean("Uninitialized", true);
         if (lastKnownPos != null)
-            compound.put("LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
+            CDGValueIO.put(compound, "LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
         if (!isController())
-            compound.put("Controller", NbtUtils.writeBlockPos(controller));
+            CDGValueIO.put(compound, "Controller", NbtUtils.writeBlockPos(controller));
         if (isController()) {
             compound.putString("Upgrade", upgrade.getId().toString());
-            compound.put("TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
+            CDGValueIO.put(compound, "TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
             compound.putInt("Height", length);
             compound.putInt("AnalogSignal", analogSignal);
         }

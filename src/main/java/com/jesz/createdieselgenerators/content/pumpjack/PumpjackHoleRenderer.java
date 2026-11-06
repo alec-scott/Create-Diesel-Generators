@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
@@ -18,6 +20,6 @@ public class PumpjackHoleRenderer extends SafeBlockEntityRenderer<PumpjackHoleBl
         CachedBuffers.partial(CDGPartialModels.PUMPJACK_ROPE, be.getBlockState())
                 .translate(0.5, 0, 0.5)
                 .scale(1, be.pipeLength, 1)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
     }
 }

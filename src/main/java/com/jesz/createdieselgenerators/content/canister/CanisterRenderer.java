@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.canister;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.client.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
@@ -22,12 +24,12 @@ public class CanisterRenderer extends SmartBlockEntityRenderer<CanisterBlockEnti
                 .scale(1)
                 .uncenter()
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
         CachedBuffers.block(blockEntity.getBlockState())
                 .center()
                 .scale(1)
                 .uncenter()
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.glint()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.glint()));
     }
 }

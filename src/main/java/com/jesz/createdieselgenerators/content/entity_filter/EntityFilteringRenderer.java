@@ -80,7 +80,7 @@ public class EntityFilteringRenderer {
 
         ValueBox box = new ValueBox.ItemValueBox(label, bb, pos, filter, behaviour.getCountLabelForValueBox());
 
-        box.passive(!hit || AllBlocks.CLIPBOARD.isIn(mainhandItem));
+        box.passive(!hit || mainhandItem.is(AllBlocks.CLIPBOARD));
 
         Outliner.getInstance().showOutline(Pair.of("filter" + behaviour.netId(), pos), box.transform(behaviour.getSlotPositioning()))
                 .lineWidth(1 / 64f)
@@ -144,7 +144,7 @@ public class EntityFilteringRenderer {
 
                     ms.pushPose();
                     slotPositioning.transform(level, blockPos, blockState, ms);
-                    if (AllBlocks.CONTRAPTION_CONTROLS.has(blockState))
+                    if (blockState.is(AllBlocks.CONTRAPTION_CONTROLS))
                         ValueBoxRenderer.renderFlatItemIntoValueBox(filter, ms, buffer, light, overlay);
                     else
                         ValueBoxRenderer.renderItemIntoValueBox(filter, ms, buffer, light, overlay);

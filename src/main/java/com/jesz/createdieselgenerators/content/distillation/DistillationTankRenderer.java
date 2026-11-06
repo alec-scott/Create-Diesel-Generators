@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.distillation;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -78,7 +80,7 @@ public class DistillationTankRenderer extends SafeBlockEntityRenderer<Distillati
     protected void renderAsBoiler(DistillationTankBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer,
                                   int light, int overlay) {
         BlockState blockState = be.getBlockState();
-        VertexConsumer vb = buffer.getBuffer(RenderType.cutout());
+        VertexConsumer vb = buffer.getBuffer(RenderTypes.cutout());
         ms.pushPose();
         TransformStack msr = TransformStack.of(ms);
         msr.translate(be.getWidth() / 2f, 0.5, be.getWidth() / 2f);

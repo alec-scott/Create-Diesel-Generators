@@ -44,9 +44,9 @@ import static mezz.jei.api.recipe.RecipeType.createRecipeHolderType;
 @ParametersAreNonnullByDefault
 public class CDGJEI implements IModPlugin {
 
-    private static final ResourceLocation ID = CreateDieselGenerators.rl("jei_plugin");
+    private static final Identifier ID = CreateDieselGenerators.rl("jei_plugin");
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 
@@ -61,7 +61,7 @@ public class CDGJEI implements IModPlugin {
                 .addTypedRecipes(CDGRecipes.BASIN_FERMENTING)
                 .catalyst(CDGBlocks.BASIN_LID::get)
                 .catalyst(AllBlocks.BASIN::get)
-                .doubleItemIcon(AllBlocks.BASIN.get(), CDGBlocks.BASIN_LID.get())
+                .doubleItemIcon(AllBlocks.BASIN, CDGBlocks.BASIN_LID.get())
                 .emptyBackground(177, 100)
                 .build("basin_fermenting", BasinFermentingCategory::new),
         bulk_fermenting = builder(BulkFermentingRecipe.class)
@@ -75,7 +75,7 @@ public class CDGJEI implements IModPlugin {
                 .catalyst(AllBlocks.MECHANICAL_PRESS::get)
                 .catalyst(CDGItems.MOLD::get)
                 .catalyst(AllBlocks.BASIN::get)
-                .doubleItemIcon(AllBlocks.MECHANICAL_PRESS.get(), CDGItems.MOLD.get())
+                .doubleItemIcon(AllBlocks.MECHANICAL_PRESS, CDGItems.MOLD.get())
                 .emptyBackground(177, 100)
                 .build("compression_molding", CompressionMoldingCategory::new),
         casting = builder(CastingRecipe.class)
@@ -83,20 +83,20 @@ public class CDGJEI implements IModPlugin {
                 .catalyst(AllBlocks.SPOUT::get)
                 .catalyst(CDGItems.MOLD::get)
                 .catalyst(AllBlocks.BASIN::get)
-                .doubleItemIcon(AllBlocks.SPOUT.get(), CDGItems.MOLD.get())
+                .doubleItemIcon(AllBlocks.SPOUT, CDGItems.MOLD.get())
                 .emptyBackground(177, 100)
                 .build("casting", CastingCategory::new),
         distillation = builder(DistillationRecipe.class)
                 .addTypedRecipes(CDGRecipes.DISTILLATION)
                 .catalyst(AllBlocks.FLUID_TANK::get)
                 .catalyst(CDGItems.DISTILLATION_CONTROLLER::get)
-                .doubleItemIcon(AllBlocks.FLUID_TANK.get(), CDGItems.DISTILLATION_CONTROLLER.get())
+                .doubleItemIcon(AllBlocks.FLUID_TANK, CDGItems.DISTILLATION_CONTROLLER.get())
                 .emptyBackground(177, 200)
                 .build("distillation", DistillationCategory::new),
         hammering = builder(HammerRecipe.class)
                 .addTypedRecipes(CDGRecipes.HAMMERING)
                 .catalyst(CDGItems.HAMMER::get)
-                .doubleItemIcon(CDGItems.HAMMER.get(), AllItems.IRON_SHEET.get())
+                .doubleItemIcon(CDGItems.HAMMER.get(), AllItems.IRON_SHEET)
                 .emptyBackground(177, 55)
                 .build("hammering", HammeringCategory::new),
         wire_cutting = builder(WireCuttingRecipe.class)
@@ -136,7 +136,7 @@ public class CDGJEI implements IModPlugin {
 
             @Override
             public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
-                ResourceLocation mold = stack.get(CDGDataComponents.MOLD_TYPE);
+                Identifier mold = stack.get(CDGDataComponents.MOLD_TYPE);
                 if (mold == null)
                     return "";
                 return "createdieselgenerators:mold:" + mold.toString();

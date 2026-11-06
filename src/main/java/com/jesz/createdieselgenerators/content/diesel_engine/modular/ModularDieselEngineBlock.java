@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
+import net.minecraft.world.item.ItemStack;
+
+import net.minecraft.world.level.redstone.Orientation;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGConfig;
@@ -19,7 +23,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,7 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -56,7 +59,7 @@ import static net.minecraft.core.Direction.NORTH;
 import static net.minecraft.core.Direction.SOUTH;
 
 public class ModularDieselEngineBlock extends HorizontalKineticBlock implements IBE<ModularDieselEngineBlockEntity>, SpecialBlockItemRequirement {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public static final BooleanProperty PIPE = BooleanProperty.create("pipe");
     private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
@@ -81,7 +84,7 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos otherPos, boolean moving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moving) {
         level.setBlockAndUpdate(pos, state.setValue(POWERED, level.hasNeighborSignal(pos)));
 
         if (CDGConfig.ANALOG_SPEED_CONTROL.get()) {
@@ -102,17 +105,17 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
                 }
             }
         }
-        super.neighborChanged(state, level, pos, block, otherPos, moving);
+        super.neighborChanged(state, level, pos, block, orientation, moving);
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
         if (!player.isShiftKeyDown() && player.mayBuild()) {
             if (placementHelper.matchesItem(stack)) {
                 placementHelper.getOffset(player, level, state, pos, hitResult)
                         .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -131,34 +134,34 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
                     IWrenchable.playRotateSound(level, pos);
                     controller.sendData();
                 });
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         if(!CDGConfig.ENGINES_FILLED_WITH_ITEMS.get() || stack.isEmpty() || !(level.getBlockEntity(pos) instanceof SmartBlockEntity be))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
         if (tank == null)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         if (stack.getItem() instanceof BucketItem || stack.getItem() instanceof MilkBucketItem) {
             Fluid fluid = stack.getItem() instanceof BucketItem bi ? bi.content : NeoForgeMod.MILK.get();
 
             if (!tank.getFluidInTank(0).isEmpty())
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
 
             tank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
             if (!player.isCreative())
                 player.setItemInHand(hand, new ItemStack(Items.BUCKET));
 
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         IFluidHandlerItem itemTank = Capabilities.FluidHandler.ITEM.getCapability(stack, null);
         if (itemTank == null)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         itemTank.drain(tank.fill(itemTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -204,21 +207,6 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
             return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock()) && !isMoving)
-            withBlockEntityDo(level, pos, be -> {
-                if (be.upgrade != EngineUpgrades.EMPTY)
-                    popResource(level, pos, be.upgrade.getItem());
-            });
-
-        if (state.hasBlockEntity() && (state.getBlock() != newState.getBlock() || !newState.hasBlockEntity()) &&
-                level.getBlockEntity(pos) instanceof ModularDieselEngineBlockEntity be) {
-            level.removeBlockEntity(pos);
-            ConnectivityHandler.splitMulti(be);
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 
     @Override
     public Class<ModularDieselEngineBlockEntity> getBlockEntityClass() {

@@ -37,6 +37,10 @@ public final class CreateTransforms {
         return b -> b.onRegister(block -> PENDING.add(() -> DisplayTarget.BY_BLOCK.register(block, target)));
     }
 
+    public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> mountedFluidStorage(Supplier<? extends com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType<?>> type) {
+        return b -> b.onRegister(block -> PENDING.add(() -> com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType.REGISTRY.register(block, type.get())));
+    }
+
     public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> mountedItemStorage(Supplier<? extends MountedItemStorageType<?>> type) {
         return b -> b.onRegister(block -> PENDING.add(() -> MountedItemStorageType.REGISTRY.register(block, type.get())));
     }

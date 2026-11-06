@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.normal;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.content.diesel_engine.EngineSoundInstance;
@@ -24,8 +28,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
@@ -78,23 +80,23 @@ public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity implem
     }
 
     @Override
-    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(ValueOutput tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
         tag.putString("Upgrade", upgrade.getId().toString());
         tag.putInt("AnalogSignal", analogSignal);
     }
 
     @Override
-    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
-        upgrade = EngineUpgrades.get(ResourceLocation.parse(tag.getString("Upgrade")));
-        analogSignal = tag.getInt("AnalogSignal");
+    protected void read(ValueInput tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        upgrade = EngineUpgrades.get(Identifier.parse(tag.getStringOr("Upgrade", "")));
+        analogSignal = tag.getIntOr("AnalogSignal", 0);
         fuelDebt = 0f;
         invalidateFuelCache();
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         movementDirection = new ScrollOptionBehaviour<>(WindmillBearingBlockEntity.RotationDirection.class,
                 CreateLang.translateDirect("contraptions.windmill.rotation_direction"), this, new DieselEngineValueBox());
         movementDirection.withCallback(v -> reActivateSource = true);
@@ -144,7 +146,7 @@ public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity implem
             sendData();
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             float currentCapacity = 0;
             float currentSpeed = 0;
 
@@ -175,14 +177,12 @@ public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity implem
             }
         }
 
-        if (level.isClientSide)
+        if (level.isClientSide())
             CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected EngineSoundInstance soundInstance;
 
-    @OnlyIn(Dist.CLIENT)
     protected void tickClient() {
         if (enabled() && getThrottle() > 0 && !isOverStressed()) {
             if (soundInstance == null || soundInstance.isStopped()) {

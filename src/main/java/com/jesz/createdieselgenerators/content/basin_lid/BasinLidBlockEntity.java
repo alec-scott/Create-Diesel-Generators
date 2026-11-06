@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.basin_lid;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGRecipes;
 import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
 import com.zurrtum.create.content.processing.basin.BasinOperatingBlockEntity;
@@ -36,8 +40,8 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
 
         compound.putInt("ProcessingTime", this.processingTime);
         compound.putBoolean("Running", this.running);
@@ -45,12 +49,12 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
 
-        this.processingTime = compound.getInt("ProcessingTime");
-        this.running = compound.getBoolean("Running");
-        this.steamInside = compound.getBoolean("SteamInside");
+        this.processingTime = compound.getIntOr("ProcessingTime", 0);
+        this.running = compound.getBooleanOr("Running", false);
+        this.steamInside = compound.getBooleanOr("SteamInside", false);
     }
 
     @Override
@@ -76,7 +80,7 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
             }
             progress = 0;
         }
-        if ((!level.isClientSide && (currentRecipe == null || processingTime == -1)) || getBlockState().getValue(OPEN) || !getBlockState().getValue(ON_A_BASIN)) {
+        if ((!level.isClientSide() && (currentRecipe == null || processingTime == -1)) || getBlockState().getValue(OPEN) || !getBlockState().getValue(ON_A_BASIN)) {
             this.running = false;
             this.processingTime = -1;
             this.basinChecker.scheduleUpdate();
@@ -84,12 +88,12 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
         if (running)
             steamInside = true;
         if (running && level != null) {
-            if (!level.isClientSide && this.processingTime <= 0) {
+            if (!level.isClientSide() && this.processingTime <= 0) {
                 this.processingTime = -1;
                 this.applyBasinRecipe();
                 this.sendData();
             }
-            if (!level.isClientSide && processingTime % 20 == 0 && new Random().nextInt() % 4 == 0)
+            if (!level.isClientSide() && processingTime % 20 == 0 && new Random().nextInt() % 4 == 0)
                 level.playSound(null, worldPosition, SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT,
                         SoundSource.BLOCKS, .15f, speed < 65 ? .75f : 1.5f);
 

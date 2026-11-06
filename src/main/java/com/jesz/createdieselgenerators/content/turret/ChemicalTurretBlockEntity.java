@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.turret;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.compat.computercraft.CCProxy;
@@ -88,13 +92,13 @@ public class ChemicalTurretBlockEntity extends TurretBlockEntity {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             lastCogRotation = cogRotation;
             if (wasShootingLastTick)
                 cogRotation += getSpeed() * 3 / 10f;
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean wasShooting = wasShootingLastTick;
             wasShootingLastTick = false;
 
@@ -119,18 +123,18 @@ public class ChemicalTurretBlockEntity extends TurretBlockEntity {
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
-        lighterUpgrade = compound.getBoolean("LighterUpgrade");
-        redstoneSignal = compound.getInt("RedstoneSignal");
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
+        lighterUpgrade = compound.getBooleanOr("LighterUpgrade", false);
+        redstoneSignal = compound.getIntOr("RedstoneSignal", 0);
 
         if (clientPacket)
-            wasShootingLastTick = compound.getBoolean("WasShooting");
+            wasShootingLastTick = compound.getBooleanOr("WasShooting", false);
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putBoolean("LighterUpgrade", lighterUpgrade);
         compound.putInt("RedstoneSignal", redstoneSignal);
 
@@ -139,7 +143,7 @@ public class ChemicalTurretBlockEntity extends TurretBlockEntity {
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         behaviours.add(computerBehaviour = CCProxy.behaviour(this));
         tank = SmartFluidTankBehaviour.single(this, 1000);
         behaviours.add(tank);
@@ -153,7 +157,7 @@ public class ChemicalTurretBlockEntity extends TurretBlockEntity {
 
         float shootingForce = getShootingForce();
 
-        if (!level.isClientSide && !tank.isEmpty()) {
+        if (!level.isClientSide() && !tank.isEmpty()) {
             wasShootingLastTick = true;
             sendData();
 

@@ -41,12 +41,12 @@ public class OilScannerItem extends Item {
         if (player.getY() < CDGConfig.MAX_OIL_SCANNER_LEVEL.get()) {
             stack.set(CDGDataComponents.OIL_SCANNER_PROGRESS, 20);
             stack.set(CDGDataComponents.OIL_SCANNER_STATE, 0);
-            if (level.isClientSide)
+            if (level.isClientSide())
                 player.displayClientMessage(CreateDieselGenerators.lang("actionbar.oil_scanner.searching"), true);
 
         } else {
             level.playLocalSound(player.getX(), player.getY(), player.getZ(), AllSoundEvents.DENY.getMainEvent(), SoundSource.PLAYERS, 1.2f, 1, true);
-            if (level.isClientSide)
+            if (level.isClientSide())
                 player.displayClientMessage(CreateDieselGenerators.lang("actionbar.oil_scanner.too_high_up"), true);
         }
         return InteractionResultHolder.success(stack);

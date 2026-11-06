@@ -15,8 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -24,7 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DieselEngineMovementBehaviour implements MovementBehaviour {
-    @OnlyIn(Dist.CLIENT)
     static Map<Pair<UUID, BlockPos>, EngineSoundInstance> soundInstances;
 
     @Override
@@ -40,13 +37,12 @@ public class DieselEngineMovementBehaviour implements MovementBehaviour {
 
     @Override
     public void tick(MovementContext context) {
-        if (!context.world.isClientSide)
+        if (!context.world.isClientSide())
             return;
 
         CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> clientTick(context));
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected void clientTick(MovementContext context) {
         CarriageContraption contraption = ((CarriageContraption)context.contraption);
         CarriageContraptionEntity entity = (CarriageContraptionEntity) contraption.entity;

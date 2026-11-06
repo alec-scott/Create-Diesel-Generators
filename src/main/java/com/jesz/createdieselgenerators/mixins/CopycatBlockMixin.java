@@ -7,7 +7,6 @@ import com.zurrtum.create.content.decoration.copycat.CopycatBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -21,14 +20,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CopycatBlock.class)
 public class CopycatBlockMixin {
-    @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true, remap = false)
-    public void use(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<ItemInteractionResult> cir) {
+    @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
+    public void use(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (stack.getItem() instanceof DyeItem di) {
             if (level.getBlockEntity(pos) instanceof CopycatBlockEntity be){
-                if(CDGBlocks.OIL_BARREL.has(be.getMaterial()))
+                if(be.getMaterial().is(CDGBlocks.OIL_BARREL.get()))
                     be.setMaterial(be.getMaterial().setValue(OilBarrelBlock.OIL_BARREL_COLOR, OilBarrelBlock.OilBarrelColor.getForDyeColor(di.getDyeColor())));
             }
-            cir.setReturnValue(ItemInteractionResult.SUCCESS);
+            cir.setReturnValue(InteractionResult.SUCCESS);
         }
     }
 

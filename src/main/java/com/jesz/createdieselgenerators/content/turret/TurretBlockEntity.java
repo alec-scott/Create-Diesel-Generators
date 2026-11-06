@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.turret;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterItem;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilteringBehaviour;
@@ -264,29 +268,29 @@ public class TurretBlockEntity extends KineticBlockEntity {
     }
 
     @Override
-    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
-        targetedVerticalRotation = compound.getFloat("VerticalRotation");
-        targetedHorizontalRotation = compound.getFloat("HorizontalRotation");
+    protected void read(ValueInput compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
+        targetedVerticalRotation = compound.getFloatOr("VerticalRotation", 0f);
+        targetedHorizontalRotation = compound.getFloatOr("HorizontalRotation", 0f);
     }
 
     @Override
-    protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(ValueOutput compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putFloat("VerticalRotation", targetedVerticalRotation);
         compound.putFloat("HorizontalRotation", targetedHorizontalRotation);
     }
 
     private FilteringBehaviour filtering;
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         filtering = new EntityFilteringBehaviour(this, new ChemicalTurretBlockEntity.ChemicalTurretValueBox());
         behaviours.add(filtering);
     }
 
     public void setControllingPlayer(Player player){
         BlockPos worldPos = BlockPos.containing(getWorldPos());
-        if(level.isClientSide)
+        if(level.isClientSide())
             AllSoundEvents.CONTROLLER_CLICK.play(level, player, worldPos);
         BlockPos tPos = ((IEntity)player).getTurretPos();
         if(tPos != null && level.getBlockEntity(tPos) instanceof TurretBlockEntity be)
@@ -304,7 +308,7 @@ public class TurretBlockEntity extends KineticBlockEntity {
 
     public void removePlayer() {
         BlockPos worldPos = BlockPos.containing(getWorldPos());
-        if(level.isClientSide)
+        if(level.isClientSide())
             AllSoundEvents.CONTROLLER_CLICK.play(level, controllingPlayer, worldPos);
         if(controllingPlayer instanceof ServerPlayer sp)
             sp.connection.send(new ClientboundSetActionBarTextPacket(CreateDieselGenerators.lang("actionbar.turret.stopped_controlling", Component.translatable(getBlockState().getBlock().getDescriptionId()))));

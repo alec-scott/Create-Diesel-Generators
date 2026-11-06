@@ -4,19 +4,14 @@ import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.zurrtum.create.AllBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
-import org.jetbrains.annotations.Nullable;
-import java.util.function.Consumer;
 
 public class ConcreteBucketItem extends BucketItem {
     DyeColor color;
@@ -29,13 +24,13 @@ public class ConcreteBucketItem extends BucketItem {
     public InteractionResult useOn(UseOnContext context) {
         BlockPos pos = context.getClickedPos();
         BlockState pipeState = context.getLevel().getBlockState(pos);
-        if (!AllBlocks.FLUID_PIPE.has(pipeState)) {
+        if (!pipeState.is(AllBlocks.FLUID_PIPE)) {
             pos = pos.relative(context.getClickedFace());
             pipeState = context.getLevel().getBlockState(pos);
-            if (!AllBlocks.FLUID_PIPE.has(pipeState))
+            if (!pipeState.is(AllBlocks.FLUID_PIPE))
                 return super.useOn(context);
         }
-        context.getLevel().setBlock(pos, BuiltInRegistries.BLOCK.get(CreateDieselGenerators.rl(color.getName() + "_concrete_encased_fluid_pipe")).defaultBlockState()
+        context.getLevel().setBlock(pos, BuiltInRegistries.BLOCK.getValue(CreateDieselGenerators.rl(color.getName() + "_concrete_encased_fluid_pipe")).defaultBlockState()
                 .setValue(PipeBlock.NORTH, pipeState.getValue(PipeBlock.NORTH))
                 .setValue(PipeBlock.EAST, pipeState.getValue(PipeBlock.EAST))
                 .setValue(PipeBlock.SOUTH, pipeState.getValue(PipeBlock.SOUTH))

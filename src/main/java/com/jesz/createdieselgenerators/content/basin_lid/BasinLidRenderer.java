@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.basin_lid;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
@@ -28,6 +30,6 @@ public class BasinLidRenderer extends SafeBlockEntityRenderer<BasinLidBlockEntit
                 .rotateYDegrees(-facing.toYRot()+180)
                 .translate(0.5625f, -0.375, 1.0625)
                 .uncenter()
-                .rotateZDegrees(be.progress*-90+90).renderInto(ms, bufferSource.getBuffer(RenderType.solid()));
+                .rotateZDegrees(be.progress*-90+90).renderInto(ms, bufferSource.getBuffer(RenderTypes.solid()));
     }
 }

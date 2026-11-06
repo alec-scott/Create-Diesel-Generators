@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGTags;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
@@ -43,8 +47,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
@@ -67,12 +69,11 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
         this.state = state;
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected AbstractTickableSoundInstance soundInstance;
 
     @Override
-    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(ValueOutput tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
         tag.putInt("OilAmount", oilAmount);
         tag.putBoolean("Started", started);
     }
@@ -108,10 +109,10 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     @Override
-    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
-        oilAmount = tag.getInt("OilAmount");
-        started = tag.getBoolean("Started");
+    protected void read(ValueInput tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        oilAmount = tag.getIntOr("OilAmount", 0);
+        started = tag.getBooleanOr("Started", false);
     }
 
     byte tick = 0;
@@ -148,11 +149,10 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
                 this.pipeLength = 0;
             this.valid = valid;
         }
-        if (level.isClientSide)
+        if (level.isClientSide())
             CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class PumpjackSoundInstance extends AbstractTickableSoundInstance {
         public PumpjackSoundInstance(SoundEvent event, float volume, float pitch, Vec3 pos) {
             super(event, SoundSource.BLOCKS, RandomSource.create());
@@ -170,7 +170,6 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
         public void tick() {}
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected void tickClient() {
         boolean isActive = started && valid && oilAmount > 0;
 
@@ -195,7 +194,7 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
         tank = SmartFluidTankBehaviour.single(this, 8000);
         behaviours.add(tank);
     }
@@ -211,7 +210,7 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
         if (stackList.isEmpty())
             return;
 
-        if (!level.isClientSide && valid) {
+        if (!level.isClientSide() && valid) {
             ChunkPos chunkPos = new ChunkPos(getBlockPos());
             oilAmount = OilChunksSavedData.getChunkOilAmount((ServerLevel) level, chunkPos);
             started = true;
@@ -229,7 +228,7 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
             OilChunksSavedData.setChunkOilAmount((ServerLevel) level, chunkPos, oilAmount);
         }
 
-        if (level.isClientSide && oilAmount > 0)
+        if (level.isClientSide() && oilAmount > 0)
             FluidFX.spawnPouringLiquid(level, worldPosition, 20, FluidFX.getFluidParticle(new FluidStack(stackList.get(0), 1000)), 0.3f, new Vec3(0.1, 1, 0.1), true);
     }
 

@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.entity_filter;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.jesz.createdieselgenerators.CDGDataComponents;
 import com.jesz.createdieselgenerators.CDGMenuTypes;
 import com.zurrtum.create.AllDataComponents;
@@ -40,15 +42,15 @@ public class EntityFilterItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, java.util.function.Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
 
         if (AllKeys.shiftDown())
             return;
         List<Component> makeSummary = makeSummary(stack);
         if (makeSummary.isEmpty())
             return;
-        tooltipComponents.add(CommonComponents.SPACE);
+        tooltipComponents.accept(CommonComponents.SPACE);
         tooltipComponents.addAll(makeSummary);
     }
 
@@ -107,7 +109,7 @@ public class EntityFilterItem extends Item {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (player.isShiftKeyDown() || hand != InteractionHand.MAIN_HAND)
             return InteractionResultHolder.pass(stackInHand);
-        if (level.isClientSide || !(player instanceof ServerPlayer sp))
+        if (level.isClientSide() || !(player instanceof ServerPlayer sp))
             return InteractionResultHolder.success(stackInHand);
 
         sp.openMenu(new SimpleMenuProvider((int id, Inventory inventory, Player player1) ->

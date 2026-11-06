@@ -10,7 +10,7 @@ public class ChemicalSprayerProjectileRenderer extends EntityRenderer<ChemicalSp
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ChemicalSprayerProjectileEntity p_114482_) {
+    public Identifier getTextureLocation(ChemicalSprayerProjectileEntity p_114482_) {
         return null;
     }
 }

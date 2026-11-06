@@ -88,12 +88,12 @@ public class BulkFermentingCategory extends CreateRecipeCategory<BulkFermentingR
         if (!requiredHeat.testBlazeBurner(BlazeBurnerBlock.HeatLevel.NONE)) {
             builder
                     .addSlot(RecipeIngredientRole.RENDER_ONLY, 134, 81)
-                    .addItemStack(AllBlocks.BLAZE_BURNER.asStack());
+                    .addItemStack(new ItemStack(AllBlocks.BLAZE_BURNER));
         }
         if (!requiredHeat.testBlazeBurner(BlazeBurnerBlock.HeatLevel.KINDLED)) {
             builder
                     .addSlot(RecipeIngredientRole.CATALYST, 153, 81)
-                    .addItemStack(AllItems.BLAZE_CAKE.asStack());
+                    .addItemStack(new ItemStack(AllItems.BLAZE_CAKE));
         }
     }
 

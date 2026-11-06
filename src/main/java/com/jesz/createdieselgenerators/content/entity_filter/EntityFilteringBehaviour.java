@@ -43,9 +43,9 @@ public class EntityFilteringBehaviour extends FilteringBehaviour {
         ItemStack itemInHand = player.getItemInHand(hand);
         ItemStack toApply = itemInHand.copy();
 
-        if (AllItems.WRENCH.isIn(toApply))
+        if (toApply.is(AllItems.WRENCH))
             return;
-        if (AllBlocks.MECHANICAL_ARM.isIn(toApply))
+        if (toApply.is(AllBlocks.MECHANICAL_ARM))
             return;
         if (level.isClientSide())
             return;

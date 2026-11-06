@@ -1,6 +1,6 @@
 package com.jesz.createdieselgenerators;
 
-import net.neoforged.fml.loading.LoadingModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -22,7 +22,7 @@ public class CDGMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.equals("com.jesz.createdieselgenerators.mixins.SableAssemblyMixin") &&
-                LoadingModList.get().getModFileById("sable") == null)
+                !FabricLoader.getInstance().isModLoaded("sable"))
             return false;
         return true;
     }

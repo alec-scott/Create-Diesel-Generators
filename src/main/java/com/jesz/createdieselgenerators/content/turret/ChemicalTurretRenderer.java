@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.turret;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilteringRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,7 +38,7 @@ public class ChemicalTurretRenderer extends KineticBlockEntityRenderer<ChemicalT
                 .rotateYDegrees(horizontalRotation)
                 .uncenter()
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
         CachedBuffers.partial(CDGPartialModels.CHEMICAL_TURRET_BODY, state)
                 .center()
                 .rotateYDegrees(horizontalRotation+180)
@@ -44,7 +46,7 @@ public class ChemicalTurretRenderer extends KineticBlockEntityRenderer<ChemicalT
                 .translate(0.5, 1.3125, 0.125)
                 .rotateXDegrees(verticalRotation)
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
         if(be.lighterUpgrade)
             CachedBuffers.partial(CDGPartialModels.CHEMICAL_TURRET_LIGHTER, state)
                     .center()
@@ -53,7 +55,7 @@ public class ChemicalTurretRenderer extends KineticBlockEntityRenderer<ChemicalT
                     .translate(0.5, 1.3125, 0.125)
                     .rotateXDegrees(verticalRotation)
                     .light(light)
-                    .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                    .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
         CachedBuffers.partial(CDGPartialModels.CHEMICAL_TURRET_SMALL_COG, state)
                 .center()
                 .rotateYDegrees(horizontalRotation+180)
@@ -62,7 +64,7 @@ public class ChemicalTurretRenderer extends KineticBlockEntityRenderer<ChemicalT
                 .rotateXDegrees(verticalRotation)
                 .rotateZDegrees(Mth.lerp(partialTicks, be.lastCogRotation, be.cogRotation))
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
     }
 
     @Override

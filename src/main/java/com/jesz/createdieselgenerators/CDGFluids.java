@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators;
 
+import net.minecraft.world.item.ItemStack;
+
 import com.jesz.createdieselgenerators.content.concrete.ConcreteBucketItem;
 import com.jesz.createdieselgenerators.content.concrete.ConcreteFluid;
 import com.jesz.createdieselgenerators.port.registrate.util.entry.FluidEntry;
@@ -10,28 +12,24 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import org.apache.commons.lang3.StringUtils;
+import com.jesz.createdieselgenerators.port.registrate.fabric.SimpleFlowableFluid;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import org.jspecify.annotations.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.jesz.createdieselgenerators.CreateDieselGenerators.REGISTRATE;
 
 public class CDGFluids {
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> PLANT_OIL = REGISTRATE.fluid("plant_oil",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> PLANT_OIL = REGISTRATE.fluid("plant_oil",
                     CreateDieselGenerators.rl("block/fluid/plant_oil_still"),
                     CreateDieselGenerators.rl("block/fluid/plant_oil_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(500))
+            .renderType(() -> () -> ChunkSectionLayer.TRANSLUCENT)
             .fluidProperties(p -> p.levelDecreasePerBlock(2)
                     .tickRate(25)
-                    .slopeFindDistance(3)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(3)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -39,16 +37,14 @@ public class CDGFluids {
             .build()
             .register();
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> CRUDE_OIL = REGISTRATE.fluid("crude_oil",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> CRUDE_OIL = REGISTRATE.fluid("crude_oil",
                             CreateDieselGenerators.rl("block/crude_oil_still"),
                             CreateDieselGenerators.rl("block/crude_oil_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(100))
             .fluidProperties(p -> p.levelDecreasePerBlock(3)
                     .tickRate(25)
-                    .slopeFindDistance(2)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(2)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -56,16 +52,14 @@ public class CDGFluids {
             .build()
             .register();
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> BIODIESEL = REGISTRATE.fluid("biodiesel",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> BIODIESEL = REGISTRATE.fluid("biodiesel",
                     CreateDieselGenerators.rl("block/biodiesel_still"),
                     CreateDieselGenerators.rl("block/biodiesel_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(500))
             .fluidProperties(p -> p.levelDecreasePerBlock(2)
                     .tickRate(25)
-                    .slopeFindDistance(3)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(3)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -73,16 +67,14 @@ public class CDGFluids {
             .build()
             .register();
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> DIESEL = REGISTRATE.fluid("diesel",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> DIESEL = REGISTRATE.fluid("diesel",
                     CreateDieselGenerators.rl("block/diesel_still"),
                     CreateDieselGenerators.rl("block/diesel_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(500))
             .fluidProperties(p -> p.levelDecreasePerBlock(2)
                     .tickRate(25)
-                    .slopeFindDistance(3)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(3)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -90,16 +82,14 @@ public class CDGFluids {
             .build()
             .register();
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> GASOLINE = REGISTRATE.fluid("gasoline",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> GASOLINE = REGISTRATE.fluid("gasoline",
                     CreateDieselGenerators.rl("block/gasoline_still"),
                     CreateDieselGenerators.rl("block/gasoline_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(500))
             .fluidProperties(p -> p.levelDecreasePerBlock(2)
                     .tickRate(25)
-                    .slopeFindDistance(3)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(3)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -107,16 +97,15 @@ public class CDGFluids {
             .build()
             .register();
 
-    public static final FluidEntry<BaseFlowingFluid.Flowing> ETHANOL = REGISTRATE.fluid("ethanol",
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> ETHANOL = REGISTRATE.fluid("ethanol",
                             CreateDieselGenerators.rl("block/fluid/ethanol_still"),
                             CreateDieselGenerators.rl("block/fluid/ethanol_flow"))
-            .properties(b -> b.viscosity(1500)
-                    .density(500))
+            .renderType(() -> () -> ChunkSectionLayer.TRANSLUCENT)
             .fluidProperties(p -> p.levelDecreasePerBlock(2)
                     .tickRate(25)
-                    .slopeFindDistance(5)
-                    .explosionResistance(100f))
-            .source(BaseFlowingFluid.Source::new)
+                    .flowSpeed(5)
+                    .blastResistance(100f))
+            .source(SimpleFlowableFluid.Source::new)
             .block()
             .build()
             .bucket()
@@ -125,7 +114,7 @@ public class CDGFluids {
             .register();
 
     @SuppressWarnings("unchecked")
-    public static final FluidEntry<BaseFlowingFluid.Flowing>[] CONCRETE = new FluidEntry[DyeColor.values().length];
+    public static final FluidEntry<SimpleFlowableFluid.Flowing>[] CONCRETE = new FluidEntry[DyeColor.values().length];
 
     static {
         for (DyeColor color : DyeColor.values()) {
@@ -133,12 +122,10 @@ public class CDGFluids {
                     REGISTRATE.fluid(color.getName() + "_cement",
                                     CreateDieselGenerators.rl("block/cement/" + color.getName() + "_still"),
                                     CreateDieselGenerators.rl("block/cement/" + color.getName() + "_flow"))
-                    .properties(b -> b.viscosity(1500)
-                            .density(500))
                     .fluidProperties(p -> p.levelDecreasePerBlock(8)
                             .tickRate(12)
-                            .slopeFindDistance(1)
-                            .explosionResistance(100f)).source(p -> new ConcreteFluid(p, color))
+                            .flowSpeed(1)
+                            .blastResistance(100f)).source(p -> new ConcreteFluid(p, color))
                     .block()
                             .build()
                     .bucket((f, p) -> new ConcreteBucketItem(color, f, p))

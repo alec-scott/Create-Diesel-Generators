@@ -2,7 +2,6 @@ package com.jesz.createdieselgenerators;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.bus.api.IEventBus;
 import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredHolder;
 import com.jesz.createdieselgenerators.port.porting_lib.util.DeferredRegister;
 
@@ -16,7 +15,6 @@ public class CDGSoundEvents {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(CreateDieselGenerators.rl(name)));
     }
 
-    public static void register(IEventBus eventBus) {
-        SOUND_EVENTS.register(eventBus);
+    public static void register() {
     }
 }

@@ -1,5 +1,13 @@
 package com.jesz.createdieselgenerators.content.distillation;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.level.redstone.Orientation;
+
+import net.minecraft.world.level.ScheduledTickAccess;
+
+import net.minecraft.util.RandomSource;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGItems;
 import com.zurrtum.create.AllBlocks;
@@ -63,14 +71,14 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof DistillationTankBlockEntity dtbe){
             int width = dtbe.getControllerBE().getWidth();
             BlockPos pos = dtbe.getController();
-            IFluidHandler tank = context.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, dtbe.getBlockPos(), null);
-            FluidStack stackInTank = tank == null ? FluidStack.EMPTY : tank.getFluidInTank(0);
+            DistillationTankBlockEntity controllerBE = dtbe.getControllerBE();
+            FluidStack stackInTank = controllerBE == null ? FluidStack.EMPTY : controllerBE.tankInventory.getFluid().copy();
 
             for (int x = 0; x < width; x++) {
                 for (int z = 0; z < width; z++) {
-                    context.getLevel().setBlockAndUpdate(pos.offset(x, 0, z), AllBlocks.FLUID_TANK.getDefaultState());
-                    context.getLevel().updateNeighborsAt(pos.offset(x, 0, z), AllBlocks.FLUID_TANK.get());
-                    if (context.getLevel().isClientSide) {
+                    context.getLevel().setBlockAndUpdate(pos.offset(x, 0, z), AllBlocks.FLUID_TANK.defaultBlockState());
+                    context.getLevel().updateNeighborsAt(pos.offset(x, 0, z), AllBlocks.FLUID_TANK);
+                    if (context.getLevel().isClientSide()) {
                         for (int i = 0; i < 30; i++) {
                             Vec3 offset = VecHelper.offsetRandomly(VecHelper.getCenterOf(pos.offset(x, 0, z)), context.getLevel().getRandom(), .3f);
                             Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, context.getLevel().getRandom(), .1f);
@@ -82,27 +90,25 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
             }
             AllSoundEvents.WRENCH_REMOVE.playAt(context.getLevel(), pos.getX() + (double) width / 2, pos.getY() + 0.5, pos.getZ() + (double) width / 2, 2f, 1f, false);
             if (!stackInTank.isEmpty() && context.getLevel().getBlockEntity(pos) instanceof FluidTankBlockEntity be){
-                IFluidHandler fTank = context.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
-                if (fTank != null)
-                    fTank.fill(stackInTank, IFluidHandler.FluidAction.EXECUTE);
+                be.getTankInventory().insert(stackInTank);
             }
             if (!context.getPlayer().isCreative())
-                context.getPlayer().getInventory().placeItemBackInInventory(DISTILLATION_CONTROLLER.asStack(width*width));
+                context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(DISTILLATION_CONTROLLER.get(), width * width));
         }
 
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
         if (direction == Direction.DOWN && neighbourState.getBlock() != this)
             withBlockEntityDo(level, pos, DistillationTankBlockEntity::updateTemperature);
-        return super.updateShape(state, direction, neighbourState, level, pos, neighbourPos);
+        return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos otherPos, boolean p_60514_) {
-        super.neighborChanged(state, level, pos, block, otherPos, p_60514_);
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean p_60514_) {
+        super.neighborChanged(state, level, pos, block, orientation, p_60514_);
         withBlockEntityDo(level, pos, DistillationTankBlockEntity::updateVerticalMulti);
     }
 
@@ -124,21 +130,10 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
         withBlockEntityDo(context.getLevel(), context.getClickedPos(), DistillationTankBlockEntity::toggleWindows);
         return InteractionResult.SUCCESS;
     }
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.hasBlockEntity() && (state.getBlock() != newState.getBlock() || !newState.hasBlockEntity())) {
-            BlockEntity be = world.getBlockEntity(pos);
-            if (!(be instanceof DistillationTankBlockEntity))
-                return;
-            DistillationTankBlockEntity tankBE = (DistillationTankBlockEntity) be;
-            world.removeBlockEntity(pos);
-            ConnectivityHandler.splitMulti(tankBE);
-        }
-    }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return AllBlocks.FLUID_TANK.asStack();
+    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+        return new ItemStack(AllBlocks.FLUID_TANK);
     }
 
     @Override
@@ -184,7 +179,7 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
     @Override
     public ItemRequirement getRequiredItems(BlockState state, BlockEntity blockEntity) {
         List<ItemStack> list = new ArrayList<>();
-        list.add(AllBlocks.FLUID_TANK.asStack());
+        list.add(new ItemStack(AllBlocks.FLUID_TANK));
         list.add(DISTILLATION_CONTROLLER.asStack());
         return new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, list);
     }

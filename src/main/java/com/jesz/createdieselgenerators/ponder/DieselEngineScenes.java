@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.ponder;
 
+import net.minecraft.world.item.ItemStack;
+
 import com.jesz.createdieselgenerators.CDGFluids;
 import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.CDGRegistries;
@@ -285,10 +287,10 @@ public class DieselEngineScenes {
 
         scene.world().modifyKineticSpeed(engines, s -> 96f);
         scene.idle(20);
-        scene.overlay().showControls(util.vector().topOf(1, 1, 2), Pointing.DOWN, 15).withItem(AllItems.WRENCH.asStack());
+        scene.overlay().showControls(util.vector().topOf(1, 1, 2), Pointing.DOWN, 15).withItem(new ItemStack(AllItems.WRENCH));
         scene.world().modifyBlock(util.grid().at(1,1,2), s -> s.setValue(PIPE, false), false);
         scene.idle(30);
-        scene.overlay().showControls(util.vector().topOf(1, 1, 3), Pointing.DOWN, 15).withItem(AllItems.WRENCH.asStack());
+        scene.overlay().showControls(util.vector().topOf(1, 1, 3), Pointing.DOWN, 15).withItem(new ItemStack(AllItems.WRENCH));
         scene.world().modifyBlock(util.grid().at(1,1,3), s -> s.setValue(PIPE, false), false);
         scene.idle(30);
         scene.overlay().showText(50)

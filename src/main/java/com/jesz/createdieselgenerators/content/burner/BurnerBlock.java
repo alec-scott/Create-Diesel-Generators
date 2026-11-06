@@ -1,5 +1,11 @@
 package com.jesz.createdieselgenerators.content.burner;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.level.redstone.Orientation;
+
+import net.minecraft.core.Direction;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.zurrtum.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
@@ -51,7 +57,7 @@ public class BurnerBlock extends HorizontalAxisKineticBlock implements IBE<Burne
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos otherPos, boolean moved) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moved) {
         if (level.getBlockEntity(pos) instanceof BurnerBlockEntity be)
             be.redstonePower = level.getBestNeighborSignal(pos);
     }
@@ -62,7 +68,7 @@ public class BurnerBlock extends HorizontalAxisKineticBlock implements IBE<Burne
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         if (level.getBlockEntity(pos) instanceof BurnerBlockEntity be)
             return be.redstoneOutput;
 

@@ -112,10 +112,10 @@ public class PumpjackBearingBlockEntity extends MechanicalBearingBlockEntity {
     @Override
     public void tick() {
         prevAngle = angle;
-        if (level.isClientSide)
+        if (level.isClientSide())
             clientAngleDiff /= 2;
 
-        if (!level.isClientSide && assembleNextTick) {
+        if (!level.isClientSide() && assembleNextTick) {
             assembleNextTick = false;
             if (running) {
                 if (movedContraption == null || movedContraption.getContraption().getBlocks().isEmpty()) {
@@ -194,7 +194,7 @@ public class PumpjackBearingBlockEntity extends MechanicalBearingBlockEntity {
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {}
 
     @Override
     public void attach(ControlledContraptionEntity contraption) {
@@ -208,7 +208,7 @@ public class PumpjackBearingBlockEntity extends MechanicalBearingBlockEntity {
         setChanged();
         BlockPos anchor = worldPosition.relative(blockState.getValue(FACING));
         movedContraption.setPos(anchor.getX(), anchor.getY(), anchor.getZ());
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             this.running = true;
             sendData();
         }

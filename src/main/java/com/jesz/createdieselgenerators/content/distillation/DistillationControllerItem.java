@@ -75,7 +75,7 @@ public class DistillationControllerItem extends Item {
 
         for (BlockPos pos : positions) {
             context.getLevel().setBlock(pos, CDGBlocks.DISTILLATION_TANK.getDefaultState(), 3);
-            if (context.getLevel().isClientSide) {
+            if (context.getLevel().isClientSide()) {
                 for (int i = 0; i < 30; i++) {
                     Vec3 offset = VecHelper.offsetRandomly(VecHelper.getCenterOf(pos), context.getLevel().getRandom(), .3f);
                     Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, context.getLevel().getRandom(), .1f);
@@ -86,7 +86,7 @@ public class DistillationControllerItem extends Item {
         }
         AllSoundEvents.WRENCH_ROTATE.playAt(context.getLevel(), controllerPos.getX() + (double) width / 2, controllerPos.getY() + (double) height / 2, controllerPos.getZ() + (double) width / 2, 2f, 1f, false);
 
-        if (!context.getPlayer().isCreative() && !context.getLevel().isClientSide) {
+        if (!context.getPlayer().isCreative() && !context.getLevel().isClientSide()) {
             itemInHand.shrink(positions.size());
         }
 

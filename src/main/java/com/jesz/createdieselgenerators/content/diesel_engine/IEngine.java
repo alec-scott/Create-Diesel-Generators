@@ -37,7 +37,7 @@ public interface IEngine {
 
     default FuelType getFuelType() {
         FluidStack current = getTank().getFluid();
-        if (!FluidStack.isSameFluid(current, getLastCachedFluid())) {
+        if (!FluidStack.areFluidsAndComponentsEqual(current, getLastCachedFluid())) {
             setLastCachedFluid(current.copy());
             FuelType type = FuelType.getTypeFor(
                     self().getLevel().registryAccess().lookupOrThrow(CDGRegistries.FUEL_TYPE),

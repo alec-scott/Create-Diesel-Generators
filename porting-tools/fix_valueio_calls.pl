@@ -20,7 +20,7 @@ while (<>) {
         $s =~ s/(?<![\w.])\Q$v\E\.put\(/CDGValueIO.put($v, /g;
         $s =~ s/(?<![\w.])\Q$v\E\.remove\(/$v.discard(/g;
     }
-    if ($s ne $orig && $s !~ /^import com\.mrh0\.createaddition\.port\.minecraft\.CDGValueIO;/m) {
+    if ($s ne $orig && $s !~ /^import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;/m) {
         $s =~ s/^(package [^;]+;[ \t]*\r?\n)/$1\nimport com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;\n/m;
     }
     print $s;

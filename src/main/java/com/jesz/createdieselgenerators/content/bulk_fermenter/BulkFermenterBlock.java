@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.bulk_fermenter;
 
+import net.minecraft.world.level.ScheduledTickAccess;
+
+import net.minecraft.util.RandomSource;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.zurrtum.create.api.connectivity.ConnectivityHandler;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
@@ -17,7 +21,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.DeferredSoundType;
 
 public class BulkFermenterBlock extends Block implements IBE<BulkFermenterBlockEntity>, IWrenchable {
     public BulkFermenterBlock(Properties properties) {
@@ -25,10 +28,10 @@ public class BulkFermenterBlock extends Block implements IBE<BulkFermenterBlockE
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+    public BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
         if (direction == Direction.DOWN && neighbourState.getBlock() != this)
             withBlockEntityDo(level, pos, BulkFermenterBlockEntity::updateHeat);
-        return super.updateShape(state, direction, neighbourState, level, pos, neighbourPos);
+        return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
     }
 
     @Override
@@ -41,18 +44,6 @@ public class BulkFermenterBlock extends Block implements IBE<BulkFermenterBlockE
         withBlockEntityDo(world, pos, BulkFermenterBlockEntity::updateHeat);
     }
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.hasBlockEntity() && (state.getBlock() != newState.getBlock() || !newState.hasBlockEntity())) {
-            BlockEntity be = world.getBlockEntity(pos);
-            if (!(be instanceof BulkFermenterBlockEntity))
-                return;
-            BulkFermenterBlockEntity tankBE = (BulkFermenterBlockEntity) be;
-            ItemHelper.dropContents(world, pos, tankBE.inventory);
-            world.removeBlockEntity(pos);
-            ConnectivityHandler.splitMulti(tankBE);
-        }
-    }
-    @Override
     public Class<BulkFermenterBlockEntity> getBlockEntityClass() {
         return BulkFermenterBlockEntity.class;
     }
@@ -61,18 +52,6 @@ public class BulkFermenterBlock extends Block implements IBE<BulkFermenterBlockE
     public BlockEntityType<? extends BulkFermenterBlockEntity> getBlockEntityType() {
         return CDGBlockEntityTypes.BULK_FERMENTER.get();
     }
+    // PORT-NOTE(26.1): the batch-placement sound silencing (NeoForge persistent data, DeferredSoundType) is dropped
 
-    // Tanks are less noisy when placed in batch
-    public static final SoundType SILENCED_METAL =
-            new DeferredSoundType(0.1F, 1.5F, () -> SoundEvents.METAL_BREAK, () -> SoundEvents.METAL_STEP,
-                    () -> SoundEvents.METAL_PLACE, () -> SoundEvents.METAL_HIT, () -> SoundEvents.METAL_FALL);
-
-    @Override
-    public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
-        SoundType soundType = super.getSoundType(state, world, pos, entity);
-        if (entity != null && entity.getPersistentData()
-                .contains("SilenceTankSound"))
-            return SILENCED_METAL;
-        return soundType;
-    }
 }

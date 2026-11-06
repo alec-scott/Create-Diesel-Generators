@@ -24,10 +24,16 @@ import com.jesz.createdieselgenerators.content.turret.ChemicalTurretBlockEntity;
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretRenderer;
 import com.zurrtum.create.client.AllPartialModels;
 import com.zurrtum.create.content.fluids.pipes.FluidPipeBlockEntity;
-import com.simibubi.create.content.kinetics.base.*;
+import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
+import com.zurrtum.create.client.content.kinetics.base.ShaftRenderer;
+import com.zurrtum.create.client.content.kinetics.base.ShaftVisual;
+import com.zurrtum.create.client.content.kinetics.base.SingleAxisRotatingVisual;
+import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
+import com.zurrtum.create.api.behaviour.display.DisplaySource;
 import com.jesz.createdieselgenerators.port.registrate.util.entry.BlockEntityEntry;
 
-import java.util.ArrayList;
+import com.jesz.createdieselgenerators.port.registrate.util.entry.BlockEntry;
+import net.minecraft.world.level.block.Block;
 
 import static com.jesz.createdieselgenerators.CreateDieselGenerators.REGISTRATE;
 
@@ -41,7 +47,7 @@ public class CDGBlockEntityTypes {
             .register();
 
     public static final BlockEntityEntry<FluidPipeBlockEntity> CONCRETE_ENCASED_FLUID_PIPE = REGISTRATE.blockEntity("concrete_encased_fluid_pipe", FluidPipeBlockEntity::new)
-            .validBlocksDeferred(() -> new ArrayList<>(CDGBlocks.CONCRETE_ENCASED_FLUID_PIPES.values()))
+            .validBlocks(() -> CDGBlocks.CONCRETE_ENCASED_FLUID_PIPES.values().stream().map(BlockEntry::get).toArray(Block[]::new))
             .register();
 
     public static final BlockEntityEntry<ChemicalTurretBlockEntity> CHEMICAL_TURRET = REGISTRATE.blockEntity("chemical_turret", ChemicalTurretBlockEntity::new)
@@ -104,7 +110,6 @@ public class CDGBlockEntityTypes {
             .register();
 
     public static final BlockEntityEntry<PumpjackHoleBlockEntity> PUMPJACK_HOLE = REGISTRATE.blockEntity("pumpjack_hole_block_entity", PumpjackHoleBlockEntity::new)
-            .displaySource(CDGDisplaySources.PUMPJACK_OIL_AMOUNT)
             .validBlocks(CDGBlocks.PUMPJACK_HOLE)
             .renderer(() -> PumpjackHoleRenderer::new)
             .register();
@@ -122,5 +127,7 @@ public class CDGBlockEntityTypes {
             .renderer(() -> ShaftRenderer::new)
             .register();
     public static void register() {
+        // PORT-NOTE(26.1): was the Registrate .displaySource builder call
+        DisplaySource.BY_BLOCK_ENTITY.add(PUMPJACK_HOLE.get(), CDGDisplaySources.PUMPJACK_OIL_AMOUNT.get());
     }
 }

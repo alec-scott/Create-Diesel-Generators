@@ -3,7 +3,6 @@ package com.jesz.createdieselgenerators;
 import com.zurrtum.create.client.foundation.block.connected.AllCTTypes;
 import com.zurrtum.create.client.foundation.block.connected.CTSpriteShiftEntry;
 import com.zurrtum.create.client.foundation.block.connected.CTSpriteShifter;
-import net.minecraft.resources.Identifier;
 
 public class CDGSpriteShifts {
     public static final CTSpriteShiftEntry MODULAR_DIESEL_ENGINE = horizontal("diesel_engine_big");

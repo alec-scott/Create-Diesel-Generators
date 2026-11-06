@@ -6,21 +6,23 @@ import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
 import com.zurrtum.create.infrastructure.packet.c2s.FilterScreenPacket;
 import io.netty.buffer.ByteBuf;
 import com.zurrtum.create.catnip.codecs.stream.CatnipStreamCodecBuilders;
-import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public record EntityFilterScreenPacket(FilterScreenPacket.Option option, EntityAttribute attribute) implements ServerboundPacketPayload {
+public record EntityFilterScreenPacket(FilterScreenPacket.Option option, EntityAttribute attribute) implements CustomPacketPayload {
+    public static final Type<EntityFilterScreenPacket> TYPE = new Type<>(CreateDieselGenerators.rl("entity_filter_screen"));
+
     public static final StreamCodec<ByteBuf, EntityFilterScreenPacket> STREAM_CODEC = StreamCodec.composite(
             FilterScreenPacket.Option.STREAM_CODEC, EntityFilterScreenPacket::option,
             EntityAttribute.STREAM_CODEC, EntityFilterScreenPacket::attribute,
             EntityFilterScreenPacket::new
     );
 
-    @Override
     public void handle(ServerPlayer player) {
         if (player == null)
             return;
@@ -40,7 +42,7 @@ public record EntityFilterScreenPacket(FilterScreenPacket.Option option, EntityA
     }
 
     @Override
-    public PacketTypeProvider getTypeProvider() {
-        return CDGPackets.ENTITY_FILTER_SCREEN;
+    public Type<EntityFilterScreenPacket> type() {
+        return TYPE;
     }
 }

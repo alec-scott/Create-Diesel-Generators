@@ -201,13 +201,13 @@ public class TrackLayersBagItem extends Item {
         }
 
         ItemStack offhandItem = player.getOffhandItem();
-        boolean hasGirder = AllBlocks.METAL_GIRDER.isIn(offhandItem);
+        boolean hasGirder = offhandItem.is(AllBlocks.METAL_GIRDER);
 
         TrackLayersBagPlacement.PlacementInfo info = TrackLayersBagPlacement.tryConnect(
                 level, player, pos, state, bag, hasGirder, false
         );
 
-        if (info.message != null && !level.isClientSide)
+        if (info.message != null && !level.isClientSide())
             player.displayClientMessage(CreateLang.translateDirect(info.message), true);
 
         if (!info.valid) {
@@ -215,7 +215,7 @@ public class TrackLayersBagItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        if (level.isClientSide)
+        if (level.isClientSide())
             return InteractionResult.SUCCESS;
 
         bag.remove(AllDataComponents.TRACK_CONNECTING_FROM);
@@ -241,13 +241,13 @@ public class TrackLayersBagItem extends Item {
     }
 
     public static InteractionResultHolder<ItemStack> clearSelection(ItemStack stack, Level level, Player player) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             level.playSound(player, player.blockPosition(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.75f, 1.0f);
         } else {
             player.displayClientMessage(CreateLang.translateDirect("track.selection_cleared"), true);
             stack.remove(AllDataComponents.TRACK_CONNECTING_FROM);
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     public static boolean select(LevelAccessor world, BlockPos pos, Vec3 lookVec, ItemStack heldItem) {

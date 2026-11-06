@@ -18,7 +18,7 @@ public class CDGPonderPlugin implements PonderPlugin {
     }
 
     @Override
-    public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+    public void registerScenes(PonderSceneRegistrationHelper<Identifier> helper) {
         PonderPlugin.super.registerScenes(helper);
 
         helper.forComponents(CDGItems.DISTILLATION_CONTROLLER.getId())
@@ -43,7 +43,7 @@ public class CDGPonderPlugin implements PonderPlugin {
     }
 
     @Override
-    public void registerTags(PonderTagRegistrationHelper<ResourceLocation> helper) {
+    public void registerTags(PonderTagRegistrationHelper<Identifier> helper) {
         PonderPlugin.super.registerTags(helper);
 
         helper.addToTag(AllCreatePonderTags.KINETIC_SOURCES)

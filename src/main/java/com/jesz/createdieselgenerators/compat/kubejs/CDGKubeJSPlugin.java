@@ -78,7 +78,7 @@ public class CDGKubeJSPlugin implements KubeJSPlugin {
         CDGKubeJSPlugin.registerLighterSkins();
 
         MoldEventJS.addedMolds.forEach((rl, name) -> {
-            generator.json(ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), "models/item/mold/"+rl.getPath()), generateTextureModel(ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), "item/mold/"+rl.getPath())));
+            generator.json(Identifier.fromNamespaceAndPath(rl.getNamespace(), "models/item/mold/"+rl.getPath()), generateTextureModel(Identifier.fromNamespaceAndPath(rl.getNamespace(), "item/mold/"+rl.getPath())));
         });
 
         LighterSkinsEventJS.addedIds.forEach((name, id) -> {
@@ -95,7 +95,7 @@ public class CDGKubeJSPlugin implements KubeJSPlugin {
         });
     }
 
-    JsonElement generateTextureModel(ResourceLocation rl) {
+    JsonElement generateTextureModel(Identifier rl) {
         JsonObject object = new JsonObject();
         object.add("parent", new JsonPrimitive("minecraft:item/generated"));
         JsonObject texturesObject = new JsonObject();

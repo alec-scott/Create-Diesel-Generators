@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MechanicalPressBlockEntity.class)
 public class MechanicalPressBlockEntityMixin {
-    @Inject(method = "matchStaticFilters", at = @At("RETURN"), remap = false, cancellable = true)
+    @Inject(method = "matchStaticFilters", at = @At("RETURN"), cancellable = true)
     public void matchStaticFilters(RecipeHolder<? extends Recipe<?>> recipe, CallbackInfoReturnable<Boolean> cir){
         if (cir.getReturnValue())
             return;
-        if (recipe.value().getType() == CDGRecipes.COMPRESSION_MOLDING.getType())
+        if (recipe.value().getType() == CDGRecipes.COMPRESSION_MOLDING)
             cir.setReturnValue(true);
     }
 }

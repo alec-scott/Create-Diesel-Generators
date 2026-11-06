@@ -1,6 +1,5 @@
 package com.jesz.createdieselgenerators;
 
-import com.jesz.createdieselgenerators.content.molds.MoldType;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

@@ -1,5 +1,10 @@
 package com.jesz.createdieselgenerators.content.items;
 
+import com.zurrtum.create.foundation.item.ItemPlacementSoundContext;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.component.TypedEntityData;
+import org.jetbrains.annotations.Nullable;
+
 import com.zurrtum.create.api.connectivity.ConnectivityHandler;
 import com.zurrtum.create.foundation.block.IBE;
 import com.zurrtum.create.foundation.blockEntity.IMultiBlockEntityContainer;
@@ -39,20 +44,20 @@ public class MultiBlockContainerBlockItem extends BlockItem {
     }
 
     @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, Player player,
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player,
                                                  ItemStack stack, BlockState state) {
         MinecraftServer minecraftserver = level.getServer();
         if (minecraftserver == null)
             return false;
-        CustomData blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
 
         if (blockEntityData != null) {
-            CompoundTag nbt = blockEntityData.copyTag();
+            CompoundTag nbt = blockEntityData.copyTagWithoutId();
             nbt.remove("Size");
             nbt.remove("Height");
             nbt.remove("Controller");
             nbt.remove("LastKnownPos");
-            stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(nbt));
+            stack.set(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(((IBE<?>) getBlock()).getBlockEntityType(), nbt));
         }
         return super.updateCustomBlockEntityTag(pos, level, player, stack, state);
     }
@@ -114,6 +119,9 @@ public class MultiBlockContainerBlockItem extends BlockItem {
         if (!player.isCreative() && stack.getCount() < tanksToPlace)
             return;
 
+        // PORT-NOTE(26.1): batch placement is quiet through Create Fly's ItemPlacementSoundContext (was player persistent data)
+        ItemPlacementSoundContext quietContext = new ItemPlacementSoundContext(ctx, 0.1f, 1.5f, SoundEvents.METAL_PLACE);
+
         for (int xOffset = 0; xOffset < width; xOffset++) {
             for (int zOffset = 0; zOffset < width; zOffset++) {
                 BlockPos offsetPos = blockAxis == Direction.Axis.X ? startPos.offset(0, xOffset, zOffset)
@@ -122,12 +130,7 @@ public class MultiBlockContainerBlockItem extends BlockItem {
                 BlockState blockState = world.getBlockState(offsetPos);
                 if (blockState.getBlock() == getBlock())
                     continue;
-                BlockPlaceContext context = BlockPlaceContext.at(ctx, offsetPos, face);
-                player.getPersistentData()
-                        .putBoolean("SilenceTankSound", true);
-                super.place(context);
-                player.getPersistentData()
-                        .remove("SilenceTankSound");
+                super.place(quietContext.offset(offsetPos, face));
             }
         }
     }

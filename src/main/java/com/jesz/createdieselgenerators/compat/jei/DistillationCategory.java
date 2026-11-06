@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.compat.jei;
 
+import net.minecraft.world.item.ItemStack;
+
 import com.jesz.createdieselgenerators.content.distillation.DistillationRecipe;
 import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.AllItems;
@@ -51,12 +53,12 @@ public class DistillationCategory extends CreateRecipeCategory<DistillationRecip
         if (!requiredHeat.testBlazeBurner(BlazeBurnerBlock.HeatLevel.NONE)) {
             builder
                     .addSlot(RecipeIngredientRole.RENDER_ONLY, 134, 171)
-                    .addItemStack(AllBlocks.BLAZE_BURNER.asStack());
+                    .addItemStack(new ItemStack(AllBlocks.BLAZE_BURNER));
         }
         if (!requiredHeat.testBlazeBurner(BlazeBurnerBlock.HeatLevel.KINDLED)) {
             builder
                     .addSlot(RecipeIngredientRole.CATALYST, 153, 171)
-                    .addItemStack(AllItems.BLAZE_CAKE.asStack());
+                    .addItemStack(new ItemStack(AllItems.BLAZE_CAKE));
         }
     }
 

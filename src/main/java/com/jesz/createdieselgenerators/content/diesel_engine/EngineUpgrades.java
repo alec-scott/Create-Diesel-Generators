@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.diesel_engine;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.*;
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlock;
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlockEntity;
@@ -18,8 +20,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public interface EngineUpgrades {
         return upgrade;
     }
 
-    static EngineUpgrades get(ResourceLocation rl) {
+    static EngineUpgrades get(Identifier rl) {
 
         for (EngineUpgrades upgrade : EngineUpgrades.allUpgrades) {
             if (upgrade.getId().equals(rl)) {
@@ -46,7 +46,7 @@ public interface EngineUpgrades {
         }
         return EMPTY;
     }
-    ResourceLocation getId();
+    Identifier getId();
     default boolean canAddOn(IEngine engine) {
         return true;
     }
@@ -58,7 +58,6 @@ public interface EngineUpgrades {
         return capacity;
     }
 
-    @OnlyIn(Dist.CLIENT)
     default <T extends SmartBlockEntity & IEngine> EngineSoundInstance createSoundInstance(T engine, Vec3 pos) {
         return new EngineSoundInstance(CDGSoundEvents.ENGINE_NORMAL.get(), SoundSource.NEUTRAL, pos, 0.2f);
     }
@@ -88,14 +87,14 @@ public interface EngineUpgrades {
                         .rotateYDegrees(facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 270 : 180)
                         .uncenter()
                         .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
             } else {
                 CachedBuffers.partial(normalModel, be.getBlockState())
                         .center()
                         .rotateYDegrees(facing.toYRot())
                         .uncenter()
                         .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
             }
         } else if (be instanceof ModularDieselEngineBlockEntity) {
             Direction facing = be.getBlockState().getValue(ModularDieselEngineBlock.FACING);
@@ -105,7 +104,7 @@ public interface EngineUpgrades {
                     .rotateYDegrees(facing.toYRot())
                     .uncenter()
                     .light(light)
-                    .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                    .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
 
         } else if (be instanceof HugeDieselEngineBlockEntity) {
             Direction facing = be.getBlockState().getValue(HugeDieselEngineBlock.FACING);
@@ -116,14 +115,14 @@ public interface EngineUpgrades {
                         .rotateYDegrees(facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 270 : 90)
                         .uncenter()
                         .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
             } else {
                 CachedBuffers.partial(hugeModel, be.getBlockState())
                         .center()
                         .rotateYDegrees(facing.getAxis() == Direction.Axis.X ? (facing.toYRot()) : (facing.toYRot()) + 180)
                         .uncenter()
                         .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
             }
 
         }
@@ -131,7 +130,7 @@ public interface EngineUpgrades {
 
     class EmptyUpgrade implements EngineUpgrades {
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return CreateDieselGenerators.rl("none");
         }
 
@@ -143,7 +142,7 @@ public interface EngineUpgrades {
 
     class SilencerUpgrade implements EngineUpgrades {
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return CreateDieselGenerators.rl("silencer");
         }
 
@@ -166,7 +165,7 @@ public interface EngineUpgrades {
 
     class TurbochargerUpgrade implements EngineUpgrades {
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return CreateDieselGenerators.rl("turbocharger");
         }
 

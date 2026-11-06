@@ -1,5 +1,11 @@
 package com.jesz.createdieselgenerators.content.oil_barrel;
 
+import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.content.distillation.DistillationTankBlockEntity;
@@ -59,7 +65,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
 
     }
 
@@ -69,7 +75,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
 
     public void updateConnectivity() {
         updateConnectivity = false;
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         if (!isController())
             return;
@@ -141,7 +147,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
             }
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             setChanged();
             sendData();
         }
@@ -166,7 +172,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
 
     public void removeController(boolean keepFluids) {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         updateConnectivity = true;
         if (!keepFluids)
@@ -194,7 +200,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
     @Override
     public void setController(BlockPos controller) {
-        if (level.isClientSide && !isVirtual())
+        if (level.isClientSide() && !isVirtual())
             return;
         if (controller.equals(this.controller))
             return;
@@ -229,27 +235,27 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
                 level.getCapability(Capabilities.FluidHandler.BLOCK, controllerBE.getBlockPos(), null));
     }
     @Override
-    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
+    protected void read(ValueInput tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
 
         BlockPos controllerBefore = controller;
         int prevSize = width;
         int prevHeight = height;
 
-        updateConnectivity = tag.contains("Uninitialized");
+        updateConnectivity = CDGValueIO.contains(tag, "Uninitialized");
         controller = null;
         lastKnownPos = null;
 
-        if (tag.contains("LastKnownPos"))
+        if (CDGValueIO.contains(tag, "LastKnownPos"))
             lastKnownPos = NBTHelper.readBlockPos(tag,"LastKnownPos");
-        if (tag.contains("Controller"))
+        if (CDGValueIO.contains(tag, "Controller"))
             controller = NBTHelper.readBlockPos(tag, "Controller");
 
         if (isController()) {
-            width = tag.getInt("Size");
-            height = tag.getInt("Height");
+            width = tag.getIntOr("Size", 0);
+            height = tag.getIntOr("Height", 0);
             tankInventory.setCapacity(getTotalTankSize() * getCapacityMultiplier());
-            tankInventory.readFromNBT(registries, tag.getCompound("TankContent"));
+            tankInventory.readFromNBT(registries, CDGValueIO.getCompound(tag, "TankContent"));
 //            if (tankInventory.getSpace() < 0)
 //                tankInventory.drain(-tankInventory.getSpace(), IFluidHandler.FluidAction.EXECUTE);
         }
@@ -271,17 +277,17 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
 
     @Override
-    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(ValueOutput tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
 
         if (updateConnectivity)
             tag.putBoolean("Uninitialized", true);
         if (lastKnownPos != null)
-            tag.put("LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
+            CDGValueIO.put(tag, "LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
         if (!isController())
-            tag.put("Controller", NbtUtils.writeBlockPos(getController()));
+            CDGValueIO.put(tag, "Controller", NbtUtils.writeBlockPos(getController()));
         if (isController()) {
-            tag.put("TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
+            CDGValueIO.put(tag, "TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
             tag.putInt("Size", width);
             tag.putInt("Height", height);
         }

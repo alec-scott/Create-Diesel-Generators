@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -33,7 +35,7 @@ public class HugeDieselEngineRenderer extends SafeBlockEntityRenderer<HugeDiesel
         if (VisualizationManager.supportsVisualization(be.getLevel()))
             return;
         Float angle = be.getTargetAngle();
-        VertexConsumer vb = buffer.getBuffer(RenderType.solid());
+        VertexConsumer vb = buffer.getBuffer(RenderTypes.solid());
         BlockState state = be.getBlockState();
         Direction facing = state.getValue(FACING);
         Direction.Axis facingAxis = facing.getAxis();

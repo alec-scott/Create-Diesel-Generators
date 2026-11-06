@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
@@ -39,7 +41,7 @@ public class ModularDieselEngineRenderer extends ShaftRenderer<ModularDieselEngi
                             , be.getBlockState()).center()
                     .rotateYDegrees(be.getBlockState().getValue(FACING).toYRot()).uncenter()
                     .light(light)
-                    .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                    .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
 
 
         super.renderSafe(be, partialTicks, ms, buffer, light, overlay);

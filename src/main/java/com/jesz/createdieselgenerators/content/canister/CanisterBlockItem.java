@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.canister;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.content.tools.FueledToolItem;
 import com.zurrtum.create.AllEnchantments;
@@ -27,8 +29,8 @@ public class CanisterBlockItem extends BlockItem implements FueledToolItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, java.util.function.Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
         createTooltip(tooltipComponents, stack);
     }
 

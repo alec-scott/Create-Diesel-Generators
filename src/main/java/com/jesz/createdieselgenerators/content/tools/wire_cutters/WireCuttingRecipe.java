@@ -1,37 +1,39 @@
 package com.jesz.createdieselgenerators.content.tools.wire_cutters;
 
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeParams;
-import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
+import com.zurrtum.create.foundation.recipe.CreateSingleStackRollableRecipe;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
-public class WireCuttingRecipe extends StandardProcessingRecipe<WireCuttingRecipe.WireCuttingInv> {
-    public WireCuttingRecipe(ProcessingRecipeParams params) {
-        super(CDGRecipes.WIRE_CUTTING, params);
+import java.util.List;
+
+/** PORT-NOTE(26.1): Create Fly's single-ingredient recipe style, {@code {ingredient, results}}. */
+public record WireCuttingRecipe(List<ProcessingOutput> results, Ingredient ingredient) implements CreateSingleStackRollableRecipe {
+    public static final MapCodec<WireCuttingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ProcessingOutput.CODEC.listOf(1, 4).fieldOf("results").forGetter(WireCuttingRecipe::results),
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(WireCuttingRecipe::ingredient)
+    ).apply(instance, WireCuttingRecipe::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, WireCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
+            ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), WireCuttingRecipe::results,
+            Ingredient.CONTENTS_STREAM_CODEC, WireCuttingRecipe::ingredient,
+            WireCuttingRecipe::new
+    );
+    public static final RecipeSerializer<WireCuttingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+
+    @Override
+    public RecipeSerializer<WireCuttingRecipe> getSerializer() {
+        return CDGRecipes.WIRE_CUTTING_SERIALIZER;
     }
 
     @Override
-    protected int getMaxInputCount() {
-        return 1;
-    }
-
-    @Override
-    protected int getMaxOutputCount() {
-        return 1;
-    }
-
-    @Override
-    public boolean matches(WireCuttingInv input, Level level) {
-        return ingredients.get(0).test(input.getItem(0));
-    }
-
-    public static class WireCuttingInv extends RecipeWrapper {
-        public WireCuttingInv(ItemStack stack) {
-            super(new ItemStackHandler(1));
-            inv.insertItem(0, stack, false);
-        }
+    public RecipeType<WireCuttingRecipe> getType() {
+        return CDGRecipes.WIRE_CUTTING;
     }
 }

@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.burner;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.content.kinetics.base.HorizontalAxisKineticBlock;
@@ -27,12 +29,12 @@ public class BurnerRenderer extends ShaftRenderer<BurnerBlockEntity> {
                 .translate(0.25, 0.25, 0.5)
                 .rotateXDegrees(rotation)
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
         CachedBuffers.partial(CDGPartialModels.SMALL_GAUGE_DIAL, state)
                 .center().rotateYDegrees(state.getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS) == Direction.Axis.X ? 90 : 0).uncenter()
                 .translate(0.75, 0.25, 0.5)
                 .rotateXDegrees(-rotation)
                 .light(light)
-                .renderInto(ms, buffer.getBuffer(RenderType.solid()));
+                .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
     }
 }

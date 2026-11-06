@@ -116,8 +116,8 @@ public class DistillationScene {
         scene.idle(80);
 
 
-        scene.overlay().showControls(util.vector().topOf(3, 2, 3), Pointing.LEFT, 15).withItem(new ItemStack(AllItems.WRENCH.get()));
-        scene.overlay().showControls(util.vector().topOf(4, 3, 2), Pointing.RIGHT, 15).withItem(new ItemStack(AllItems.WRENCH.get()));
+        scene.overlay().showControls(util.vector().topOf(3, 2, 3), Pointing.LEFT, 15).withItem(new ItemStack(AllItems.WRENCH));
+        scene.overlay().showControls(util.vector().topOf(4, 3, 2), Pointing.RIGHT, 15).withItem(new ItemStack(AllItems.WRENCH));
 
         scene.idle(15);
         scene.world().hideIndependentSection(distillationTankElement, Direction.DOWN);

@@ -10,14 +10,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = SubLevelAssemblyHelper.class, remap = false)
+@Mixin(SubLevelAssemblyHelper.class)
 public class SableAssemblyMixin {
 
     @Inject(
             method = "moveBlocks",
-            at = @At("TAIL"),
-            remap = false
-    )
+            at = @At("TAIL"))
     private static void onMoveBlocks(
             ServerLevel level,
             SubLevelAssemblyHelper.AssemblyTransform transform,

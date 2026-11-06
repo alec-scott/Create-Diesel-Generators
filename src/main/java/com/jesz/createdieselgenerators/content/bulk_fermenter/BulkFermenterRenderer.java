@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.bulk_fermenter;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -27,7 +29,7 @@ public class BulkFermenterRenderer extends SafeBlockEntityRenderer<BulkFermenter
             return;
 
         BlockState blockState = be.getBlockState();
-        VertexConsumer vb = buffer.getBuffer(RenderType.cutout());
+        VertexConsumer vb = buffer.getBuffer(RenderTypes.cutout());
         ms.pushPose();
         TransformStack msr = TransformStack.of(ms);
         msr.translate(be.getWidth() / 2f, 0.5, be.getWidth() / 2f);

@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.concrete;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.level.redstone.Orientation;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
@@ -45,7 +49,7 @@ public class ConcreteEncasedFluidPipeBlock extends EncasedPipeBlock {
         return InteractionResult.SUCCESS;
     }
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block otherBlock, BlockPos neighborPos,
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block otherBlock, @Nullable Orientation orientation,
                                 boolean isMoving) {
         DebugPackets.sendNeighborsUpdatePacket(world, pos);
         Direction d = fixedValidateNeighbourChange(state, world, pos, otherBlock, neighborPos, isMoving);
@@ -58,7 +62,7 @@ public class ConcreteEncasedFluidPipeBlock extends EncasedPipeBlock {
 
     public static Direction fixedValidateNeighbourChange(BlockState state, Level world, BlockPos pos, Block otherBlock,
                                                     BlockPos neighborPos, boolean isMoving) {
-        if (world.isClientSide)
+        if (world.isClientSide())
             return null;
         // calling getblockstate() as otherBlock param seems to contain the block which
         // was replaced

@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -33,11 +32,11 @@ public class AndesiteGirderBlock extends GirderBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (player == null)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        if (AllBlocks.SHAFT.isIn(stack)) {
+        if (stack.is(AllBlocks.SHAFT)) {
             KineticBlockEntity.switchToBlockState(level, pos, CDGBlocks.ANDESITE_GIRDER_ENCASED_SHAFT.getDefaultState()
                     .setValue(WATERLOGGED, state.getValue(WATERLOGGED))
                     .setValue(TOP, state.getValue(TOP))
@@ -46,19 +45,19 @@ public class AndesiteGirderBlock extends GirderBlock {
                             .getAxis() == Direction.Axis.Z ? Direction.Axis.Z : Direction.Axis.X));
 
             level.playSound(null, pos, SoundEvents.NETHERITE_BLOCK_HIT, SoundSource.BLOCKS, 0.5f, 1.25f);
-            if (!level.isClientSide && !player.isCreative()) {
+            if (!level.isClientSide() && !player.isCreative()) {
                 stack.shrink(1);
                 if (stack.isEmpty())
                     player.setItemInHand(hand, ItemStack.EMPTY);
             }
 
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        if (AllItems.WRENCH.isIn(stack) && !player.isShiftKeyDown()) {
+        if (stack.is(AllItems.WRENCH) && !player.isShiftKeyDown()) {
             if (AndesiteGirderWrenchBehaviour.handleClick(level, pos, state, hitResult))
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
-            return ItemInteractionResult.FAIL;
+                return InteractionResult.SUCCESS;
+            return InteractionResult.FAIL;
         }
 
         IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
@@ -66,7 +65,7 @@ public class AndesiteGirderBlock extends GirderBlock {
             return helper.getOffset(player, level, state, pos, hitResult)
                     .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
 

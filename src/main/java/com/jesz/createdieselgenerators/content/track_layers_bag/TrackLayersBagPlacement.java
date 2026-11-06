@@ -39,8 +39,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.*;
 
@@ -101,7 +99,7 @@ public class TrackLayersBagPlacement {
         int lookAngle = (int) (22.5 + AngleHelper.deg(Mth.atan2(lookVec.z, lookVec.x)) % 360) / 8;
         int maxLength = AllConfigs.server().trains.maxTrackPlacementLength.get();
         ItemStack storedTracksRaw = TrackLayersBagItem.getTracks(stack);
-        if (level.isClientSide && cached != null && pos2.equals(hoveringPos) && stack.equals(lastItem)
+        if (level.isClientSide() && cached != null && pos2.equals(hoveringPos) && stack.equals(lastItem)
                 && hoveringMaxed == maximiseTurn && lookAngle == hoveringAngle)
             return cached;
 
@@ -133,7 +131,7 @@ public class TrackLayersBagPlacement {
         Vec3 normal1 = connectingFrom.normal();
         BlockState state1 = level.getBlockState(pos1);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             info.end1 = end1;
             info.end2 = end2;
             info.normal1 = normal1;
@@ -156,7 +154,7 @@ public class TrackLayersBagPlacement {
             axis1 = axis1.scale(-1);
             normedAxis1 = normedAxis1.scale(-1);
             end1 = track.getCurveStart(level, pos1, state1, axis1);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 info.end1 = end1;
                 info.axis1 = axis1;
             }
@@ -170,7 +168,7 @@ public class TrackLayersBagPlacement {
             axis2 = axis2.scale(-1);
             normedAxis2 = normedAxis2.scale(-1);
             end2 = track.getCurveStart(level, pos2, state2, axis2);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 info.end2 = end2;
                 info.axis2 = axis2;
             }
@@ -185,7 +183,7 @@ public class TrackLayersBagPlacement {
         double absAscend = Math.abs(ascend);
         boolean slope = !normal1.equals(normal2);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             Vec3 offset1 = axis1.scale(info.end1Extent);
             Vec3 offset2 = axis2.scale(info.end2Extent);
             BlockPos targetPos1 = pos1.offset(BlockPos.containing(offset1));
@@ -376,7 +374,7 @@ public class TrackLayersBagPlacement {
 
         if (!player.isCreative()) {
             for (boolean simulate : Iterate.trueAndFalse) {
-                if (level.isClientSide && !simulate)
+                if (level.isClientSide() && !simulate)
                     break;
 
                 int tracks = info.requiredTracks;
@@ -588,7 +586,6 @@ public class TrackLayersBagPlacement {
     static int hintAngle;
     static Couple<List<BlockPos>> hints;
 
-    @OnlyIn(Dist.CLIENT)
     public static void clientTick() {
 
         Minecraft mc = Minecraft.getInstance();
@@ -787,7 +784,6 @@ public class TrackLayersBagPlacement {
         lastLineCount = segCount;
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void line(int id, Vec3 v1, Vec3 o1, Vec3 ex) {
         int color = Color.mixColors(0xEA5C2B, 0x95CD41, animation.getValue());
         Outliner.getInstance().showLine(Pair.of("start", id), v1.subtract(o1), v1.add(ex))
