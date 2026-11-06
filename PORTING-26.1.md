@@ -128,10 +128,10 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - [x] Compile clean (block/BE APIs, renderers to extract/submit, mixin retargets).
 - [x] Resources: item definitions, recipe/data conversion.
 - [x] Compat: JEI, CC:Tweaked, Sable.
-- [ ] Dedicated server boot (`../../railways-test-server`). Watch: client-package interfaces on block entities, recipe
-      parsing of all shapes, `FuelType` registry path, `SpawnPlacementsAccessor`, mixin handler signatures (not checked
-      statically).
-- [ ] Client test (user launches the game); add checks to `../port-testing/`.
+- [x] Dedicated server boot: clean with Create Fly, Steam 'n' Rails, D&D, Copycats+, CC&A, New Age. 64 blocks placed and
+      ticking, `/reload` clean. Fixed at boot (`3095144`): `minecraft:chain` is `iron_chain`; mixed tag+item ingredient
+      lists need `fabric:any`; strut loot table removed (block excluded).
+- [ ] Client test (user launches the game): checks are in `../port-testing/diesel-generators.md`.
 - [ ] Toolsmith lighter trade: 26.1 data files (`villager_trade` plus tag). The code path is removed.
 - [ ] `enchantable` is set on lighter, sprayers and canister, but `create:capacity` applicability comes from data: check
       these items are in its supported items tag.
