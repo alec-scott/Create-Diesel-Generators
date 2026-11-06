@@ -55,6 +55,10 @@ public class CreateDieselGenerators implements ModInitializer {
         CDGMountedStorageTypes.register();
         CDGDisplaySources.register();
 
+        // Upstream gated the wood type finder on Moonlight (the library Every Compat builds on), not on Every Compat itself
+        if (loader.isModLoaded("moonlight"))
+            com.jesz.createdieselgenerators.compat.EveryCompatCompat.init();
+
         REGISTRATE.register();
         CreateTransforms.apply();
         CDGCreativeTab.register();

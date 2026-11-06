@@ -31,10 +31,9 @@ sourceSets {
         java {
             // Datagen is stubbed (the committed src/generated/resources are used); see PORTING-26.1.md.
             exclude 'com/jesz/createdieselgenerators/events/datagen/**'
-            // Compat for mods with no Fabric 26.1 build (KubeJS, Strut Your Stuff, Every Compat): see PORTING-26.1.md.
+            // Compat for mods with no Fabric 26.1 build (KubeJS, Strut Your Stuff): see PORTING-26.1.md.
             exclude 'com/jesz/createdieselgenerators/compat/kubejs/**'
             exclude 'com/jesz/createdieselgenerators/compat/strut_your_stuff/**'
-            exclude 'com/jesz/createdieselgenerators/compat/EveryCompatCompat.java'
         }
     }
 }
@@ -50,6 +49,8 @@ dependencies {
 
     // Optional: CC:Tweaked peripherals (only touched when the mod is loaded)
     compileOnly "maven.modrinth:cc-tweaked:${computercraft_tweaked_version}"
+    // Optional: Moonlight Lib (BlockSetAPI), the API Every Compat builds on; only touched when "moonlight" is loaded
+    compileOnly "maven.modrinth:moonlight:${moonlight_version}"
     // Optional: compat/jei is only loaded by JEI itself via the jei_mod_plugin entrypoint.
     compileOnly "maven.modrinth:jei:${jei_version}"
     // Optional Sable compat, only touched when the "sable" mod is loaded (see PORTING-26.1.md)
