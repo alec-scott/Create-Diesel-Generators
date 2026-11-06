@@ -1,10 +1,10 @@
 {
-  "ingredient": [
+  "ingredient": { "fabric:type": "fabric:any", "ingredients": [
     "#create:casing",
     "create:linear_chassis",
     "create:secondary_linear_chassis",
     "create:radial_chassis"
-  ],
+  ] },
   "processing_time": 100,
   "results": [
     {

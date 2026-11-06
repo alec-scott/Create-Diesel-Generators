@@ -10,7 +10,7 @@
   "mold": "createdieselgenerators:chain",
   "results": [
     {
-      "id": "minecraft:chain"
+      "id": "minecraft:iron_chain"
     }
   ],
   "type": "createdieselgenerators:compression_molding"

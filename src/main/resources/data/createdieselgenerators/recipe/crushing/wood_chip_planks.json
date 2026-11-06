@@ -1,9 +1,9 @@
 {
   "ingredient": {
-    "base": [
+    "base": { "fabric:type": "fabric:any", "ingredients": [
       "#minecraft:planks",
       "minecraft:bamboo_mosaic"
-    ],
+    ] },
     "fabric:type": "fabric:difference",
     "subtracted": "createdieselgenerators:chip_wood_block"
   },

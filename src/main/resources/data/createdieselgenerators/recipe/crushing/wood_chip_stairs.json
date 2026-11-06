@@ -1,10 +1,10 @@
 {
   "ingredient": {
-    "base": [
+    "base": { "fabric:type": "fabric:any", "ingredients": [
       "#minecraft:wooden_stairs",
       "minecraft:bamboo_mosaic_stairs",
       "createdieselgenerators:chip_wood_beam"
-    ],
+    ] },
     "fabric:type": "fabric:difference",
     "subtracted": "createdieselgenerators:chip_wood_stairs"
   },

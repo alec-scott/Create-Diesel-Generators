@@ -2,7 +2,7 @@
   "key": {
     "C": "create:copper_casing",
     "P": "create:fluid_pipe",
-    "c": "minecraft:chain"
+    "c": "minecraft:iron_chain"
   },
   "pattern": [
     " P ",

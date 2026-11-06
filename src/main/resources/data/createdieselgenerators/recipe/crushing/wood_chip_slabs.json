@@ -1,10 +1,10 @@
 {
   "ingredient": {
-    "base": [
+    "base": { "fabric:type": "fabric:any", "ingredients": [
       "#minecraft:wooden_slabs",
       "minecraft:bamboo_mosaic_slab",
       "createdieselgenerators:chip_wood_block"
-    ],
+    ] },
     "fabric:type": "fabric:difference",
     "subtracted": "createdieselgenerators:chip_wood_slab"
   },
