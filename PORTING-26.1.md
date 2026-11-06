@@ -38,8 +38,9 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 
 - **Base**: upstream `1.21.1` (Create 6).
 - **Build**: the CC&A template (non-remap Loom 1.17, Java 25, Fabric API 0.155.3, Forge Config API Port 26.1.5).
-  Excluded in `build.gradle`: `events/datagen`, `compat/kubejs`, `compat/strut_your_stuff`, `compat/EveryCompatCompat`
-  (no Fabric 26.1 builds; the sources stay in the tree). `kubejs.plugins.txt` removed. The hooks are gone: KubeJS lighter
+  Excluded in `build.gradle`: `events/datagen`, `compat/kubejs`, `compat/strut_your_stuff`
+  (no Fabric 26.1 builds of KubeJS or Strut Your Stuff; the sources stay in the tree). Every Compat and Moonlight Lib do have
+  26.1.2 Fabric builds (earlier log entries said otherwise: wrong). `kubejs.plugins.txt` removed. The hooks are gone: KubeJS lighter
   skins, fuel types and oil amount events, Struts entries in the creative tab.
 - **Registrate**: relocated Registrate shim + datagen stubs copied from CC&A into `com.jesz.createdieselgenerators.port.*`;
   datagen builder calls stripped (committed `src/generated/resources` are used). The `*Generator` datagen classes are deleted.
@@ -85,10 +86,16 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - **JEI**: `jei_mod_plugin` entrypoint `compat/jei/CDGJEI`; all seven categories in `CDGCategories` on Create Fly's
   `CreateCategory`/`BasinCategory`. Compression molding uses Create Fly's press, heat uses its burner; the other machines
   are scaled items, not upstream's animations.
+- **Restored (2026-11-06)**: toolsmith lighter trade is data (`createdieselgenerators:toolsmith/2/emerald_lighter` in `villager_trade`, added through
+  `data/minecraft/tags/villager_trade/toolsmith/level_2.json`, which merges with vanilla's). Distillation tank glow is the
+  `level` block state property as Create Fly's tanks (`DistillationTankBlock.LIGHT_LEVEL`, `lightLevel`; variants in the
+  blockstate JSON omit it). Turret operator hat: `TurretOperatorHatLayer` through `LivingEntityRenderLayerRegistrationCallback`
+  plus the client `LivingEntityRendererMixin` (render state data). Every Compat: `EveryCompatCompat` compiles against
+  Moonlight Lib (compileOnly), called when `moonlight` is loaded.
 - **Dropped**: lighter skins and `lighter_skins.json` loading, the custom item renderers (hammer, wire cutters, lighter,
-  sprayer, mold, and mold-in-basin via `BasinRendererMixin`), turret operator hat layer, `ContraptionMixin` (Create Fly's
+  sprayer, mold, and mold-in-basin via `BasinRendererMixin`), `ContraptionMixin` (Create Fly's
   `captureMultiblock` already localises `Controller`), batch-placement silencing for barrels' own sound type (now
-  `ItemPlacementSoundContext`), fluid luminosity in the distillation tank, toolsmith lighter trade (26.1 trades are data).
+  `ItemPlacementSoundContext`).
 
 ## Port mechanics (how things map)
 
@@ -120,6 +127,19 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - `./gradlew build -x test` succeeds; mixin audit: 13 classes, 0 problems. **Nothing has been run**: no server boot, no
   client, as instructed for this session. All behaviour below is compile-checked only.
 
+### 2026-11-06 (restore dropped features)
+- Toolsmith lighter trade (`daf9a83`): upstream was `VillagerTradesEvent`, level 2, 5 emeralds for a lighter, 10 uses, 8 xp,
+  multiplier 0.02. Same values as data; checked against 26.1 vanilla `trade_set/toolsmith/level_2` (`#minecraft:toolsmith/level_2`).
+- Distillation tank glow (`d314d58`): upstream's luminosity rules kept (fluid light / 1.2, bright below the fill line or
+  above it for lighter-than-air fluids, 1 elsewhere). Note that upstream never read the luminosity into a light level (no
+  `lightLevel`/`getLightEmission` anywhere), so it had no visible effect; here it drives the block light, and like Create Fly's
+  tank it is 0 when the tower has no windows.
+- Turret operator hat (`58da0e5`): the earlier claim that `getTurretPos` is not synced was checked against upstream and is
+  wrong in effect: the turret block entity ticks on both sides and sets it on the entities it finds in both worlds, so
+  nothing needs syncing. Layer placement follows Create Fly's `HatFeatureRenderer`; access widener for `ModelPart.cubes`.
+- Every Compat (`e116e0c`): Every Compat 26.1.2-3.0.0 (Fabric, version ZN6rPi46) exists, but upstream's code only uses Moonlight
+  Lib's `BlockSetAPI`, so we compile against Moonlight 26.1.2-4.3.0 (HYd3L5kA) and gate on `moonlight`, as upstream did.
+
 ## TODO
 
 - [x] Phase 1: build migration, shims, imports mapped, entrypoints/registration/configs/networking.
@@ -131,12 +151,10 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
       ticking, `/reload` clean. Fixed at boot (`3095144`): `minecraft:chain` is `iron_chain`; mixed tag+item ingredient
       lists need `fabric:any`; strut loot table removed (block excluded).
 - [ ] Client test (user launches the game): checks are in `../port-testing/diesel-generators.md`.
-- [ ] Toolsmith lighter trade: 26.1 data files (`villager_trade` plus tag). The code path is removed.
 - [ ] `enchantable` is set on lighter, sprayers and canister, but `create:capacity` applicability comes from data: check
       these items are in its supported items tag.
 - [ ] Item visuals: lighter open/ignited and skins, mold types, hammer and wire cutters animations (static models now;
       lighter state and mold type could be `minecraft:select` item models). Molds in a basin render as plain items.
-- [ ] Turret operator hat layer (`IEntity.getTurretPos` is not synced to clients anyway).
 - [x] Fluid side restrictions restored from upstream (engine ports, modular PIPE top, burner not top, hole sides, turret bottom).
 - [ ] Bulk fermenter "no new slot" rule is `canPlaceItem` on the wrapper: check Create Fly's insert honours it. Packager
       unpacking uses `packagerMode`.
