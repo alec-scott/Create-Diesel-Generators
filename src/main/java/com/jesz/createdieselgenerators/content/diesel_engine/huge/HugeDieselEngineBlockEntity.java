@@ -1,6 +1,14 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
-import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+import com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScrollOptionBehaviour;
+
+import com.zurrtum.create.infrastructure.fluids.FluidInventory;
+
+import com.jesz.createdieselgenerators.port.CDGFluidUnits;
+
+import net.minecraft.world.level.block.Block;
+
+
 
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -8,32 +16,22 @@ import net.minecraft.world.level.storage.ValueInput;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.jesz.createdieselgenerators.CDGConfig;
-import com.jesz.createdieselgenerators.content.diesel_engine.EngineSoundInstance;
 import com.jesz.createdieselgenerators.content.diesel_engine.EngineUpgrades;
 import com.jesz.createdieselgenerators.content.diesel_engine.IEngine;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
 import com.zurrtum.create.client.api.goggles.IHaveGoggleInformation;
 import com.zurrtum.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 import com.zurrtum.create.content.kinetics.base.IRotate;
-import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
-import com.zurrtum.create.content.kinetics.steamEngine.PoweredShaftBlockEntity;
 import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
 import com.zurrtum.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.zurrtum.create.client.foundation.item.TooltipHelper;
 import com.zurrtum.create.client.foundation.utility.CreateLang;
 import com.zurrtum.create.catnip.data.Couple;
 import com.zurrtum.create.catnip.data.Pair;
 import com.zurrtum.create.client.catnip.lang.FontHelper;
-import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -41,12 +39,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -55,8 +50,8 @@ import static com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDie
 import static net.minecraft.ChatFormatting.GOLD;
 
 public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IEngine {
-    ScrollOptionBehaviour<WindmillBearingBlockEntity.RotationDirection> movementDirection;
-    EngineUpgrades upgrade = EngineUpgrades.EMPTY;
+    public ServerScrollOptionBehaviour<WindmillBearingBlockEntity.RotationDirection> movementDirection;
+    public EngineUpgrades upgrade = EngineUpgrades.EMPTY;
     SmartFluidTankBehaviour tank;
     WeakReference<PoweredEngineShaftBlockEntity> target = new WeakReference<>(null);
     public int analogSignal = 0;
@@ -84,12 +79,25 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
     @Override
     protected void read(ValueInput tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        upgrade = EngineUpgrades.get(Identifier.parse(tag.getStringOr("Upgrade", "")));
-        analogSignal = CDGValueIO.contains(tag, "AnalogSignal") ? tag.getIntOr("AnalogSignal", 0) : 0;
+        Identifier upgradeId = Identifier.tryParse(tag.getStringOr("Upgrade", ""));
+        upgrade = upgradeId == null ? EngineUpgrades.EMPTY : EngineUpgrades.get(upgradeId);
+        analogSignal = tag.getIntOr("AnalogSignal", 0);
         fuelDebt = 0f;
         signalChanged = true;
-        overStressed = CDGValueIO.contains(tag, "OverStressed") && tag.getBooleanOr("OverStressed", false);
+        overStressed = tag.getBooleanOr("OverStressed", false);
         invalidateFuelCache();
+    }
+
+    // PORT-NOTE(26.1): was HugeDieselEngineBlock.onRemove (drop the upgrade, update the shaft)
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState oldState) {
+        super.preRemoveSideEffects(pos, oldState);
+        if (upgrade != EngineUpgrades.EMPTY)
+            Block.popResource(level, pos, upgrade.getItem());
+        BlockPos shaftPos = pos.relative(oldState.getValue(FACING), 2);
+        BlockState shaftState = level.getBlockState(shaftPos);
+        if (CDGBlocks.POWERED_ENGINE_SHAFT.has(shaftState))
+            level.scheduleTick(shaftPos, shaftState.getBlock(), 1);
     }
 
     @Override
@@ -145,37 +153,9 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
                 return;
             }
 
-            fuelDebt += cachedBurnRate * getFuelThrottle();
-            while (fuelDebt >= 1f) {
-                tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
-                fuelDebt -= 1f;
-            }
-
-            if (level.isClientSide())
-                CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
+            fuelDebt = IEngine.burnFuel(getTank(), fuelDebt + cachedBurnRate * getFuelThrottle() * CDGFluidUnits.MB);
         } else {
             shaft.removeGenerator(worldPosition);
-        }
-    }
-
-    protected EngineSoundInstance soundInstance;
-
-    protected void tickClient() {
-        if (enabled()) {
-            if (soundInstance == null || soundInstance.isStopped()) {
-                Minecraft.getInstance()
-                        .getSoundManager()
-                        .play(soundInstance = upgrade.createSoundInstance(this, Vec3.atCenterOf(getBlockPos())));
-            } else if (soundInstance.active()) {
-                soundInstance.keepAlive();
-                soundInstance.setPitch(upgrade.getPitchMultiplier(this) * getFuelSoundPitch() / 2 * getThrottle());
-                soundInstance.setVolume(upgrade.getVolume(this)* getThrottle());
-            }
-        } else {
-            if (soundInstance != null) {
-                soundInstance.fadeOut();
-                soundInstance = null;
-            }
         }
     }
 
@@ -195,12 +175,11 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
     
     @Override
     public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
-        movementDirection = new ScrollOptionBehaviour<>(WindmillBearingBlockEntity.RotationDirection.class,
-                CreateLang.translateDirect("contraptions.windmill.rotation_direction"), this, new HugeDieselEngineValueBox());
+        movementDirection = new ServerScrollOptionBehaviour<>(WindmillBearingBlockEntity.RotationDirection.class, this);
         movementDirection.withCallback(this::onDirectionChanged);
 
         behaviours.add(movementDirection);
-        tank = SmartFluidTankBehaviour.single(this, 100);
+        tank = SmartFluidTankBehaviour.single(this, CDGFluidUnits.mb(100));
         behaviours.add(tank);
     }
 
@@ -216,11 +195,7 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.HUGE_DIESEL_ENGINE.get(),
-                (be, side) -> {
-                    if (side == null || side.getAxis() != be.getBlockState().getValue(FACING).getAxis())
-                        return be.getTank();
-                    return null;
-                });
+                (be, side) -> be.tank.getCapability());
     }
 
     @Override
@@ -259,31 +234,6 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
         return containedFluidTooltip(tooltip, isPlayerSneaking, tank.getCapability());
     }
 
-    public Float getTargetAngle() {
-        float angle;
-        BlockState state = getBlockState();
-        if (!CDGBlocks.HUGE_DIESEL_ENGINE.has(state))
-            return null;
-
-        Direction facing = state.getValue(FACING);
-        PoweredEngineShaftBlockEntity shaft = getShaft();
-        Direction.Axis facingAxis = facing.getAxis();
-        Direction.Axis axis;
-
-        if (shaft == null)
-            return null;
-
-        axis = KineticBlockEntityRenderer.getRotationAxisOf(shaft);
-        angle = KineticBlockEntityRenderer.getAngleForBe(shaft, shaft.getBlockPos(), axis);
-        if (axis == facingAxis)
-            return null;
-        if (axis.isHorizontal() && (facingAxis == Direction.Axis.X ^ facing.getAxisDirection() == Direction.AxisDirection.POSITIVE))
-            angle *= -1;
-        if (axis == Direction.Axis.X && facing == Direction.DOWN)
-            angle *= -1;
-        return angle;
-    }
-
     @Override
     public int getAnalogSignal() {
         return analogSignal;
@@ -295,7 +245,7 @@ public class HugeDieselEngineBlockEntity extends SmartBlockEntity implements IHa
     }
 
     @Override
-    public FluidTank getTank() {
+    public FluidInventory getTank() {
         return tank.getPrimaryHandler();
     }
 

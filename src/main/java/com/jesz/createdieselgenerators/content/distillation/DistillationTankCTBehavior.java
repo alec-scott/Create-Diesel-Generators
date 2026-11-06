@@ -2,7 +2,6 @@ package com.jesz.createdieselgenerators.content.distillation;
 
 import com.jesz.createdieselgenerators.CDGSpriteShifts;
 import com.zurrtum.create.api.connectivity.ConnectivityHandler;
-import com.zurrtum.create.content.fluids.tank.FluidTankBlock;
 import com.zurrtum.create.client.foundation.block.connected.CTSpriteShiftEntry;
 import com.zurrtum.create.client.foundation.block.connected.ConnectedTextureBehaviour;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

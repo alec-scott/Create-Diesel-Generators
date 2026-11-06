@@ -6,7 +6,6 @@ import net.minecraft.world.level.redstone.Orientation;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGItems;
-import com.zurrtum.create.AllItems;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
 import com.zurrtum.create.content.kinetics.base.KineticBlock;
 import com.zurrtum.create.content.kinetics.simpleRelays.ICogWheel;

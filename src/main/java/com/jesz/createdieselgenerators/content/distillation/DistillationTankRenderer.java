@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.distillation;
 
+import com.zurrtum.create.foundation.fluid.FluidTank;
+
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import com.jesz.createdieselgenerators.CDGPartialModels;
@@ -13,13 +15,11 @@ import com.zurrtum.create.catnip.data.Iterate;
 import net.createmod.catnip.platform.NeoForgeCatnipServices;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class DistillationTankRenderer extends SafeBlockEntityRenderer<DistillationTankBlockEntity> {
     public DistillationTankRenderer(BlockEntityRendererProvider.Context context) { }

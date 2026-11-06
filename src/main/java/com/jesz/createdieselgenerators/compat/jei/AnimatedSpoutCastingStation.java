@@ -33,7 +33,7 @@ public class AnimatedSpoutCastingStation extends AnimatedKinetics {
         matrixStack.mulPose(Axis.YP.rotationDegrees(22.5f));
         int scale = 23;
 
-        blockElement(AllBlocks.SPOUT.getDefaultState())
+        blockElement(AllBlocks.SPOUT.defaultBlockState())
                 .scale(scale)
                 .render(graphics);
 
@@ -58,7 +58,7 @@ public class AnimatedSpoutCastingStation extends AnimatedKinetics {
 
         matrixStack.popPose();
 
-        blockElement(AllBlocks.BASIN.getDefaultState())
+        blockElement(AllBlocks.BASIN.defaultBlockState())
                 .atLocal(0, 1.65, 0)
                 .scale(scale)
                 .render(graphics);

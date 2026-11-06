@@ -1,27 +1,15 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScrollOptionBehaviour;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
 
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
-import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
-import com.zurrtum.create.client.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
-import com.zurrtum.create.client.foundation.gui.AllIcons;
-import com.zurrtum.create.client.catnip.lang.Lang;
-import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -38,9 +26,6 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
     public BlockPos bearingPos;
     public WeakReference<PumpjackBearingBlockEntity> bearing = new WeakReference<>(null);
     public float inPonderAngle = Integer.MIN_VALUE;
-    protected AbstractTickableSoundInstance rumbleInstance;
-    protected AbstractTickableSoundInstance hissInstance;
-    private float lastSoundAngle = 0;
     public PumpjackCrankBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
     }
@@ -101,17 +86,14 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
             angle = 0;
         if(getSpeed() != 0)
             angle += Mth.clamp(Math.abs(getSpeed()), 0, 64) / 10;
-
-        if (level.isClientSide())
-            CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
     }
     public Vec3 crankBearingLocation = new Vec3(0, -100, 0);
 
-    public ScrollOptionBehaviour<CrankSize> crankSize;
+    // PORT-NOTE(26.1): server scroll option; the value box (icons, label) is a client behaviour
+    public ServerScrollOptionBehaviour<CrankSize> crankSize;
     @Override
     public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
-        crankSize = new ScrollOptionBehaviour<>(CrankSize.class,
-                Component.translatable("createdieselgenerators.pumpjack_crank.crank_size"), this, new PumpjackCrankValueBox());
+        crankSize = new ServerScrollOptionBehaviour<>(CrankSize.class, this);
         crankSize.withCallback($ -> onSizeChanged());
         behaviours.add(crankSize);
         super.addBehaviours(behaviours);
@@ -120,92 +102,9 @@ public class PumpjackCrankBlockEntity extends KineticBlockEntity {
     private void onSizeChanged() {
 
     }
-    public enum CrankSize implements INamedIconOptions {
-        NORMAL(AllIcons.I_CLEAR), LARGE(AllIcons.I_PLACE);
-
-        private final AllIcons icon;
-        CrankSize(AllIcons icon) {
-            this.icon = icon;
-        }
-        @Override
-        public AllIcons getIcon() {
-            return icon;
-        }
-
-        @Override
-        public String getTranslationKey() {
-            return "createdieselgenerators.tooltip.crank." + Lang.asId(name());
-        }
+    // PORT-NOTE(26.1): icons and translation keys moved to the client (CDGBlockEntityBehaviours.CrankSizeIcon)
+    public enum CrankSize {
+        NORMAL, LARGE
     }
 
-    protected void tickClient() {
-        boolean isActive = getSpeed() != 0 && getBearing() != null;
-
-        if (isActive) {
-            if (rumbleInstance == null || rumbleInstance.isStopped() ||
-                    !Minecraft.getInstance().getSoundManager().isActive(rumbleInstance)) {
-                rumbleInstance = new CrankSoundInstance(
-                        SoundEvents.MINECART_RIDING, 0.3f, 0.4f,
-                        Vec3.atCenterOf(getBlockPos()));
-                Minecraft.getInstance().getSoundManager().play(rumbleInstance);
-            }
-            if (hissInstance == null || hissInstance.isStopped()) {
-                hissInstance = new CrankSoundInstance(
-                        SoundEvents.BLASTFURNACE_FIRE_CRACKLE, 0.1f, 1.2f,
-                        Vec3.atCenterOf(getBlockPos()));
-                Minecraft.getInstance().getSoundManager().play(hissInstance);
-            }
-
-            float prevNorm = prevAngle % 360;
-            float currNorm = angle % 360;
-
-            boolean crossedBottom = (prevNorm < 10 && currNorm >= 10) || (prevNorm > 350 && currNorm <= 10);
-            boolean crossedTop = (prevNorm < 190 && currNorm >= 190) || (prevNorm > 170 && currNorm <= 170);
-
-            if (crossedBottom) {
-                Minecraft.getInstance().level.playLocalSound(getBlockPos(),
-                        SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.2f, 0.3f, false);
-                Minecraft.getInstance().level.playLocalSound(getBlockPos(),
-                        SoundEvents.ANVIL_HIT, SoundSource.BLOCKS, 0.1f, 0.5f, false);
-            }
-
-            if (crossedTop) {
-                Minecraft.getInstance().level.playLocalSound(getBlockPos(),
-                        SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.15f, 0.3f, false);
-                Minecraft.getInstance().level.playLocalSound(getBlockPos(),
-                        SoundEvents.CHAIN_STEP, SoundSource.BLOCKS, 0.1f, 0.6f, false);
-            }
-
-            if (crossedBottom && Math.random() < 0.3)
-                Minecraft.getInstance().level.playLocalSound(getBlockPos(),
-                        SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 0.15f, 0.5f, false);
-
-        } else {
-            if (rumbleInstance != null) {
-                Minecraft.getInstance().getSoundManager().stop(rumbleInstance);
-                rumbleInstance = null;
-            }
-            if (hissInstance != null) {
-                Minecraft.getInstance().getSoundManager().stop(hissInstance);
-                hissInstance = null;
-            }
-        }
-    }
-
-    public static class CrankSoundInstance extends AbstractTickableSoundInstance {
-        public CrankSoundInstance(SoundEvent event, float volume, float pitch, Vec3 pos) {
-            super(event, SoundSource.BLOCKS, RandomSource.create());
-            this.x = pos.x;
-            this.y = pos.y;
-            this.z = pos.z;
-            this.volume = volume;
-            this.pitch = pitch;
-            this.looping = true;
-            this.delay = 0;
-            this.attenuation = Attenuation.LINEAR;
-        }
-
-        @Override
-        public void tick() {}
-    }
 }

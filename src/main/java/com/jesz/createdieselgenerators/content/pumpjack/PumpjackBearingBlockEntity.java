@@ -188,10 +188,6 @@ public class PumpjackBearingBlockEntity extends MechanicalBearingBlockEntity {
             return false;
         return movedContraption.isStalled();
     }
-    @Override
-    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        return false;
-    }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {}

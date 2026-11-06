@@ -5,7 +5,6 @@ import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.AllItems;
 import com.zurrtum.create.content.decoration.girder.GirderBlock;
 import com.zurrtum.create.content.decoration.girder.GirderEncasedShaftBlock;
-import com.zurrtum.create.content.decoration.girder.GirderWrenchBehavior;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.catnip.placement.IPlacementHelper;
 import com.zurrtum.create.catnip.placement.PlacementHelpers;
@@ -63,7 +62,7 @@ public class AndesiteGirderBlock extends GirderBlock {
         IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
         if (helper.matchesItem(stack))
             return helper.getOffset(player, level, state, pos, hitResult)
-                    .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
+                    .placeInWorld(level, (BlockItem) stack.getItem(), player, hand);
 
         return InteractionResult.TRY_WITH_EMPTY_HAND;
     }

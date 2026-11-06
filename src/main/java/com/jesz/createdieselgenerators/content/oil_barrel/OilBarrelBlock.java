@@ -1,26 +1,23 @@
 package com.jesz.createdieselgenerators.content.oil_barrel;
 
+import net.minecraft.core.component.DataComponents;
+
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.zurrtum.create.api.connectivity.ConnectivityHandler;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
 import com.zurrtum.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -78,9 +75,11 @@ public class OilBarrelBlock extends Block implements IBE<OilBarrelBlockEntity>, 
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!(stack.getItem() instanceof DyeItem di))
+        // PORT-NOTE(26.1): dyes carry their colour in the DYE component
+        DyeColor dye = stack.get(DataComponents.DYE);
+        if (dye == null)
             return InteractionResult.TRY_WITH_EMPTY_HAND;
-        OilBarrelColor color = OilBarrelColor.getForDyeColor(di.getDyeColor());
+        OilBarrelColor color = OilBarrelColor.getForDyeColor(dye);
 
         if (state.getValue(OIL_BARREL_COLOR) == color) {
             if (level.getBlockEntity(pos) instanceof OilBarrelBlockEntity be){

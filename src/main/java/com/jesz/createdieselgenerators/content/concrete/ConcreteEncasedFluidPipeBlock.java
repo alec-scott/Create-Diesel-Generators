@@ -1,38 +1,27 @@
 package com.jesz.createdieselgenerators.content.concrete;
 
-import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.level.redstone.Orientation;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
 import com.zurrtum.create.content.fluids.FluidPropagator;
-import com.zurrtum.create.content.fluids.pipes.AxisPipeBlock;
 import com.zurrtum.create.content.fluids.pipes.EncasedPipeBlock;
-import com.zurrtum.create.content.fluids.pipes.FluidPipeBlock;
 import com.zurrtum.create.content.fluids.pipes.FluidPipeBlockEntity;
-import com.zurrtum.create.content.fluids.pump.PumpBlock;
-import com.zurrtum.create.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.ticks.TickPriority;
 
 public class ConcreteEncasedFluidPipeBlock extends EncasedPipeBlock {
     public ConcreteEncasedFluidPipeBlock(Properties properties) {
-        super(properties, AllBlocks.ANDESITE_CASING::get);
+        super(properties, AllBlocks.ANDESITE_CASING);
     }
 
     @Override
@@ -47,42 +36,6 @@ public class ConcreteEncasedFluidPipeBlock extends EncasedPipeBlock {
         context.getLevel().setBlock(context.getClickedPos(), state.cycle(PipeBlock.PROPERTY_BY_DIRECTION.get(context.getClickedFace())), 3);
         IWrenchable.playRotateSound(context.getLevel(), context.getClickedPos());
         return InteractionResult.SUCCESS;
-    }
-    @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block otherBlock, @Nullable Orientation orientation,
-                                boolean isMoving) {
-        DebugPackets.sendNeighborsUpdatePacket(world, pos);
-        Direction d = fixedValidateNeighbourChange(state, world, pos, otherBlock, neighborPos, isMoving);
-        if (d == null)
-            return;
-        if (!state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(d)))
-            return;
-        world.scheduleTick(pos, this, 1, TickPriority.HIGH);
-    }
-
-    public static Direction fixedValidateNeighbourChange(BlockState state, Level world, BlockPos pos, Block otherBlock,
-                                                    BlockPos neighborPos, boolean isMoving) {
-        if (world.isClientSide())
-            return null;
-        // calling getblockstate() as otherBlock param seems to contain the block which
-        // was replaced
-        otherBlock = world.getBlockState(neighborPos)
-                .getBlock();
-        if (otherBlock instanceof FluidPipeBlock)
-            return null;
-        if (otherBlock instanceof AxisPipeBlock)
-            return null;
-        if (otherBlock instanceof PumpBlock)
-            return null;
-        if (otherBlock instanceof LiquidBlock)
-            return null;
-        for (Direction d : Iterate.directions) {
-            if (!pos.relative(d)
-                    .equals(neighborPos))
-                continue;
-            return d;
-        }
-        return null;
     }
 
     @Override

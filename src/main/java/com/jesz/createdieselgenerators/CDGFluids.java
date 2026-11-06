@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators;
 
+import net.minecraft.world.item.DyeColor;
+
 import net.minecraft.world.item.ItemStack;
 
 import com.jesz.createdieselgenerators.content.concrete.ConcreteBucketItem;

@@ -28,6 +28,16 @@ my %known = (
     SidedFluidInventory => 'com.zurrtum.create.infrastructure.fluids.SidedFluidInventory',
     FluidHelper => 'com.zurrtum.create.foundation.fluid.FluidHelper',
     CDGFluidUnits => 'com.jesz.createdieselgenerators.port.CDGFluidUnits',
+    ServerScrollOptionBehaviour => 'com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScrollOptionBehaviour',
+    ServerScrollValueBehaviour => 'com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScrollValueBehaviour',
+    IHaveGoggleInformation => 'com.zurrtum.create.client.api.goggles.IHaveGoggleInformation',
+    ConnectivityHandler => 'com.zurrtum.create.api.connectivity.ConnectivityHandler',
+    SmartFluidTankBehaviour => 'com.zurrtum.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour',
+    Block => 'net.minecraft.world.level.block.Block',
+    ItemStackHandler => 'com.zurrtum.create.infrastructure.items.ItemStackHandler',
+    DataComponents => 'net.minecraft.core.component.DataComponents',
+    DyeColor => 'net.minecraft.world.item.DyeColor',
+    IEngine => 'com.jesz.createdieselgenerators.content.diesel_engine.IEngine',
 );
 local $^I = ''; local $/;
 while (<>) {

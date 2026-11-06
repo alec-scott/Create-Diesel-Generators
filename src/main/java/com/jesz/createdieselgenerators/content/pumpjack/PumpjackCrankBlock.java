@@ -71,7 +71,7 @@ public class PumpjackCrankBlock extends HorizontalKineticBlock implements IBE<Pu
         if (!player.isShiftKeyDown() && player.mayBuild()) {
             if (placementHelper.matchesItem(stack)) {
                 placementHelper.getOffset(player, level, state, pos, hitResult)
-                        .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
+                        .placeInWorld(level, (BlockItem) stack.getItem(), player, hand);
                 return InteractionResult.SUCCESS;
             }
         }

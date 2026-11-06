@@ -1,32 +1,20 @@
 package com.jesz.createdieselgenerators.contraption;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.jesz.createdieselgenerators.CDGConfig;
-import com.jesz.createdieselgenerators.CDGSoundEvents;
-import com.jesz.createdieselgenerators.content.diesel_engine.EngineSoundInstance;
 import com.zurrtum.create.api.behaviour.movement.MovementBehaviour;
 import com.zurrtum.create.content.contraptions.behaviour.MovementContext;
 import com.zurrtum.create.content.trains.entity.CarriageContraption;
-import com.zurrtum.create.content.trains.entity.CarriageContraptionEntity;
-import it.unimi.dsi.fastutil.Pair;
-import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-public class DieselEngineMovementBehaviour implements MovementBehaviour {
-    static Map<Pair<UUID, BlockPos>, EngineSoundInstance> soundInstances;
+public class DieselEngineMovementBehaviour extends MovementBehaviour {
+    // PORT-NOTE(26.1): the train engine sound is client code (client/CDGTrainEngineSounds), set from the client entrypoint
+    public static java.util.function.Consumer<MovementContext> clientTick;
 
     @Override
     public boolean isActive(MovementContext context) {
-        return context.contraption instanceof CarriageContraption && MovementBehaviour.super.isActive(context);
+        return context.contraption instanceof CarriageContraption && super.isActive(context);
     }
 
     @Nullable
@@ -40,51 +28,7 @@ public class DieselEngineMovementBehaviour implements MovementBehaviour {
         if (!context.world.isClientSide())
             return;
 
-        CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> clientTick(context));
-    }
-
-    protected void clientTick(MovementContext context) {
-        CarriageContraption contraption = ((CarriageContraption)context.contraption);
-        CarriageContraptionEntity entity = (CarriageContraptionEntity) contraption.entity;
-
-        if (soundInstances == null)
-            soundInstances = new HashMap<>();
-
-        if(!CDGConfig.ENGINES_EMIT_SOUND_ON_TRAINS.get() || entity.getCarriage().train.derailed)
-            return;
-
-        double trainSpeed = context.motion.length() * 2 / (entity.getCarriage().train.maxSpeed() / 28);
-        double lastTrainSpeed = context.data.getDouble("TrainSpeed");
-        double acceleration = trainSpeed - lastTrainSpeed;
-        context.data.putDouble("TrainSpeed", trainSpeed);
-
-        float throttle = Mth.lerp(0.05f, context.data.getFloat("Throttle"),
-                (float) Math.max(0, Math.min(1, acceleration)));
-        context.data.putFloat("Throttle", throttle);
-
-        EngineSoundInstance instance = soundInstances.get(Pair.of(entity.getUUID(), context.localPos));
-
-        if (context.disabled) {
-            if (instance != null)
-                instance.fadeOut();
-            return;
-        }
-
-
-        if (instance == null) {
-            instance = new EngineSoundInstance(CDGSoundEvents.ENGINE_NORMAL.get(), SoundSource.NEUTRAL, context.position, 0.6f);
-            instance.setVolume(1f);
-            Minecraft.getInstance().getSoundManager().play(instance);
-            soundInstances.put(Pair.of(entity.getUUID(), context.localPos), instance);
-        } else if (instance.isStopped())
-            soundInstances.remove(Pair.of(entity.getUUID(), context.localPos));
-
-        instance.setPosition(context.position);
-
-        if (instance.active()) {
-            instance.keepAlive();
-            float pitch = (float) Math.min(2, Math.max(Math.min(0.14, throttle) * 5 + trainSpeed / 28, 0.1f));
-            instance.setPitch(pitch);
-        }
+        if (clientTick != null)
+            clientTick.accept(context);
     }
 }

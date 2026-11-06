@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.normal;
 
+import com.zurrtum.create.foundation.fluid.FluidHelper;
+
 import net.minecraft.world.level.redstone.Orientation;
 
 import net.minecraft.world.level.ScheduledTickAccess;
@@ -22,15 +24,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,17 +38,11 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -78,10 +70,6 @@ public class DieselEngineBlock extends DirectionalKineticBlock implements Specia
         return withWater(super.getStateForPlacement(context), context);
     }
 
-    @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
-        return true;
-    }
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
@@ -182,28 +170,10 @@ public class DieselEngineBlock extends DirectionalKineticBlock implements Specia
         if(!CDGConfig.ENGINES_FILLED_WITH_ITEMS.get() || stack.isEmpty() || !(level.getBlockEntity(pos) instanceof SmartBlockEntity be))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
-        if(tank == null)
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-
-        if (stack.getItem() instanceof BucketItem || stack.getItem() instanceof MilkBucketItem) {
-            Fluid fluid = stack.getItem() instanceof BucketItem bi ? bi.content : NeoForgeMod.MILK.get();
-
-            if (!tank.getFluidInTank(0).isEmpty())
-                return InteractionResult.FAIL;
-
-            tank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
-            if (!player.isCreative())
-                player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-
+        // PORT-NOTE(26.1): buckets and fluid items through Create Fly's FluidHelper (Fabric transfer, droplets)
+        if (FluidHelper.tryEmptyItemIntoBE(level, player, hand, stack, be))
             return InteractionResult.SUCCESS;
-        }
-
-        IFluidHandlerItem itemTank = Capabilities.FluidHandler.ITEM.getCapability(stack, null);
-        if(itemTank == null)
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        itemTank.drain(tank.fill(itemTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

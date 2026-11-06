@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.pumpjack;
 
+import com.jesz.createdieselgenerators.port.CDGFluidUnits;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -9,10 +11,8 @@ import com.jesz.createdieselgenerators.CDGTags;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.jesz.createdieselgenerators.content.concrete.ConcreteEncasedFluidPipeBlock;
 import com.jesz.createdieselgenerators.world.OilChunksSavedData;
-import com.mojang.datafixers.util.Pair;
 import com.zurrtum.create.client.api.goggles.IHaveGoggleInformation;
 import com.zurrtum.create.client.api.goggles.IHaveHoveringInformation;
-import com.zurrtum.create.client.content.fluids.FluidFX;
 import com.zurrtum.create.content.fluids.pipes.EncasedPipeBlock;
 import com.zurrtum.create.content.fluids.pipes.GlassFluidPipeBlock;
 import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
@@ -22,23 +22,14 @@ import com.zurrtum.create.client.foundation.item.TooltipHelper;
 import com.zurrtum.create.client.foundation.utility.CreateLang;
 import com.zurrtum.create.client.catnip.lang.FontHelper;
 import com.zurrtum.create.client.catnip.lang.Lang;
-import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,11 +37,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +57,6 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
         super(type, pos, state);
         this.state = state;
     }
-
-    protected AbstractTickableSoundInstance soundInstance;
 
     @Override
     protected void write(ValueOutput tag, boolean clientPacket) {
@@ -126,7 +113,7 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
             int pipeLength = 0;
             tick = 0;
             boolean valid = false;
-            for (int i = 0; i < getBlockPos().getY() - level.getMinBuildHeight(); i++) {
+            for (int i = 0; i < getBlockPos().getY() - level.getMinY(); i++) {
                 pipeLength++;
                 BlockState bs = level.getBlockState(getBlockPos().below(i + 1));
                 if (bs.getBlock() instanceof PipeBlock || bs.getBlock() instanceof EncasedPipeBlock || bs.getBlock() instanceof ConcreteEncasedFluidPipeBlock) {
@@ -149,77 +136,47 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
                 this.pipeLength = 0;
             this.valid = valid;
         }
-        if (level.isClientSide())
-            CatnipServices.PLATFORM.executeOnClientOnly(() -> this::tickClient);
     }
 
-    public static class PumpjackSoundInstance extends AbstractTickableSoundInstance {
-        public PumpjackSoundInstance(SoundEvent event, float volume, float pitch, Vec3 pos) {
-            super(event, SoundSource.BLOCKS, RandomSource.create());
-            this.x = pos.x;
-            this.y = pos.y;
-            this.z = pos.z;
-            this.volume = volume;
-            this.pitch = pitch;
-            this.looping = true;
-            this.delay = 0;
-            this.attenuation = Attenuation.LINEAR;
-        }
-
-        @Override
-        public void tick() {}
-    }
-
-    protected void tickClient() {
-        boolean isActive = started && valid && oilAmount > 0;
-
-        if (isActive) {
-            if (soundInstance == null || soundInstance.isStopped()) {
-                soundInstance = new PumpjackSoundInstance(
-                        SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_AMBIENT, 0.2f, 0.4f,
-                        Vec3.atCenterOf(getBlockPos()));
-                Minecraft.getInstance().getSoundManager().play(soundInstance);
-            }
-        } else {
-            if (soundInstance != null) {
-                Minecraft.getInstance().getSoundManager().stop(soundInstance);
-                soundInstance = null;
-            }
-        }
+    // PORT-NOTE(26.1): the pumping sound is a client behaviour (client/CDGBlockEntityBehaviours)
+    public boolean isPumping() {
+        return started && valid && oilAmount > 0;
     }
 
     @Override
-    public AABB getRenderBoundingBox() {
-        return super.getRenderBoundingBox().inflate(pipeLength);
+    protected AABB createRenderBoundingBox() {
+        return super.createRenderBoundingBox().inflate(pipeLength);
     }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
-        tank = SmartFluidTankBehaviour.single(this, 8000);
+        tank = SmartFluidTankBehaviour.single(this, CDGFluidUnits.mb(8000));
         behaviours.add(tank);
     }
+
+    // PORT-NOTE(26.1): FluidFX is client only; set from the client entrypoint
+    public static java.util.function.BiConsumer<PumpjackHoleBlockEntity, Fluid> clientPourEffect;
 
     public void pumpjackRotation(boolean isCrankLarge) {
 
         List<Fluid> stackList = new ArrayList<>();
-        BuiltInRegistries.FLUID.getTags()
-                .filter(p -> p.getFirst().equals(CDGTags.PUMPJACK_OUTPUT))
-                .map(Pair::getSecond)
-                .forEach(s -> stackList.addAll(s.stream().map(Holder::value).toList()));
+        for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(CDGTags.PUMPJACK_OUTPUT))
+            stackList.add(holder.value());
 
         if (stackList.isEmpty())
             return;
 
         if (!level.isClientSide() && valid) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            ChunkPos chunkPos = ChunkPos.containing(getBlockPos());
             oilAmount = OilChunksSavedData.getChunkOilAmount((ServerLevel) level, chunkPos);
             started = true;
 
             int subtractedAmount = Mth.clamp((int) (1000 * Math.abs((float) headPos / (float) bearingPos)) * (isCrankLarge ? 2 : 1), 0, oilAmount);
 
-            FluidStack oilStack = new FluidStack(stackList.get(0), subtractedAmount);
+            // PORT-NOTE(26.1): chunk oil stays in mB; the tank is in droplets
+            FluidStack oilStack = new FluidStack(stackList.get(0), CDGFluidUnits.mb(subtractedAmount));
 
-            subtractedAmount = tank.getPrimaryHandler().fill(oilStack, IFluidHandler.FluidAction.EXECUTE);
+            subtractedAmount = CDGFluidUnits.toMb(tank.getCapability().insert(oilStack));
 
             if (oilAmount == Integer.MAX_VALUE)
                 return;
@@ -228,23 +185,15 @@ public class PumpjackHoleBlockEntity extends SmartBlockEntity implements IHaveGo
             OilChunksSavedData.setChunkOilAmount((ServerLevel) level, chunkPos, oilAmount);
         }
 
-        if (level.isClientSide() && oilAmount > 0)
-            FluidFX.spawnPouringLiquid(level, worldPosition, 20, FluidFX.getFluidParticle(new FluidStack(stackList.get(0), 1000)), 0.3f, new Vec3(0.1, 1, 0.1), true);
+        if (level.isClientSide() && oilAmount > 0 && clientPourEffect != null)
+            clientPourEffect.accept(this, stackList.getFirst());
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.PUMPJACK_HOLE.get(),
-                (be, side) -> {
-                    if (side == null || (side.getAxis().isHorizontal() && be.getBlockState().getValue(
-                            side == Direction.NORTH ? NORTH :
-                            side == Direction.EAST ? EAST :
-                            side == Direction.WEST ? WEST : SOUTH
-                    )))
-                        return be.tank.getCapability();
-                    return null;
-                }
+                (be, side) -> be.tank.getCapability()
         );
     }
 }

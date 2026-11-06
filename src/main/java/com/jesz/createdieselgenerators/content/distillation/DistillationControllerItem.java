@@ -20,9 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
-import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class DistillationControllerItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        if (!(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof FluidTankBlockEntity ftbe && AllBlocks.FLUID_TANK.has(ftbe.getBlockState())))
+        if (!(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof FluidTankBlockEntity ftbe && ftbe.getBlockState().is(AllBlocks.FLUID_TANK)))
             return super.useOn(context);
         ItemStack itemInHand = context.getPlayer().getItemInHand(InteractionHand.MAIN_HAND);
         BlockPos controllerPos = ftbe.getController();
@@ -50,8 +48,8 @@ public class DistillationControllerItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        IFluidHandler tank = context.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, ftbe.getBlockPos(), null);
-        FluidStack fluidInTank = tank.getFluidInTank(0);
+        FluidTankBlockEntity tankController = ftbe.getControllerBE();
+        FluidStack fluidInTank = tankController == null ? FluidStack.EMPTY : tankController.getTankInventory().getFluid().copy();
         List<BlockPos> positions = new ArrayList<>();
 
         for (int y = 0; y < height; y++) {
@@ -94,9 +92,8 @@ public class DistillationControllerItem extends Item {
             be.updateConnectivity();
             be.updateVerticalMulti();
             be.updateTemperature();
-            IFluidHandler distillerTank = context.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, controllerPos, null);
-            if (distillerTank != null)
-                distillerTank.fill(fluidInTank, IFluidHandler.FluidAction.EXECUTE);
+            if (!fluidInTank.isEmpty())
+                be.tankInventory.insert(fluidInTank);
         }
 
         return InteractionResult.SUCCESS;

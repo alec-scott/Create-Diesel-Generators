@@ -1,6 +1,11 @@
 package com.jesz.createdieselgenerators.content.burner;
 
-import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+import com.zurrtum.create.client.api.goggles.IHaveGoggleInformation;
+
+import com.zurrtum.create.foundation.fluid.FluidTank;
+
+import com.jesz.createdieselgenerators.port.CDGFluidUnits;
+
 
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -11,13 +16,9 @@ import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,14 +27,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
-public class BurnerBlockEntity extends KineticBlockEntity {
+public class BurnerBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation {
     public float heat = -1;
     public int redstoneOutput = 0;
-    SmartFluidTank tank = new SmartFluidTank(100, f -> {});
+    // PORT-NOTE(26.1): Create Fly tank, 100 mB in droplets
+    final FluidTank tank = new FluidTank(CDGFluidUnits.mb(100));
 
     public float valveState = 0.2f;
     public float prevValveState;
@@ -81,7 +82,8 @@ public class BurnerBlockEntity extends KineticBlockEntity {
                 }
             }
             if ((int)(tick % (10 / valveOrRedstoneState)) == 0) {
-                tank.drain(1, IFluidHandler.FluidAction.EXECUTE);
+                if (!tank.isEmpty())
+                    tank.extract(tank.getFluid(), Math.min(CDGFluidUnits.MB, tank.getFluid().getAmount()));
                 sendData();
                 setChanged();
             }
@@ -116,9 +118,8 @@ public class BurnerBlockEntity extends KineticBlockEntity {
         return level.getRandom().nextInt(bound) != 1;
     }
 
-    @Override
+    // PORT-NOTE(26.1): called by the client tick behaviour (client/CDGBlockEntityBehaviours) after the kinetic audio
     public void tickAudio() {
-        super.tickAudio();
         float valveOrRedstoneState = Math.min(3, redstonePower != 0 ? 10 : this.valveState);
         if (valveOrRedstoneState == 0 || heat == -1)
             return;
@@ -169,7 +170,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
         tag.putFloat("ValveState", valveState);
         tag.putFloat("Heat", heat);
         tag.putInt("Tick", tick);
-        CDGValueIO.put(tag, "FluidContent", tank.writeToNBT(registries, new CompoundTag()));
+        tank.write(tag.child("FluidContent"));
         tag.putInt("RedstonePower", redstonePower);
         tag.putByte("RedstoneOutput", (byte) redstoneOutput);
         super.write(tag, clientPacket);
@@ -180,7 +181,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
         valveState = tag.getFloatOr("ValveState", 0f);
         heat = tag.getFloatOr("Heat", 0f);
         tick = tag.getIntOr("Tick", 0);
-        tank.readFromNBT(registries, CDGValueIO.getCompound(tag, "FluidContent"));
+        tank.read(tag.childOrEmpty("FluidContent"));
         redstonePower = tag.getIntOr("RedstonePower", 0);
         if (tag.getBooleanOr("RedstonePower", false))
             redstonePower = 15;
@@ -192,11 +193,7 @@ public class BurnerBlockEntity extends KineticBlockEntity {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 CDGBlockEntityTypes.BURNER.get(),
-                (be, context) -> {
-                    if (context != Direction.UP)
-                        return be.tank;
-                    return null;
-                }
+                (be, context) -> be.tank
         );
     }
 

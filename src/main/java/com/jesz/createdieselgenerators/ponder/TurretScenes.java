@@ -2,7 +2,6 @@ package com.jesz.createdieselgenerators.ponder;
 
 import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.content.turret.ChemicalTurretBlockEntity;
-import com.zurrtum.create.AllItems;
 import com.zurrtum.create.client.foundation.ponder.CreateSceneBuilder;
 import com.zurrtum.create.catnip.math.Pointing;
 import com.zurrtum.create.client.ponder.api.element.ElementLink;

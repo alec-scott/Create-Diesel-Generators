@@ -11,7 +11,6 @@ import com.zurrtum.create.client.ponder.api.element.WorldSectionElement;
 import com.zurrtum.create.client.ponder.api.scene.SceneBuilder;
 import com.zurrtum.create.client.ponder.api.scene.SceneBuildingUtil;
 import com.zurrtum.create.client.ponder.api.scene.Selection;
-import com.zurrtum.create.client.ponder.foundation.element.InputWindowElement;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 

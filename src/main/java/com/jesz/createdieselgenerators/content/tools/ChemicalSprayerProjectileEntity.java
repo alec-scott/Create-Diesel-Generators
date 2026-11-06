@@ -1,11 +1,15 @@
 package com.jesz.createdieselgenerators.content.tools;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
+import net.minecraft.server.level.ServerLevel;
+
 import com.jesz.createdieselgenerators.CDGEntityTypes;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
 import com.zurrtum.create.AllFluids;
-import com.zurrtum.create.client.content.fluids.FluidFX;
-import com.zurrtum.create.foundation.fluid.FluidHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -21,7 +25,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
@@ -34,7 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
 
 public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
@@ -46,6 +50,9 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
         super(type, level);
     }
 
+    // PORT-NOTE(26.1): FluidFX.getFluidParticle is client only; set from the client entrypoint
+    public static java.util.function.Function<FluidStack, net.minecraft.core.particles.ParticleOptions> clientFluidParticle;
+
     int t = 0;
     public static ChemicalSprayerProjectileEntity spray(Level level, FluidStack stack, boolean fire, boolean cooling){
         ChemicalSprayerProjectileEntity projectile = new ChemicalSprayerProjectileEntity(CDGEntityTypes.CHEMICAL_SPRAYER_PROJECTILE.get(), level);
@@ -56,7 +63,8 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
 
         tag.putBoolean("Fire", fire);
         tag.putBoolean("Cooling", cooling);
-        tag.put("FluidStack", stack.save(level.registryAccess(), new CompoundTag()));
+        if (!stack.isEmpty())
+            tag.put("FluidStack", stack.toNbt(level.registryAccess()));
 
         projectile.getEntityData().set(DATA, tag);
         return projectile;
@@ -68,13 +76,13 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
 
         if (fire) {
             hit.getEntity().setRemainingFireTicks((hit.getEntity().getRemainingFireTicks()) + 100);
-            hit.getEntity().hurt(damageSources().inFire(), 2);
+            hit.getEntity().hurtOrSimulate(damageSources().inFire(), 2);
         } else if(cooling) {
             hit.getEntity().clearFire();
             if (hit.getEntity().getType() == EntityType.ENDERMAN)
-                hit.getEntity().hurt(damageSources().generic(), 0.5f);
+                hit.getEntity().hurtOrSimulate(damageSources().generic(), 0.5f);
         }
-        else if (stack.getFluid().isSame(AllFluids.POTION)) {
+        else if (stack.getFluid().isSame(AllFluids.POTION) && level() instanceof ServerLevel serverLevel) {
             if (hit.getEntity() instanceof LivingEntity le && le.isAffectedByPotions()) {
                 PotionContents potionContents = stack.get(DataComponents.POTION_CONTENTS);
                 if (potionContents != null)
@@ -82,36 +90,37 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
                         MobEffect effect = effectInstance.getEffect().value();
 
                         if (effect.isInstantenous()) {
-                            effect.applyInstantenousEffect(owner, owner, le, effectInstance.getAmplifier(), 0.5d);
+                            effect.applyInstantenousEffect(serverLevel, owner, owner, le, effectInstance.getAmplifier(), 0.5d);
                         } else {
                             le.addEffect(new MobEffectInstance(effectInstance), owner);
                         }
                     }
             }
-        } else if (FluidHelper.isTag(stack, Tags.Fluids.MILK)) {
+        } else if (stack.isIn(ConventionalFluidTags.MILK)) {
             if (hit.getEntity() instanceof LivingEntity le && le.isAffectedByPotions())
-                le.removeEffectsCuredBy(net.neoforged.neoforge.common.EffectCures.MILK);
+                le.removeAllEffects();
         } else {
             if (owner instanceof LivingEntity)
                 ((LivingEntity) owner).setLastHurtMob(hit.getEntity());
-            hit.getEntity().hurt(damageSources().generic(), 0.5f);
+            hit.getEntity().hurtOrSimulate(damageSources().generic(), 0.5f);
         }
         super.onHitEntity(hit);
         remove(RemovalReason.DISCARDED);
     }
 
+    // PORT-NOTE(26.1): was load/saveWithoutId(CompoundTag)
     @Override
-    public void load(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         if (stack == null)
-            stack = FluidStack.parseOptional(level().registryAccess(), compound.getCompound("FluidStack"));
-        super.load(compound);
+            stack = input.read("FluidStack", FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY);
     }
 
     @Override
-    public CompoundTag saveWithoutId(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         if (stack != null)
-            stack.save(level().registryAccess(), compound.getCompound("FluidStack"));
-        return super.saveWithoutId(compound);
+            output.store("FluidStack", FluidStack.OPTIONAL_CODEC, stack);
     }
 
     static final EntityDataAccessor<CompoundTag> DATA = SynchedEntityData.defineId(ChemicalSprayerProjectileEntity.class, EntityDataSerializers.COMPOUND_TAG);
@@ -131,11 +140,11 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
     @Override
     public void tick() {
         if (level().isClientSide()) {
-            stack = FluidStack.parseOptional(level().registryAccess(), getEntityData().get(DATA).getCompound("FluidStack"));
-            fire = getEntityData().get(DATA).getBoolean("Fire");
-            cooling = getEntityData().get(DATA).getBoolean("Cooling");
-            if (stack != null && !stack.isEmpty() && !fire)
-                level().addParticle(FluidFX.getFluidParticle(stack), position().x+random.nextDouble()-0.5, position().y+0.3, position().z+random.nextDouble()-0.5, getDeltaMovement().x, getDeltaMovement().y - 0.1, getDeltaMovement().z);
+            stack = FluidStack.fromNbt(level().registryAccess(), getEntityData().get(DATA).getCompound("FluidStack"));
+            fire = getEntityData().get(DATA).getBooleanOr("Fire", false);
+            cooling = getEntityData().get(DATA).getBooleanOr("Cooling", false);
+            if (stack != null && !stack.isEmpty() && !fire && clientFluidParticle != null)
+                level().addParticle(clientFluidParticle.apply(stack), position().x+random.nextDouble()-0.5, position().y+0.3, position().z+random.nextDouble()-0.5, getDeltaMovement().x, getDeltaMovement().y - 0.1, getDeltaMovement().z);
             if (t >= 1) {
                 if (fire) {
                     level().addParticle(ParticleTypes.LAVA, position().x, position().y, position().z, getDeltaMovement().x, getDeltaMovement().y - 0.1, getDeltaMovement().z);
@@ -173,7 +182,7 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
             if (hitresult.getType() != HitResult.Type.MISS)
                 this.onHit(hitresult);
 
-            this.checkInsideBlocks();
+            this.applyEffectsFromBlocks();
             ProjectileUtil.rotateTowardsMovement(this, 0.2F);
 
             Vec3 deltaMovement = this.getDeltaMovement();

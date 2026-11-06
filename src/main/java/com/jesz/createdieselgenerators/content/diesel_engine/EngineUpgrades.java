@@ -1,31 +1,22 @@
 package com.jesz.createdieselgenerators.content.diesel_engine;
 
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import com.jesz.createdieselgenerators.*;
-import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlock;
-import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlockEntity;
-import com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDieselEngineBlock;
 import com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDieselEngineBlockEntity;
 import com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineBlockEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
-import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
-import com.zurrtum.create.client.catnip.render.CachedBuffers;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineBlock.FACING;
 
+/**
+ * PORT-NOTE(26.1): common part only. Rendering of the upgrade parts and the engine sound instance moved to the client
+ * ({@code client.render.EngineUpgradeRenders}, {@code client.EngineSoundBehaviour}), keyed by upgrade.
+ */
 public interface EngineUpgrades {
     List<EngineUpgrades> allUpgrades = new ArrayList<>();
     EngineUpgrades EMPTY = register(new EmptyUpgrade());
@@ -58,10 +49,6 @@ public interface EngineUpgrades {
         return capacity;
     }
 
-    default <T extends SmartBlockEntity & IEngine> EngineSoundInstance createSoundInstance(T engine, Vec3 pos) {
-        return new EngineSoundInstance(CDGSoundEvents.ENGINE_NORMAL.get(), SoundSource.NEUTRAL, pos, 0.2f);
-    }
-
     default <T extends SmartBlockEntity & IEngine> float getPitchMultiplier(T engine) {
         return 1f;
     }
@@ -71,62 +58,6 @@ public interface EngineUpgrades {
     }
 
     ItemStack getItem();
-
-    default void render(BlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light) {
-
-    }
-
-    static void renderPartial(BlockEntity be, PoseStack ms, MultiBufferSource buffer,
-                              PartialModel normalModel, PartialModel normalVerticalModel,
-                              PartialModel modularModel, PartialModel hugeModel, int light) {
-        if (be instanceof DieselEngineBlockEntity) {
-            Direction facing = be.getBlockState().getValue(FACING);
-            if (facing.getAxis() == Direction.Axis.Y) {
-                CachedBuffers.partial(normalVerticalModel, be.getBlockState())
-                        .center()
-                        .rotateYDegrees(facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 270 : 180)
-                        .uncenter()
-                        .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
-            } else {
-                CachedBuffers.partial(normalModel, be.getBlockState())
-                        .center()
-                        .rotateYDegrees(facing.toYRot())
-                        .uncenter()
-                        .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
-            }
-        } else if (be instanceof ModularDieselEngineBlockEntity) {
-            Direction facing = be.getBlockState().getValue(ModularDieselEngineBlock.FACING);
-
-            CachedBuffers.partial(modularModel, be.getBlockState())
-                    .center()
-                    .rotateYDegrees(facing.toYRot())
-                    .uncenter()
-                    .light(light)
-                    .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
-
-        } else if (be instanceof HugeDieselEngineBlockEntity) {
-            Direction facing = be.getBlockState().getValue(HugeDieselEngineBlock.FACING);
-
-            if (facing.getAxis() == Direction.Axis.Y) {
-                CachedBuffers.partial(hugeModel, be.getBlockState())
-                        .center().rotateZDegrees(90)
-                        .rotateYDegrees(facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 270 : 90)
-                        .uncenter()
-                        .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
-            } else {
-                CachedBuffers.partial(hugeModel, be.getBlockState())
-                        .center()
-                        .rotateYDegrees(facing.getAxis() == Direction.Axis.X ? (facing.toYRot()) : (facing.toYRot()) + 180)
-                        .uncenter()
-                        .light(light)
-                        .renderInto(ms, buffer.getBuffer(RenderTypes.cutout()));
-            }
-
-        }
-    }
 
     class EmptyUpgrade implements EngineUpgrades {
         @Override
@@ -144,12 +75,6 @@ public interface EngineUpgrades {
         @Override
         public Identifier getId() {
             return CreateDieselGenerators.rl("silencer");
-        }
-
-        @Override
-        public void render(BlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light) {
-            renderPartial(be, ms, buffer, CDGPartialModels.ENGINE_SILENCER, CDGPartialModels.ENGINE_SILENCER_VERTICAL,
-                    CDGPartialModels.MODULAR_ENGINE_SILENCER, CDGPartialModels.HUGE_ENGINE_SILENCER, light);
         }
 
         @Override
@@ -177,12 +102,6 @@ public interface EngineUpgrades {
         @Override
         public float getCapacity(float capacity, IEngine engine) {
             return (float) (capacity * CDGConfig.TURBOCHARGED_ENGINE_MULTIPLIER.get());
-        }
-
-        @Override
-        public void render(BlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light) {
-            renderPartial(be, ms, buffer, CDGPartialModels.ENGINE_TURBOCHARGER, CDGPartialModels.ENGINE_TURBOCHARGER_VERTICAL,
-                    CDGPartialModels.MODULAR_TURBOCHARGER, CDGPartialModels.ENGINE_TURBOCHARGER, light);
         }
 
         @Override

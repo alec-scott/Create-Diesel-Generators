@@ -5,7 +5,6 @@ import com.jesz.createdieselgenerators.CDGBlocks;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.content.kinetics.simpleRelays.ShaftBlock;
 import com.zurrtum.create.content.kinetics.steamEngine.PoweredShaftBlock;
-import com.zurrtum.create.content.kinetics.steamEngine.SteamEngineBlock;
 import com.zurrtum.create.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

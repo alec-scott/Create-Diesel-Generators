@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
 
 import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 
-public class PumpjackBearingBMovementBehaviour implements MovementBehaviour {
+public class PumpjackBearingBMovementBehaviour extends MovementBehaviour {
     @Nullable
     @Override
     public ItemStack canBeDisabledVia(MovementContext context) {
@@ -35,7 +35,7 @@ public class PumpjackBearingBMovementBehaviour implements MovementBehaviour {
     }
     @Override
     public void tick(MovementContext context) {
-        MovementBehaviour.super.tick(context);
+        super.tick(context);
         PumpjackBearingBlockEntity bearing = null;
         if (context.world.getBlockEntity(context.contraption.anchor.relative(((BearingContraption) context.contraption).getFacing().getOpposite())) instanceof PumpjackBearingBlockEntity be)
             bearing = be;

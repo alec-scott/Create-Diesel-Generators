@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators;
 
+import net.minecraft.world.level.block.Block;
+
 import com.jesz.createdieselgenerators.content.andesite_girder.AndesiteGirderBlock;
 import com.jesz.createdieselgenerators.content.andesite_girder.AndesiteGirderEncasedShaftBlock;
 import com.jesz.createdieselgenerators.content.basin_lid.BasinLidBlock;

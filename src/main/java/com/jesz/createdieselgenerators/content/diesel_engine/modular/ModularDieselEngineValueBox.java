@@ -1,6 +1,5 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.zurrtum.create.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;

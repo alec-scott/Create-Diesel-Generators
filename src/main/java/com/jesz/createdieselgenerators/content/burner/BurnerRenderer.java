@@ -8,7 +8,6 @@ import com.zurrtum.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.zurrtum.create.client.content.kinetics.base.ShaftRenderer;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;

@@ -1,27 +1,24 @@
 package com.jesz.createdieselgenerators.content.entity_filter;
 
+import net.minecraft.world.InteractionResult;
+
+import com.zurrtum.create.foundation.gui.menu.MenuBase;
+import com.zurrtum.create.foundation.gui.menu.MenuProvider;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.component.TooltipDisplay;
 
 import com.jesz.createdieselgenerators.CDGDataComponents;
-import com.jesz.createdieselgenerators.CDGMenuTypes;
 import com.zurrtum.create.AllDataComponents;
-import com.zurrtum.create.client.AllKeys;
-import com.zurrtum.create.content.logistics.filter.AttributeFilterMenu;
 import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
-import com.zurrtum.create.content.logistics.filter.FilterItem;
-import com.zurrtum.create.content.logistics.item.filter.attribute.ItemAttribute;
 import com.zurrtum.create.client.foundation.utility.CreateLang;
-import com.zurrtum.create.catnip.nbt.NBTHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +30,8 @@ import net.minecraft.world.level.Level;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class EntityFilterItem extends Item {
+/** PORT-NOTE(26.1): opens through Create Fly's MenuProvider (its menu registry and OpenScreenPacket). */
+public class EntityFilterItem extends Item implements MenuProvider {
     public EntityFilterItem(Properties properties) {
         super(properties);
     }
@@ -45,13 +43,11 @@ public class EntityFilterItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, java.util.function.Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
 
-        if (AllKeys.shiftDown())
-            return;
         List<Component> makeSummary = makeSummary(stack);
         if (makeSummary.isEmpty())
             return;
         tooltipComponents.accept(CommonComponents.SPACE);
-        tooltipComponents.addAll(makeSummary);
+        makeSummary.forEach(tooltipComponents);
     }
 
     private List<Component> makeSummary(ItemStack stack) {
@@ -105,18 +101,24 @@ public class EntityFilterItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stackInHand = player.getItemInHand(hand);
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown() || hand != InteractionHand.MAIN_HAND)
-            return InteractionResultHolder.pass(stackInHand);
-        if (level.isClientSide() || !(player instanceof ServerPlayer sp))
-            return InteractionResultHolder.success(stackInHand);
+            return InteractionResult.PASS;
+        if (!level.isClientSide() && player instanceof ServerPlayer sp)
+            openHandledScreen(sp);
+        return InteractionResult.SUCCESS;
+    }
 
-        sp.openMenu(new SimpleMenuProvider((int id, Inventory inventory, Player player1) ->
-                new EntityFilterMenu(CDGMenuTypes.ENTITY_FILTER.get(), id, inventory, player1.getMainHandItem()), getDescription()), buf -> {
-            ItemStack.STREAM_CODEC.encode(buf, stackInHand);
-        });
-        return InteractionResultHolder.success(stackInHand);
+    @Override
+    public @Nullable MenuBase<?> createMenu(int id, Inventory inv, Player player, RegistryFriendlyByteBuf extraData) {
+        ItemStack heldItem = player.getMainHandItem();
+        ItemStack.STREAM_CODEC.encode(extraData, heldItem);
+        return new EntityFilterMenu(id, inv, heldItem);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return getName(getDefaultInstance());
     }
 
 }

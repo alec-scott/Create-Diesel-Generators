@@ -1,21 +1,19 @@
 package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterMenu;
-import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterScreen;
-import com.jesz.createdieselgenerators.port.registrate.builders.MenuBuilder;
-import com.jesz.createdieselgenerators.port.registrate.util.entry.MenuEntry;
-import com.jesz.createdieselgenerators.port.registrate.util.nullness.NonNullSupplier;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import com.zurrtum.create.api.registry.CreateRegistries;
+import com.zurrtum.create.foundation.gui.menu.MenuType;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.ItemStack;
 
+/**
+ * PORT-NOTE(26.1): Create Fly's own menu type registry (its OpenScreenPacket carries the holder); the screen is
+ * registered with Create Fly's AllMenuScreens in the client entrypoint.
+ */
 public class CDGMenuTypes {
-    public static final MenuEntry<EntityFilterMenu> ENTITY_FILTER =
-            register("entity_filter", EntityFilterMenu::new, () -> EntityFilterScreen::new);
-    static <M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> MenuEntry<M> register(String name, MenuBuilder.ForgeMenuFactory<M> factory, NonNullSupplier<MenuBuilder.ScreenFactory<M, S>> screenFactory){
-        return CreateDieselGenerators.REGISTRATE.menu(name, factory, screenFactory).register();
+    public static final MenuType<ItemStack> ENTITY_FILTER = Registry.register(CreateRegistries.MENU_TYPE,
+            CreateDieselGenerators.rl("entity_filter"), EntityFilterMenu::new);
+
+    public static void register() {
     }
-
-    public static void register() {}
-
 }

@@ -1,5 +1,8 @@
 package com.jesz.createdieselgenerators.content.canister;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+
 import net.minecraft.world.level.ScheduledTickAccess;
 
 import net.minecraft.world.level.LevelReader;
@@ -20,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -69,11 +71,16 @@ public class CanisterBlock extends Block implements IBE<CanisterBlockEntity>, Pr
 
         withBlockEntityDo(level, pos, be -> {
             be.setComponentPatch(stack.getComponentsPatch());
-            be.setCapacityEnchantLevel(stack.getEnchantmentLevel(level.holderOrThrow(AllEnchantments.CAPACITY)));
+            be.setCapacityEnchantLevel(capacityLevel(level, stack));
         });
 
-        if (stack.getEnchantmentLevel(level.holderOrThrow(AllEnchantments.CAPACITY)) != 0)
+        if (capacityLevel(level, stack) != 0)
             level.setBlock(pos, state.setValue(ENCHANTED, true), 2);
+    }
+
+    // PORT-NOTE(26.1): was ItemStack.getEnchantmentLevel (NeoForge)
+    static int capacityLevel(Level level, ItemStack stack) {
+        return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(AllEnchantments.CAPACITY), stack);
     }
 
     @Override
@@ -111,7 +118,7 @@ public class CanisterBlock extends Block implements IBE<CanisterBlockEntity>, Pr
         if (!(params.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof CanisterBlockEntity be))
             return lootDrops;
 
-        FluidStack contents = be.tank.getCapability().getFluidInTank(0);
+        FluidStack contents = be.getTank().getFluid();
 
         DataComponentPatch components = be.getComponentPatch()
                 .forget(c -> c.equals(CDGDataComponents.FLUID_CONTENTS));

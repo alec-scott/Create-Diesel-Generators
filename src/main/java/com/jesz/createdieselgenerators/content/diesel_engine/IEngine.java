@@ -1,13 +1,13 @@
 package com.jesz.createdieselgenerators.content.diesel_engine;
 
+import com.zurrtum.create.infrastructure.fluids.FluidInventory;
+
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineBlock;
 import com.jesz.createdieselgenerators.fuel_type.FuelType;
-import com.zurrtum.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public interface IEngine {
 
@@ -36,7 +36,7 @@ public interface IEngine {
     }
 
     default FuelType getFuelType() {
-        FluidStack current = getTank().getFluid();
+        FluidStack current = fs();
         if (!FluidStack.areFluidsAndComponentsEqual(current, getLastCachedFluid())) {
             setLastCachedFluid(current.copy());
             FuelType type = FuelType.getTypeFor(
@@ -58,13 +58,27 @@ public interface IEngine {
     }
 
     default FluidStack fs() {
-        return getTank().getFluid();
+        return getTank().getStack(0);
     }
 
     default float getFuelSpeed() { getFuelType(); return getCachedFuelSpeed(); }
     default float getFuelCapacity() { getFuelType(); return getCachedFuelCapacity(); }
     default float getFuelBurnRate() { getFuelType(); return getCachedBurnRate(); }
     default float getFuelSoundPitch() { return getFuelType().soundPitch(); }
+
+    /**
+     * PORT-NOTE(26.1): drains the whole droplets of {@code debt} from the tank's fluid (was 1 mB per whole unit of
+     * debt) and returns the fractional remainder.
+     */
+    static float burnFuel(FluidInventory tank, float debt) {
+        int whole = (int) debt;
+        if (whole <= 0)
+            return debt;
+        FluidStack fluid = tank.getStack(0);
+        if (!fluid.isEmpty())
+            tank.extract(fluid, Math.min(whole, fluid.getAmount()));
+        return debt - whole;
+    }
 
     int getAnalogSignal();
 
@@ -80,7 +94,8 @@ public interface IEngine {
 
     SmartBlockEntity self();
 
-    FluidTank getTank();
+    // PORT-NOTE(26.1): any single-slot Create Fly fluid inventory (TankSegment or FluidTank), droplets
+    FluidInventory getTank();
 
     EngineUpgrades getUpgrade();
     void setUpgrade(EngineUpgrades upgrade);

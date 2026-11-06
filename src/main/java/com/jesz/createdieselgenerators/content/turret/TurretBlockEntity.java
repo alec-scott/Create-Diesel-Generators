@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.turret;
 
+import net.minecraft.server.level.ServerLevel;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -12,14 +14,12 @@ import com.zurrtum.create.AllSoundEvents;
 import com.zurrtum.create.content.contraptions.actors.seat.SeatEntity;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
-import com.zurrtum.create.client.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import com.zurrtum.create.foundation.blockEntity.behaviour.filtering.ServerFilteringBehaviour;
 import com.zurrtum.create.client.foundation.utility.CreateLang;
-import dev.ryanhcode.sable.companion.SableCompanion;
+import com.jesz.createdieselgenerators.port.CDGSable;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -100,7 +100,7 @@ public class TurretBlockEntity extends KineticBlockEntity {
 
         if (controllingEntity != null && controllingPlayer == null && targetedEntity != null) {
             AABB aabb = getTargetBB();
-            Vec3 targetPos = SableCompanion.INSTANCE.projectOutOfSubLevel(targetedEntity.level(), targetedEntity.position());
+            Vec3 targetPos = CDGSable.projectOutOfSubLevel(targetedEntity.level(), targetedEntity.position());
             Vec3 turretPos = getWorldPos();
             targetedHorizontalRotation = (float) (Math.atan2(targetPos.x - turretPos.x, targetPos.z - turretPos.z) * 180 / Math.PI) + 180;            targetedVerticalRotation = calculatePitch(targetPos.add(0, 0.5, 0));
 
@@ -245,14 +245,14 @@ public class TurretBlockEntity extends KineticBlockEntity {
     }
 
     public boolean isValidTarget(LivingEntity entity) {
-        Vec3 entityPos = SableCompanion.INSTANCE.projectOutOfSubLevel(entity.level(), entity.position());
+        Vec3 entityPos = CDGSable.projectOutOfSubLevel(entity.level(), entity.position());
 
-        if (!TargetingConditions.forCombat().test(controllingEntity, entity))
+        if (!(level instanceof ServerLevel serverLevel) || !TargetingConditions.forCombat().test(serverLevel, controllingEntity, entity))
             return false;
         if (entity.isRemoved() || !isWithinRange(entityPos) || entityPos.distanceTo(getWorldPos()) < 2)
             return false;
-        if (filtering.getFilter().getItem() instanceof SpawnEggItem egg)
-            if (egg.getType(null) != entity.getType())
+        if (filtering.getFilter().getItem() instanceof SpawnEggItem)
+            if (!SpawnEggItem.spawnsEntity(filtering.getFilter(), entity.getType()))
                 return false;
         if (filtering.getFilter().getItem() instanceof EntityFilterItem) {
             if (!EntityFilterItem.test(filtering.getFilter(), entity))
@@ -281,10 +281,10 @@ public class TurretBlockEntity extends KineticBlockEntity {
         compound.putFloat("HorizontalRotation", targetedHorizontalRotation);
     }
 
-    private FilteringBehaviour filtering;
+    private ServerFilteringBehaviour filtering;
     @Override
     public void addBehaviours(List<BlockEntityBehaviour<?>> behaviours) {
-        filtering = new EntityFilteringBehaviour(this, new ChemicalTurretBlockEntity.ChemicalTurretValueBox());
+        filtering = new EntityFilteringBehaviour(this);
         behaviours.add(filtering);
     }
 
@@ -317,6 +317,6 @@ public class TurretBlockEntity extends KineticBlockEntity {
     }
 
     public Vec3 getWorldPos() {
-        return SableCompanion.INSTANCE.projectOutOfSubLevel(level, Vec3.atCenterOf(worldPosition));
+        return CDGSable.projectOutOfSubLevel(level, Vec3.atCenterOf(worldPosition));
     }
 }

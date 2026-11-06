@@ -4,33 +4,26 @@ import com.jesz.createdieselgenerators.CDGRecipes;
 import com.zurrtum.create.api.behaviour.spouting.BlockSpoutingBehaviour;
 import com.zurrtum.create.content.fluids.spout.SpoutBlockEntity;
 import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.level.Level;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 
-import java.util.List;
+import java.util.Optional;
 
+/** PORT-NOTE(26.1): recipe lookup through the server's recipe access (spouts only fill on the server). */
 public class BasinSpoutCasting implements BlockSpoutingBehaviour {
     @Override
     public int fillBlock(Level level, BlockPos pos, SpoutBlockEntity spout, FluidStack availableFluid, boolean simulate) {
-        BasinBlockEntity basin;
-        if (level.getBlockEntity(pos) instanceof BasinBlockEntity be)
-            basin = be;
-        else
+        if (!(level instanceof ServerLevel serverLevel) || !(level.getBlockEntity(pos) instanceof BasinBlockEntity basin))
             return 0;
 
-        List<Recipe<RecipeInput>> recipes = level.getRecipeManager().getAllRecipesFor(CDGRecipes.CASTING.getType()).stream()
+        Optional<CastingRecipe> recipe = serverLevel.recipeAccess().recipeMap().byType(CDGRecipes.CASTING).stream()
                 .map(RecipeHolder::value)
-                .filter(r -> r instanceof CastingRecipe cr && cr.matches(basin, availableFluid) && cr.getFluidIngredients().get(0).amount() <= availableFluid.getAmount())
-                .toList();
+                .filter(r -> r.matches(basin, availableFluid) && r.fluidIngredient().amount() <= availableFluid.getAmount())
+                .findFirst();
 
-        if (recipes.isEmpty())
-            return 0;
-
-        CastingRecipe recipe = (CastingRecipe) recipes.get(0);
-        return recipe.execute(basin, simulate);
+        return recipe.map(r -> r.execute(basin, simulate)).orElse(0);
     }
 }

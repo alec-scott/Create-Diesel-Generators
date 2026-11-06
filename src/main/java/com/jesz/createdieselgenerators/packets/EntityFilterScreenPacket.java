@@ -5,13 +5,9 @@ import com.jesz.createdieselgenerators.content.entity_filter.EntityFilterMenu;
 import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
 import com.zurrtum.create.infrastructure.packet.c2s.FilterScreenPacket;
 import io.netty.buffer.ByteBuf;
-import com.zurrtum.create.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record EntityFilterScreenPacket(FilterScreenPacket.Option option, EntityAttribute attribute) implements CustomPacketPayload {

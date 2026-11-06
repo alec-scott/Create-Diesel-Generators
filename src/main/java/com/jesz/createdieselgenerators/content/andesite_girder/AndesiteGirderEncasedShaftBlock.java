@@ -32,8 +32,8 @@ public class AndesiteGirderEncasedShaftBlock extends GirderEncasedShaftBlock {
 
     @Override
     public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
-        return ItemRequirement.of(AllBlocks.SHAFT.getDefaultState(), be)
-                .union(ItemRequirement.of(AllBlocks.METAL_GIRDER.getDefaultState(), be));
+        return ItemRequirement.of(AllBlocks.SHAFT.defaultBlockState(), be)
+                .union(ItemRequirement.of(AllBlocks.METAL_GIRDER.defaultBlockState(), be));
     }
 
     @Override

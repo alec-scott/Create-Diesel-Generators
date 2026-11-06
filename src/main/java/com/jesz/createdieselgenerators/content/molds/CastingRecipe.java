@@ -1,119 +1,70 @@
 package com.jesz.createdieselgenerators.content.molds;
 
-import com.google.common.base.Joiner;
-import com.google.gson.JsonObject;
 import com.jesz.createdieselgenerators.CDGRecipes;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeParams;
-import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
-import net.minecraft.network.FriendlyByteBuf;
+import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
+import com.zurrtum.create.foundation.fluid.FluidIngredient;
+import com.zurrtum.create.foundation.recipe.CreateRecipe;
+import com.zurrtum.create.infrastructure.fluids.FluidStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
-import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CastingRecipe extends StandardProcessingRecipe<RecipeInput> {
-    public MoldType moldType;
-    MoldRecipeParams params;
+/**
+ * PORT-NOTE(26.1): {@code {fluid_ingredient, mold, results}} (droplets). A spout over a basin holding the mold casts
+ * the result ({@link BasinSpoutCasting}).
+ */
+public record CastingRecipe(FluidIngredient fluidIngredient, Identifier mold, List<ProcessingOutput> results)
+        implements CreateRecipe<RecipeInput> {
+    public static final MapCodec<CastingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            FluidIngredient.CODEC.fieldOf("fluid_ingredient").forGetter(CastingRecipe::fluidIngredient),
+            Identifier.CODEC.fieldOf("mold").forGetter(CastingRecipe::mold),
+            ProcessingOutput.CODEC.listOf(1, 1).fieldOf("results").forGetter(CastingRecipe::results)
+    ).apply(instance, CastingRecipe::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, CastingRecipe> STREAM_CODEC = StreamCodec.composite(
+            FluidIngredient.PACKET_CODEC, CastingRecipe::fluidIngredient,
+            Identifier.STREAM_CODEC, CastingRecipe::mold,
+            ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), CastingRecipe::results,
+            CastingRecipe::new
+    );
+    public static final RecipeSerializer<CastingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
-    public CastingRecipe(MoldRecipeParams params) {
-        super(CDGRecipes.CASTING, params);
-        this.moldType = MoldType.findById(params.mold());
-        this.params = params;
-    }
-
-    @Override
-    protected int getMaxInputCount() {
-        return 0;
-    }
-
-    @Override
-    protected int getMaxFluidInputCount() {
-        return 1;
-    }
-
-    @Override
-    protected int getMaxFluidOutputCount() {
-        return 0;
-    }
-
-    @Override
-    protected int getMaxOutputCount() {
-        return 1;
-    }
-
-    public MoldRecipeParams getParams() {
-        return params;
+    public MoldType moldType() {
+        return MoldType.findById(mold);
     }
 
     public boolean matches(BasinBlockEntity basin, FluidStack fluidStack) {
-        if (moldType == null)
+        if (moldType() == null)
             return false;
-        if (getFluidIngredients().size() != 1)
+        if (!CompressionMoldingRecipe.hasMold(basin.itemCapability, moldType()))
             return false;
-
-        IItemHandler availableItems = basin.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, basin.getBlockPos(), null);
-
-        if (availableItems == null)
-            return false;
-
-        MoldType moldInBasin = null;
-        for (int i = 0; i < availableItems.getSlots(); i++) {
-            ItemStack stack = availableItems.getStackInSlot(i);
-
-            if (stack.getItem() instanceof MoldItem && MoldItem.getMold(stack) == moldType)
-                moldInBasin = MoldItem.getMold(stack);
-        }
-
-        if (moldInBasin == null)
-            return false;
-
-
-        if (getFluidIngredients().get(0).test(fluidStack))
-            return true;
-
-        return false;
+        return fluidIngredient.test(fluidStack);
     }
 
+    /** Returns the fluid amount used (droplets), or 0 when the basin cannot take the output. */
     public int execute(BasinBlockEntity basin, boolean simulate) {
-        IItemHandler availableItems = basin.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, basin.getBlockPos(), null);
-
-        if (availableItems == null)
-            return 0;
-
-        MoldType moldInBasin = null;
-        for (int i = 0; i < availableItems.getSlots(); i++) {
-            ItemStack stack = availableItems.getStackInSlot(i);
-
-            if (stack.getItem() instanceof MoldItem && MoldItem.getMold(stack) == moldType)
-                moldInBasin = MoldItem.getMold(stack);
-        }
-
-        if (moldInBasin == null)
+        if (!CompressionMoldingRecipe.hasMold(basin.itemCapability, moldType()))
             return 0;
 
         List<ItemStack> recipeOutputItems = new ArrayList<>();
-
         if (!simulate)
-            recipeOutputItems.addAll(rollResults(basin.getLevel().random));
+            ProcessingOutput.rollOutput(basin.getLevel().getRandom(), results, recipeOutputItems::add);
 
         if (!basin.acceptOutputs(recipeOutputItems, List.of(), false))
             return 0;
 
-        return getFluidIngredients().get(0).amount();
+        return fluidIngredient.amount();
     }
 
     @Override
@@ -121,31 +72,18 @@ public class CastingRecipe extends StandardProcessingRecipe<RecipeInput> {
         return false;
     }
 
-    public static class Serializer implements RecipeSerializer<CastingRecipe> {
-        private final MapCodec<CastingRecipe> codec;
-        private final StreamCodec<RegistryFriendlyByteBuf, CastingRecipe> streamCodec;
+    @Override
+    public ItemStack assemble(RecipeInput input) {
+        return ItemStack.EMPTY;
+    }
 
-        public Serializer() {
-            this.codec = MoldRecipeParams.CODEC.xmap(CastingRecipe::new, CastingRecipe::getParams)
-                    .validate(recipe -> {
-                        var errors = recipe.validate();
-                        if (errors.isEmpty())
-                            return DataResult.success(recipe);
-                        errors.add(recipe.getClass().getSimpleName() + " failed validation:");
-                        return DataResult.error(() -> Joiner.on('\n').join(errors), recipe);
-                    });
-            this.streamCodec = MoldRecipeParams.STREAM_CODEC.map(CastingRecipe::new, CastingRecipe::getParams);
-        }
+    @Override
+    public RecipeSerializer<CastingRecipe> getSerializer() {
+        return CDGRecipes.CASTING_SERIALIZER;
+    }
 
-        @Override
-        public MapCodec<CastingRecipe> codec() {
-            return codec;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, CastingRecipe> streamCodec() {
-            return streamCodec;
-        }
-
+    @Override
+    public RecipeType<CastingRecipe> getType() {
+        return CDGRecipes.CASTING;
     }
 }

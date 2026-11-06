@@ -1,6 +1,11 @@
 package com.jesz.createdieselgenerators.content.oil_barrel;
 
-import com.jesz.createdieselgenerators.port.minecraft.CDGValueIO;
+import com.zurrtum.create.infrastructure.fluids.FluidInventory;
+
+import com.jesz.createdieselgenerators.port.CDGFluidUnits;
+
+import com.zurrtum.create.foundation.fluid.FluidTank;
+
 
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -8,21 +13,14 @@ import net.minecraft.world.level.storage.ValueInput;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGConfig;
-import com.jesz.createdieselgenerators.content.distillation.DistillationTankBlockEntity;
-import com.zurrtum.create.AllBlockEntityTypes;
 import com.zurrtum.create.api.connectivity.ConnectivityHandler;
 import com.zurrtum.create.client.api.goggles.IHaveGoggleInformation;
 import com.zurrtum.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.zurrtum.create.foundation.blockEntity.SmartBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import com.zurrtum.create.infrastructure.config.AllConfigs;
-import com.zurrtum.create.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,9 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
 import com.jesz.createdieselgenerators.port.neoforge.capabilities.RegisterCapabilitiesEvent;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +36,7 @@ import static com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelBlock.
 
 public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Fluid, IHaveGoggleInformation {
 
-    protected IFluidHandler fluidCapability;
+    protected FluidInventory fluidCapability;
     protected FluidTank tankInventory;
     protected BlockPos controller;
     protected BlockPos lastKnownPos;
@@ -69,8 +64,13 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
 
     }
 
-    protected SmartFluidTank createInventory() {
-        return new SmartFluidTank(getCapacityMultiplier(), this::onFluidStackChanged);
+    protected FluidTank createInventory() {
+        return new FluidTank(getCapacityMultiplier()) {
+            @Override
+            public void markDirty() {
+                onFluidStackChanged(getFluid());
+            }
+        };
     }
 
     public void updateConnectivity() {
@@ -106,6 +106,14 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
             updateCapability = false;
             refreshCapability();
         }
+    }
+
+    // PORT-NOTE(26.1): was OilBarrelBlock.onRemove (as Create Fly's FluidTankBlockEntity)
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState oldState) {
+        super.preRemoveSideEffects(pos, oldState);
+        level.removeBlockEntity(pos);
+        ConnectivityHandler.splitMulti(this);
     }
 
     @Override
@@ -166,9 +174,9 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
 
     public void applyFluidTankSize(int blocks) {
         tankInventory.setCapacity(blocks * getCapacityMultiplier());
-        int overflow = tankInventory.getFluidAmount() - tankInventory.getCapacity();
+        int overflow = tankInventory.getFluid().getAmount() - tankInventory.getMaxAmountPerStack();
         if (overflow > 0)
-            tankInventory.drain(overflow, IFluidHandler.FluidAction.EXECUTE);
+            tankInventory.extract(tankInventory.getFluid(), overflow);
     }
 
     public void removeController(boolean keepFluids) {
@@ -213,10 +221,9 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
 
     void refreshCapability() {
         fluidCapability = handlerForCapability();
-        invalidateCapabilities();
     }
 
-    private IFluidHandler handlerForCapability() {
+    private FluidInventory handlerForCapability() {
         return isController() ? tankInventory
                 : getControllerBE() != null ? getControllerBE().handlerForCapability() : new FluidTank(0);
     }
@@ -231,8 +238,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
         OilBarrelBlockEntity controllerBE = getControllerBE();
         if (controllerBE == null)
             return false;
-        return containedFluidTooltip(tooltip, isPlayerSneaking,
-                level.getCapability(Capabilities.FluidHandler.BLOCK, controllerBE.getBlockPos(), null));
+        return containedFluidTooltip(tooltip, isPlayerSneaking, controllerBE.tankInventory);
     }
     @Override
     protected void read(ValueInput tag, boolean clientPacket) {
@@ -242,20 +248,15 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
         int prevSize = width;
         int prevHeight = height;
 
-        updateConnectivity = CDGValueIO.contains(tag, "Uninitialized");
-        controller = null;
-        lastKnownPos = null;
-
-        if (CDGValueIO.contains(tag, "LastKnownPos"))
-            lastKnownPos = NBTHelper.readBlockPos(tag,"LastKnownPos");
-        if (CDGValueIO.contains(tag, "Controller"))
-            controller = NBTHelper.readBlockPos(tag, "Controller");
+        updateConnectivity = tag.getBooleanOr("Uninitialized", false);
+        lastKnownPos = tag.read("LastKnownPos", BlockPos.CODEC).orElse(null);
+        controller = tag.read("Controller", BlockPos.CODEC).orElse(null);
 
         if (isController()) {
-            width = tag.getIntOr("Size", 0);
-            height = tag.getIntOr("Height", 0);
+            width = tag.getIntOr("Size", 1);
+            height = tag.getIntOr("Height", 1);
             tankInventory.setCapacity(getTotalTankSize() * getCapacityMultiplier());
-            tankInventory.readFromNBT(registries, CDGValueIO.getCompound(tag, "TankContent"));
+            tankInventory.read(tag.childOrEmpty("TankContent"));
 //            if (tankInventory.getSpace() < 0)
 //                tankInventory.drain(-tankInventory.getSpace(), IFluidHandler.FluidAction.EXECUTE);
         }
@@ -283,11 +284,11 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
         if (updateConnectivity)
             tag.putBoolean("Uninitialized", true);
         if (lastKnownPos != null)
-            CDGValueIO.put(tag, "LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
+            tag.store("LastKnownPos", BlockPos.CODEC, lastKnownPos);
         if (!isController())
-            CDGValueIO.put(tag, "Controller", NbtUtils.writeBlockPos(getController()));
+            tag.store("Controller", BlockPos.CODEC, getController());
         if (isController()) {
-            CDGValueIO.put(tag, "TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
+            tankInventory.write(tag.child("TankContent"));
             tag.putInt("Size", width);
             tag.putInt("Height", height);
         }
@@ -315,7 +316,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
 
     public static int getCapacityMultiplier() {
-        return AllConfigs.server().fluids.fluidTankCapacity.get() * 1000;
+        return AllConfigs.server().fluids.fluidTankCapacity.get() * CDGFluidUnits.BUCKET;
     }
 
     @Override
@@ -380,7 +381,7 @@ public class OilBarrelBlockEntity extends SmartBlockEntity implements IMultiBloc
     }
 
     @Override
-    public IFluidTank getTank(int tank) {
+    public FluidTank getTank(int tank) {
         return tankInventory;
     }
 

@@ -1,11 +1,8 @@
 package com.jesz.createdieselgenerators.content.bulk_fermenter;
 
 import com.jesz.createdieselgenerators.CDGBlocks;
-import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.api.packager.unpacking.UnpackingHandler;
 import com.zurrtum.create.infrastructure.component.PackageOrderWithCrafts;
-import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
-import com.zurrtum.create.impl.unpacking.BasinUnpackingHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;

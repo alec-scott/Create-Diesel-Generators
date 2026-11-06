@@ -4,25 +4,18 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
 
-import com.jesz.createdieselgenerators.CDGRecipes;
 import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
 import com.zurrtum.create.content.processing.basin.BasinOperatingBlockEntity;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static com.jesz.createdieselgenerators.content.basin_lid.BasinLidBlock.ON_A_BASIN;
 import static com.jesz.createdieselgenerators.content.basin_lid.BasinLidBlock.OPEN;
@@ -33,6 +26,8 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
     public int processingTime;
     public boolean running;
     public float progress;
+    // PORT-NOTE(26.1): synced for the client gauge; Create Fly finds basin recipes on the server only
+    public int recipeDuration;
 
 
     public BasinLidBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -46,6 +41,7 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
         compound.putInt("ProcessingTime", this.processingTime);
         compound.putBoolean("Running", this.running);
         compound.putBoolean("SteamInside", this.steamInside);
+        compound.putInt("RecipeDuration", currentRecipe instanceof BasinFermentingRecipe r ? r.getProcessingDuration() : recipeDuration);
     }
 
     @Override
@@ -55,6 +51,7 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
         this.processingTime = compound.getIntOr("ProcessingTime", 0);
         this.running = compound.getBooleanOr("Running", false);
         this.steamInside = compound.getBooleanOr("SteamInside", false);
+        this.recipeDuration = compound.getIntOr("RecipeDuration", 0);
     }
 
     @Override
@@ -68,13 +65,15 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
     @Override
     public void tick() {
         super.tick();
-        if (currentRecipe != null)
-            progress = (float) processingTime /((BasinFermentingRecipe)currentRecipe).getProcessingDuration();
-        else {
+        if (currentRecipe instanceof BasinFermentingRecipe r)
+            progress = (float) processingTime / r.getProcessingDuration();
+        else if (level.isClientSide()) {
+            progress = running && recipeDuration > 0 ? (float) processingTime / recipeDuration : 0;
+        } else {
             if (processingTime != -1) {
-                List<Recipe<?>> recipes = this.getMatchingRecipes();
-                if (!recipes.isEmpty())
-                    this.currentRecipe = recipes.get(0);
+                Recipe<?> recipe = this.getMatchingRecipes();
+                if (recipe != null)
+                    this.currentRecipe = recipe;
                 else
                     processingTime = -1;
             }
@@ -93,7 +92,7 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
                 this.applyBasinRecipe();
                 this.sendData();
             }
-            if (!level.isClientSide() && processingTime % 20 == 0 && new Random().nextInt() % 4 == 0)
+            if (!level.isClientSide() && processingTime % 20 == 0 && level.getRandom().nextInt(4) == 0)
                 level.playSound(null, worldPosition, SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT,
                         SoundSource.BLOCKS, .15f, speed < 65 ? .75f : 1.5f);
 
@@ -111,9 +110,9 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
         if (this.level == null) return true;
         if (this.getBasin().filter(BasinBlockEntity::canContinueProcessing).isEmpty()) return true;
 
-        List<Recipe<?>> recipes = this.getMatchingRecipes();
-        if (recipes.isEmpty()) return true;
-        this.currentRecipe = recipes.get(0);
+        Recipe<?> recipe = this.getMatchingRecipes();
+        if (recipe == null) return true;
+        this.currentRecipe = recipe;
         this.startProcessingBasin();
         this.sendData();
         return true;
@@ -124,7 +123,8 @@ public class BasinLidBlockEntity extends BasinOperatingBlockEntity {
         if (this.running && this.processingTime > 0) return;
         super.startProcessingBasin();
         this.running = true;
-        this.processingTime = this.currentRecipe instanceof ProcessingRecipe<?, ?> processed ? processed.getProcessingDuration() : 20;
+        this.processingTime = this.currentRecipe instanceof BasinFermentingRecipe processed ? processed.getProcessingDuration() : 20;
+        this.recipeDuration = this.processingTime;
     }
 
     @Override

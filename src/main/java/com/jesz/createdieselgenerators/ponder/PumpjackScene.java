@@ -156,7 +156,7 @@ public class PumpjackScene {
                 .placeNearTarget();
         scene.idle(65);
 
-        scene.world().setBlock(new BlockPos(4, 1, 0), AllBlocks.FLUID_PIPE.getDefaultState().setValue(FluidPipeBlock.EAST, false)
+        scene.world().setBlock(new BlockPos(4, 1, 0), AllBlocks.FLUID_PIPE.defaultBlockState().setValue(FluidPipeBlock.EAST, false)
                 .setValue(FluidPipeBlock.NORTH, false)
                 .setValue(FluidPipeBlock.WEST, false)
                 .setValue(FluidPipeBlock.SOUTH, false), false);

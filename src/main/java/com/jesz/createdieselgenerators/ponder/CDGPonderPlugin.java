@@ -4,8 +4,6 @@ import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.CreateDieselGenerators;
 import com.zurrtum.create.client.infrastructure.ponder.AllCreatePonderTags;
-import com.jesz.createdieselgenerators.port.registrate.util.entry.ItemProviderEntry;
-import com.jesz.createdieselgenerators.port.registrate.util.entry.RegistryEntry;
 import com.zurrtum.create.client.ponder.api.registration.PonderPlugin;
 import com.zurrtum.create.client.ponder.api.registration.PonderSceneRegistrationHelper;
 import com.zurrtum.create.client.ponder.api.registration.PonderTagRegistrationHelper;

@@ -6,7 +6,6 @@ import com.jesz.createdieselgenerators.CDGPartialModels;
 import com.jesz.createdieselgenerators.content.entity_filter.EntityFilteringRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
-import com.zurrtum.create.client.catnip.animation.AnimationTickHolder;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import com.zurrtum.create.client.catnip.render.SuperByteBuffer;

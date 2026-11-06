@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
+import com.zurrtum.create.foundation.fluid.FluidHelper;
+
 import net.minecraft.world.item.ItemStack;
 
 import net.minecraft.world.level.redstone.Orientation;
@@ -8,7 +10,6 @@ import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
 import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGConfig;
 import com.jesz.createdieselgenerators.content.diesel_engine.EngineUpgrades;
-import com.zurrtum.create.api.connectivity.ConnectivityHandler;
 import com.zurrtum.create.api.schematic.requirement.SpecialBlockItemRequirement;
 import com.zurrtum.create.content.equipment.wrench.IWrenchable;
 import com.zurrtum.create.content.kinetics.base.HorizontalKineticBlock;
@@ -38,16 +39,10 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import com.jesz.createdieselgenerators.port.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -71,10 +66,6 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
                 .setValue(POWERED, false));
     }
 
-    @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
-        return true;
-    }
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
@@ -114,7 +105,7 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
         if (!player.isShiftKeyDown() && player.mayBuild()) {
             if (placementHelper.matchesItem(stack)) {
                 placementHelper.getOffset(player, level, state, pos, hitResult)
-                        .placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
+                        .placeInWorld(level, (BlockItem) stack.getItem(), player, hand);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -140,28 +131,10 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
         if(!CDGConfig.ENGINES_FILLED_WITH_ITEMS.get() || stack.isEmpty() || !(level.getBlockEntity(pos) instanceof SmartBlockEntity be))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
-        if (tank == null)
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-
-        if (stack.getItem() instanceof BucketItem || stack.getItem() instanceof MilkBucketItem) {
-            Fluid fluid = stack.getItem() instanceof BucketItem bi ? bi.content : NeoForgeMod.MILK.get();
-
-            if (!tank.getFluidInTank(0).isEmpty())
-                return InteractionResult.FAIL;
-
-            tank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
-            if (!player.isCreative())
-                player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-
+        // PORT-NOTE(26.1): buckets and fluid items through Create Fly's FluidHelper (Fabric transfer, droplets)
+        if (FluidHelper.tryEmptyItemIntoBE(level, player, hand, stack, be))
             return InteractionResult.SUCCESS;
-        }
-
-        IFluidHandlerItem itemTank = Capabilities.FluidHandler.ITEM.getCapability(stack, null);
-        if (itemTank == null)
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        itemTank.drain(tank.fill(itemTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

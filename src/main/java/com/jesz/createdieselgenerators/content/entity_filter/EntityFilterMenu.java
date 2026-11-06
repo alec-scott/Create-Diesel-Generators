@@ -4,20 +4,18 @@ import com.jesz.createdieselgenerators.CDGDataComponents;
 import com.zurrtum.create.AllDataComponents;
 import com.zurrtum.create.content.logistics.filter.AbstractFilterMenu;
 import com.zurrtum.create.infrastructure.component.AttributeFilterWhitelistMode;
-import com.zurrtum.create.content.logistics.item.filter.attribute.ItemAttribute;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ContainerInput;
+import com.jesz.createdieselgenerators.CDGMenuTypes;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import com.zurrtum.create.infrastructure.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +25,9 @@ public class EntityFilterMenu extends AbstractFilterMenu {
     public AttributeFilterWhitelistMode whitelistMode;
     List<EntityAttribute.EntityAttributeEntry> selectedAttributes;
 
-    public EntityFilterMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
-        super(type, id, inv, extraData);
-    }
-
-    protected EntityFilterMenu(MenuType<?> type, int id, Inventory inv, ItemStack contentHolder) {
-        super(type, id, inv, contentHolder);
+    // PORT-NOTE(26.1): Create Fly menus are created from the holder (the held filter item)
+    public EntityFilterMenu(int id, Inventory inv, ItemStack contentHolder) {
+        super(CDGMenuTypes.ENTITY_FILTER, id, inv, contentHolder);
     }
 
     public void appendSelectedAttribute(EntityAttribute entry, Boolean inverted) {
@@ -44,7 +39,7 @@ public class EntityFilterMenu extends AbstractFilterMenu {
         super.init(inv, contentHolder);
         ItemStack stack = new ItemStack(Items.NAME_TAG);
         stack.set(DataComponents.CUSTOM_NAME, Component.literal("Selected Tags").withStyle(ChatFormatting.RESET, ChatFormatting.BLUE));
-        ghostInventory.setStackInSlot(1, stack);
+        ghostInventory.setItem(1, stack);
     }
     @Override
     protected ItemStackHandler createGhostInventory() {
@@ -63,8 +58,8 @@ public class EntityFilterMenu extends AbstractFilterMenu {
 
     @Override
     protected void addFilterSlots() {
-        this.addSlot(new SlotItemHandler(ghostInventory, 0, 16, 27));
-        this.addSlot(new SlotItemHandler(ghostInventory, 1, 16, 62) {
+        this.addSlot(new Slot(ghostInventory, 0, 16, 27));
+        this.addSlot(new Slot(ghostInventory, 1, 16, 62) {
             @Override
             public boolean mayPickup(Player playerIn) {
                 return false;
@@ -77,7 +72,7 @@ public class EntityFilterMenu extends AbstractFilterMenu {
         selectedAttributes.clear();
     }
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput clickTypeIn, Player player) {
         if (slotId == 37)
             return;
         super.clicked(slotId, dragType, clickTypeIn, player);
@@ -100,14 +95,14 @@ public class EntityFilterMenu extends AbstractFilterMenu {
         if (index == 37)
             return ItemStack.EMPTY;
         if (index == 36) {
-            ghostInventory.setStackInSlot(37, ItemStack.EMPTY);
+            ghostInventory.setItem(37, ItemStack.EMPTY);
             return ItemStack.EMPTY;
         }
         if (index < 36) {
             ItemStack stackToInsert = playerInventory.getItem(index);
             ItemStack copy = stackToInsert.copy();
             copy.setCount(1);
-            ghostInventory.setStackInSlot(0, copy);
+            ghostInventory.setItem(0, copy);
         }
         return ItemStack.EMPTY;
     }

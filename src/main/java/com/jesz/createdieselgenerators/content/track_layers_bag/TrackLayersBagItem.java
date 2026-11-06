@@ -288,7 +288,7 @@ public class TrackLayersBagItem extends Item {
 
     public static ItemStack full() {
         ItemStack stack = CDGItems.TRACK_LAYERS_BAG.asStack();
-        ((TrackLayersBagItem)stack.getItem()).add(stack, AllBlocks.TRACK.asStack(1024));
+        ((TrackLayersBagItem)stack.getItem()).add(stack, new ItemStack(AllBlocks.TRACK, 1024));
         return stack;
     }
 }

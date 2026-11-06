@@ -27,7 +27,7 @@ public class BasinFermentingStationElement extends AnimatedKinetics {
                 .scale(scale)
                 .render(graphics);
 
-        GuiGameElement.of(AllBlocks.BASIN.getDefaultState())
+        GuiGameElement.of(AllBlocks.BASIN.defaultBlockState())
                 .atLocal(0, 1, 0)
                 .scale(scale)
                 .render(graphics);
