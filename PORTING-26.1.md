@@ -92,8 +92,7 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
   blockstate JSON omit it). Turret operator hat: `TurretOperatorHatLayer` through `LivingEntityRenderLayerRegistrationCallback`
   plus the client `LivingEntityRendererMixin` (render state data). Every Compat: `EveryCompatCompat` compiles against
   Moonlight Lib (compileOnly), called when `moonlight` is loaded.
-- **Dropped**: lighter skins and `lighter_skins.json` loading, the custom item renderers (hammer, wire cutters, lighter,
-  sprayer, mold, and mold-in-basin via `BasinRendererMixin`), `ContraptionMixin` (Create Fly's
+- **Dropped**: the KubeJS lighter skin hooks (`LighterSkinsEventJS`; KubeJS has no 26.1 build), `ContraptionMixin` (Create Fly's
   `captureMultiblock` already localises `Controller`), batch-placement silencing for barrels' own sound type (now
   `ItemPlacementSoundContext`).
 
@@ -140,6 +139,32 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - Every Compat (`e116e0c`): Every Compat 26.1.2-3.0.0 (Fabric, version ZN6rPi46) exists, but upstream's code only uses Moonlight
   Lib's `BlockSetAPI`, so we compile against Moonlight 26.1.2-4.3.0 (HYd3L5kA) and gate on `moonlight`, as upstream did.
 
+### 2026-11-06 (restore item visuals)
+- **Mechanism**: custom `ItemModel` types registered through `ItemModels.ID_MAPPER` (`client/model/CDGItemModels`, called from
+  the client entrypoint), as Create Fly does for the potato cannon, extendo grip and wands; item definitions in
+  `src/generated/resources/assets/createdieselgenerators/items/` name them. Client only: nothing in common code references them
+  (state comes from data components, which are synced with the stack). Access widener entries for `ItemStackRenderState`
+  layers, `BlockEntityRenderState.blockState` and `displayContext`.
+- **Transforms**: upstream drew in a space centred on the item and shifted the partial quads by -0.5 itself; 26.1 layers take
+  quads in block space, then display transform, then -0.5, then `localTransform`. So every upstream transform `X` becomes
+  `T(0.5) * X * T(-0.5)` (`CDGModelHelper.fromCentred`), and an item drawn inside the renderer (`renderStatic`) becomes
+  `T(0.5) * X * (its own display transform pose)` under the host's display transform (`appendHeldItem`). The two
+  conventions were derived from Create Fly's layer code and the Create 6 renderer; none of it has been seen on screen.
+- Lighter (`0db2050`): `LighterModel`. State is the `LIGHTER_STATE` component, skin is `stack.getHoverName()` lower-cased looked
+  up in `lighter_skins.json` names (every namespace, read in `resolveDependencies`, so a resource reload re-reads it), as upstream.
+  The three states are baked per skin id; the display transforms come from `item/lighter`, as upstream used the main model.
+- Hammer and wire cutters (`ce1f8cc`): `HammerModel`, `WireCuttersModel`, reading `PROCESSING_ITEM` (a synced component, so
+  other players animate). Same timing and transforms as upstream for first person (with the left-hand flip), third person and
+  the rest.
+- Chemical sprayer (`05f9734`): `ChemicalSprayerModel`, both items (the definition names the body model). Cog about the item
+  centre; fast while the holder is using the stack.
+- Mold (`6dfdf46`): `MoldModel` over every `MoldType` (list stays open to addons). Molds in a basin: client mixins
+  `BasinRendererMixin` (extract and submit heads of Create Fly's `BasinRenderer`) and `BasinRenderStateMixin` (carries the data);
+  `client/render/MoldBasinRender`. As upstream, a basin holding a mold draws only the filter and its stacks (no fluid).
+  Mixin audit: 16 classes, 0 problems.
+- Not done: upstream's `renderItem` hook (a mold as a visualised output item while none is in the inventory) has no Create Fly
+  counterpart worth a mixin; the canister was not touched, so its glint is unchanged.
+
 ## TODO
 
 - [x] Phase 1: build migration, shims, imports mapped, entrypoints/registration/configs/networking.
@@ -153,8 +178,8 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - [ ] Client test (user launches the game): checks are in `../port-testing/diesel-generators.md`.
 - [ ] `enchantable` is set on lighter, sprayers and canister, but `create:capacity` applicability comes from data: check
       these items are in its supported items tag.
-- [ ] Item visuals: lighter open/ignited and skins, mold types, hammer and wire cutters animations (static models now;
-      lighter state and mold type could be `minecraft:select` item models). Molds in a basin render as plain items.
+- [x] Item visuals restored as custom item models (compile-checked only, see the session log): lighter states and skins,
+      mold types, hammer and wire cutters animations, sprayer cog, molds in a basin. In-game checks are in `../port-testing`.
 - [x] Fluid side restrictions restored from upstream (engine ports, modular PIPE top, burner not top, hole sides, turret bottom).
 - [ ] Bulk fermenter "no new slot" rule is `canPlaceItem` on the wrapper: check Create Fly's insert honours it. Packager
       unpacking uses `packagerMode`.

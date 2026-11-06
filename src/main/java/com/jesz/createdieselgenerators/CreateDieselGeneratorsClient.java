@@ -38,8 +38,8 @@ import net.neoforged.fml.config.ModConfig;
 
 /**
  * PORT-NOTE(26.1): was FMLClientSetupEvent, the client mod-bus listeners of ModEvents and the client-only parts of the
- * mod constructor. Render layers of blocks are gone (26.1 takes them from the quads); lighter skins, custom item
- * renderers and the turret operator hat layer are not ported (see PORTING-26.1.md).
+ * mod constructor. Render layers of blocks are gone (26.1 takes them from the quads); custom item models are in
+ * client/model/CDGItemModels (lighter skins, hammer, wire cutters, sprayer, mold); see PORTING-26.1.md.
  */
 public class CreateDieselGeneratorsClient implements ClientModInitializer {
     @Override
