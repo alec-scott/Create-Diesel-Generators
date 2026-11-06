@@ -1,6 +1,9 @@
 package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.client.CDGBlockEntityBehaviours;
+import com.jesz.createdieselgenerators.content.turret.TurretOperatorHatLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.minecraft.client.renderer.entity.ShulkerRenderer;
 import com.jesz.createdieselgenerators.client.CDGClientEvents;
 import com.jesz.createdieselgenerators.client.CDGTrainEngineSounds;
 import com.jesz.createdieselgenerators.client.EntityFilterScreen;
@@ -49,6 +52,13 @@ public class CreateDieselGeneratorsClient implements ClientModInitializer {
         CDGClientEvents.register();
         PonderIndex.addPlugin(new CDGPonderPlugin());
         registerTooltips();
+
+        // Was TurretOperatorHatLayer.registerOnAll: every living renderer (upstream: those with hierarchical or ageable list models,
+        // which is all but shulkers here)
+        LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
+            if (!(renderer instanceof ShulkerRenderer))
+                helper.register(new TurretOperatorHatLayer(renderer));
+        });
 
         AllMenuScreens.register(CDGMenuTypes.ENTITY_FILTER, EntityFilterScreen::create);
         ClientTooltipComponentCallback.EVENT.register(data -> data instanceof TrackLayersBagComponent component ? new TrackLayersBagTooltip(component) : null);

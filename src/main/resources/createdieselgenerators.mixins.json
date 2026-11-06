@@ -19,6 +19,9 @@
     "UseOnContextInvoker",
     "SableAssemblyMixin"
   ],
+  "client": [
+    "LivingEntityRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
