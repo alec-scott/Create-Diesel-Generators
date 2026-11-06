@@ -197,3 +197,10 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
       assumed CROSS), `pumpjack_crank/large_rod.json` still has `neoforge:obj`.
 - [x] JEI: upstream layouts and machine drawings restored (compile-checked only; checks in `../port-testing`). Not drawn: `AnimatedDieselEngineElement`, which no upstream category uses.
 - [ ] Sable: `SableAssemblyMixin` needs Sable present to test.
+
+## Restoration boot check (2026-11-06)
+Dedicated server boot and `/reload` clean with all restored features. Fluid side rules checked on the server by reading
+Create pipe connection states next to each machine (16 checks, all pass): burner sides and top, normal engine in three
+facings, turret, huge engine, modular engine, distillation tank, pumpjack hole. Note for repeating this: an unconnected
+pipe defaults to straight east-west, so test along north-south. Everything client-side (item models, hat, JEI drawings)
+is compile-checked only until the user runs `../port-testing/diesel-generators.md`.
