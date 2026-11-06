@@ -13,5 +13,7 @@ public class CDGItemModels {
 
     public static void register() {
         register(LighterModel.ID, LighterModel.Unbaked.CODEC);
+        register(HammerModel.ID, HammerModel.Unbaked.CODEC);
+        register(WireCuttersModel.ID, WireCuttersModel.Unbaked.CODEC);
     }
 }

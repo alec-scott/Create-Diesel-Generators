@@ -1,6 +1,5 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "createdieselgenerators:item/wire_cutters"
+    "type": "createdieselgenerators:model/wire_cutters"
   }
 }
