@@ -1,5 +1,9 @@
 package com.jesz.createdieselgenerators.content.tools;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+
+import net.minecraft.resources.Identifier;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -14,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -59,14 +62,9 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
         projectile.stack = stack;
         projectile.fire = fire;
         projectile.cooling = cooling;
-        CompoundTag tag = new CompoundTag();
-
-        tag.putBoolean("Fire", fire);
-        tag.putBoolean("Cooling", cooling);
-        if (!stack.isEmpty())
-            tag.put("FluidStack", stack.toNbt(level.registryAccess()));
-
-        projectile.getEntityData().set(DATA, tag);
+        projectile.getEntityData().set(DATA_FIRE, fire);
+        projectile.getEntityData().set(DATA_COOLING, cooling);
+        projectile.getEntityData().set(DATA_FLUID, stack.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString());
         return projectile;
     }
 
@@ -123,26 +121,27 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
             output.store("FluidStack", FluidStack.OPTIONAL_CODEC, stack);
     }
 
-    static final EntityDataAccessor<CompoundTag> DATA = SynchedEntityData.defineId(ChemicalSprayerProjectileEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    // PORT-NOTE(26.1): EntityDataSerializers.COMPOUND_TAG is gone; the client only needs the flags and the fluid id
+    // (for particles), so the components are not synced
+    static final EntityDataAccessor<Boolean> DATA_FIRE = SynchedEntityData.defineId(ChemicalSprayerProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    static final EntityDataAccessor<Boolean> DATA_COOLING = SynchedEntityData.defineId(ChemicalSprayerProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    static final EntityDataAccessor<String> DATA_FLUID = SynchedEntityData.defineId(ChemicalSprayerProjectileEntity.class, EntityDataSerializers.STRING);
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("Fire", fire);
-        tag.putBoolean("Cooling", cooling);
-        //tag.put("FluidStack", new CompoundTag());
-        //stack.save(level().registryAccess(), tag.getCompound("FluidStack"));
-        builder.define(DATA, tag);
+        builder.define(DATA_FIRE, false);
+        builder.define(DATA_COOLING, false);
+        builder.define(DATA_FLUID, "");
     }
 
     @Override
     public void tick() {
         if (level().isClientSide()) {
-            stack = FluidStack.fromNbt(level().registryAccess(), getEntityData().get(DATA).getCompound("FluidStack"));
-            fire = getEntityData().get(DATA).getBooleanOr("Fire", false);
-            cooling = getEntityData().get(DATA).getBooleanOr("Cooling", false);
+            Identifier fluidId = Identifier.tryParse(getEntityData().get(DATA_FLUID));
+            stack = fluidId == null ? FluidStack.EMPTY : BuiltInRegistries.FLUID.getOptional(fluidId).map(f -> new FluidStack(f, 81)).orElse(FluidStack.EMPTY);
+            fire = getEntityData().get(DATA_FIRE);
+            cooling = getEntityData().get(DATA_COOLING);
             if (stack != null && !stack.isEmpty() && !fire && clientFluidParticle != null)
                 level().addParticle(clientFluidParticle.apply(stack), position().x+random.nextDouble()-0.5, position().y+0.3, position().z+random.nextDouble()-0.5, getDeltaMovement().x, getDeltaMovement().y - 0.1, getDeltaMovement().z);
             if (t >= 1) {
@@ -167,7 +166,7 @@ public class ChemicalSprayerProjectileEntity extends AbstractHurtingProjectile {
                 fire = false;
                 if(stack.getFluid().isSame(Fluids.LAVA))
                     remove(RemovalReason.DISCARDED);
-                getEntityData().get(DATA).putBoolean("Fire", false);
+                getEntityData().set(DATA_FIRE, false);
             }
         }
 

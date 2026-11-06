@@ -31,8 +31,8 @@ public class OilChunksSavedData extends SavedData {
         ListTag lt = new ListTag();
         chunks.forEach((pos,amount) -> {
             CompoundTag c = new CompoundTag();
-            c.put("x", IntTag.valueOf(pos.x));
-            c.put("z", IntTag.valueOf(pos.z));
+            c.put("x", IntTag.valueOf(pos.x()));
+            c.put("z", IntTag.valueOf(pos.z()));
             c.put("Amountmb", IntTag.valueOf(amount));
             lt.add(c);
         });
@@ -108,7 +108,7 @@ public class OilChunksSavedData extends SavedData {
 
         double scale = CDGConfig.OIL_CHUNK_SCALE.get();
         PerlinNoise noise = PerlinNoise.create(RandomSource.create(seed), List.of(-2, -1, 0, 1));
-        float amount = (float) (noise.getValue(chunk.x * scale, 0, chunk.z * scale) + 1) / 1.6f;
+        float amount = (float) (noise.getValue(chunk.x() * scale, 0, chunk.z() * scale) + 1) / 1.6f;
 
         boolean isHighInOil = false;
         boolean isDenied = false;

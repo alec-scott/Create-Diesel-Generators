@@ -4,13 +4,12 @@ import com.jesz.createdieselgenerators.content.pumpjack.PumpjackOilAmountDisplay
 import com.zurrtum.create.api.behaviour.display.DisplaySource;
 import com.jesz.createdieselgenerators.port.registrate.util.entry.RegistryEntry;
 
-import java.util.function.Supplier;
 import static com.jesz.createdieselgenerators.CreateDieselGenerators.REGISTRATE;
 
 public class CDGDisplaySources {
     public static final RegistryEntry<DisplaySource, PumpjackOilAmountDisplaySource> PUMPJACK_OIL_AMOUNT = simple("pumpjack_oil_amount", PumpjackOilAmountDisplaySource::new);
 
-    private static <T extends DisplaySource> RegistryEntry<DisplaySource, T> simple(String name, Supplier<T> supplier) {
+    private static <T extends DisplaySource> RegistryEntry<DisplaySource, T> simple(String name, com.jesz.createdieselgenerators.port.registrate.util.nullness.NonNullSupplier<T> supplier) {
         return REGISTRATE.displaySource(name, supplier).register();
     }
 

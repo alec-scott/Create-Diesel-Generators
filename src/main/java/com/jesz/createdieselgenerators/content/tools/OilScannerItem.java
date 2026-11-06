@@ -1,5 +1,7 @@
 package com.jesz.createdieselgenerators.content.tools;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.InteractionResult;
 
 import net.minecraft.world.entity.EquipmentSlot;

@@ -16,7 +16,8 @@ import net.minecraft.world.level.ChunkPos;
 
 public class CDGCommands {
     public CDGCommands (CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("cdg").then(Commands.literal("oil")
+        // PORT-NOTE(26.1): permission level 2 is now a requires() on the root (was hasPermission(2) per command)
+        dispatcher.register(Commands.literal("cdg").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).then(Commands.literal("oil")
                 .then(Commands.literal("get").executes((command) -> getOilChunk(command.getSource())))
                 .then(Commands.literal("locate").executes((command) -> locateOilChunk(command.getSource())))
                 .then(Commands.literal("regenerate").executes((command) -> refreshOilChunk(command.getSource())))
@@ -29,8 +30,6 @@ public class CDGCommands {
     }
 
     private int getOilChunk(CommandSourceStack source) throws CommandSyntaxException {
-        if (!source.hasPermission(2))
-            return 0;
         ChunkPos chunkPos = ChunkPos.containing(new BlockPos((int) source.getPosition().x, (int) source.getPosition().y, (int) source.getPosition().z));
 
         int amount = OilChunksSavedData.getChunkOilAmount(source.getLevel(), chunkPos);
@@ -44,8 +43,6 @@ public class CDGCommands {
     }
 
     private int refreshOilChunk(CommandSourceStack source) throws CommandSyntaxException {
-        if (!source.hasPermission(2))
-            return 0;
         ChunkPos chunkPos = ChunkPos.containing(new BlockPos((int) source.getPosition().x, (int) source.getPosition().y, (int) source.getPosition().z));
 
         OilChunksSavedData.removeChunk(source.getLevel(), chunkPos);
@@ -56,8 +53,6 @@ public class CDGCommands {
     }
 
     private int setOilChunk(CommandSourceStack source, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        if (!source.hasPermission(2))
-            return 0;
         ChunkPos chunkPos = ChunkPos.containing(new BlockPos((int) source.getPosition().x, (int) source.getPosition().y, (int) source.getPosition().z));
 
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
@@ -68,8 +63,6 @@ public class CDGCommands {
     }
 
     private int setOilChunkInfinite(CommandSourceStack source, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        if(!source.hasPermission(2))
-            return 0;
         ChunkPos chunkPos = ChunkPos.containing(new BlockPos((int) source.getPosition().x, (int) source.getPosition().y, (int) source.getPosition().z));
 
         OilChunksSavedData.setChunkOilAmount(source.getLevel(), chunkPos, Integer.MAX_VALUE);
@@ -79,8 +72,6 @@ public class CDGCommands {
     }
 
     private int locateOilChunk(CommandSourceStack source) throws CommandSyntaxException {
-        if (!source.hasPermission(2))
-            return 0;
 
         BlockPos sourcePos = BlockPos.containing(source.getPosition());
         ChunkPos centerChunk = ChunkPos.containing(sourcePos);
@@ -89,8 +80,8 @@ public class CDGCommands {
         int dx = 0, dz = -1;
 
         for (int i = 0; i < (radius * 2 + 1) * (radius * 2 + 1); i++) {
-            int cx = centerChunk.x + dx;
-            int cz = centerChunk.z + dz;
+            int cx = centerChunk.x() + dx;
+            int cz = centerChunk.z() + dz;
             ChunkPos currentChunk = new ChunkPos(cx, cz);
 
             int amount = OilChunksSavedData.getChunkOilAmount(source.getLevel(), currentChunk);
@@ -102,9 +93,7 @@ public class CDGCommands {
                         .withStyle(ChatFormatting.GRAY)
                         .append(Component.literal(cx + " " + cz)
                                 .withStyle(ChatFormatting.GOLD)
-                                .withStyle(style -> style.withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.SUGGEST_COMMAND,
-                                        "/tp @s " + blockX + " ~ " + blockZ))))
+                                .withStyle(style -> style.withClickEvent(new ClickEvent.SuggestCommand("/tp @s " + blockX + " ~ " + blockZ))))
                         .append(" with ").withStyle(ChatFormatting.GRAY)
                         .append(Component.literal(String.format("%,1d", amount) + "mB ")
                                 .withStyle(ChatFormatting.GOLD))

@@ -1,7 +1,6 @@
 package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.content.tools.ChemicalSprayerProjectileEntity;
-import com.jesz.createdieselgenerators.content.tools.ChemicalSprayerProjectileRenderer;
 import com.jesz.createdieselgenerators.port.registrate.util.entry.EntityEntry;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityDimensions;
@@ -14,6 +13,6 @@ public class CDGEntityTypes {
                     .properties(b -> b.dimensions(EntityDimensions.fixed(0.5f, 0.5f)).trackRangeChunks(4)
                             .trackedUpdateRate(20)
                             .forceTrackedVelocityUpdates(true))
-                    .renderer(() -> ChemicalSprayerProjectileRenderer::new).register();
+                    .renderer(() -> net.minecraft.client.renderer.entity.NoopRenderer::new).register();
     public static void register(){}
 }

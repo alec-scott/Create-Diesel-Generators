@@ -74,7 +74,7 @@ public class DistillationTankBlock extends Block implements IBE<DistillationTank
                         for (int i = 0; i < 30; i++) {
                             Vec3 offset = VecHelper.offsetRandomly(VecHelper.getCenterOf(pos.offset(x, 0, z)), context.getLevel().getRandom(), .3f);
                             Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, context.getLevel().getRandom(), .1f);
-                            context.getLevel().addParticle(new ItemParticleOption(ParticleTypes.ITEM, DISTILLATION_CONTROLLER.asStack()), offset.x(), offset.y(),
+                            context.getLevel().addParticle(new ItemParticleOption(ParticleTypes.ITEM, DISTILLATION_CONTROLLER.get()), offset.x(), offset.y(),
                                     offset.z(), motion.x(), motion.y(), motion.z());
                         }
                     }

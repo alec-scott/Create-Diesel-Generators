@@ -184,7 +184,7 @@ public interface EntityAttribute {
         }
         @Override
         public EntityAttribute read(CompoundTag tag) {
-            return new IsMob(BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(tag.getString("Entity"))));
+            return new IsMob(BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(tag.getStringOr("Entity", "minecraft:pig"))));
         }
 
         @Override

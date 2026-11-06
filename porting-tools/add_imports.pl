@@ -37,6 +37,8 @@ my %known = (
     ItemStackHandler => 'com.zurrtum.create.infrastructure.items.ItemStackHandler',
     DataComponents => 'net.minecraft.core.component.DataComponents',
     DyeColor => 'net.minecraft.world.item.DyeColor',
+    Nullable => 'org.jetbrains.annotations.Nullable',
+    Component => 'net.minecraft.network.chat.Component',
     IEngine => 'com.jesz.createdieselgenerators.content.diesel_engine.IEngine',
 );
 local $^I = ''; local $/;

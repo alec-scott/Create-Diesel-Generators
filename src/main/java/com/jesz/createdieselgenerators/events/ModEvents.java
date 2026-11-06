@@ -1,6 +1,7 @@
 package com.jesz.createdieselgenerators.events;
 
 import com.jesz.createdieselgenerators.CDGBlockEntityTypes;
+import com.jesz.createdieselgenerators.CDGItems;
 import com.jesz.createdieselgenerators.CDGRegistries;
 import com.jesz.createdieselgenerators.content.bulk_fermenter.BulkFermenterBlockEntity;
 import com.jesz.createdieselgenerators.content.bulk_fermenter.BulkFermenterUnpackingHandler;
@@ -40,6 +41,9 @@ public class ModEvents {
         BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(CDGBlockEntityTypes.CANISTER.get(), new SpoutCanisterFilling());
         BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(AllBlockEntityTypes.BASIN, new BasinSpoutCasting());
         BulkFermenterUnpackingHandler.register();
+
+        // Was FurnaceBurnItem.getBurnTime (NeoForge)
+        net.fabricmc.fabric.api.registry.FuelValueEvents.BUILD.register((builder, context) -> builder.add(CDGItems.WOOD_CHIPS.get(), CDGItems.WOOD_CHIPS.get().getBurnTime()));
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {

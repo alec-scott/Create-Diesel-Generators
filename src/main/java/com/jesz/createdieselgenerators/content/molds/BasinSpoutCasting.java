@@ -1,6 +1,5 @@
 package com.jesz.createdieselgenerators.content.molds;
 
-import com.jesz.createdieselgenerators.CDGRecipes;
 import com.zurrtum.create.api.behaviour.spouting.BlockSpoutingBehaviour;
 import com.zurrtum.create.content.fluids.spout.SpoutBlockEntity;
 import com.zurrtum.create.content.processing.basin.BasinBlockEntity;
@@ -19,8 +18,10 @@ public class BasinSpoutCasting implements BlockSpoutingBehaviour {
         if (!(level instanceof ServerLevel serverLevel) || !(level.getBlockEntity(pos) instanceof BasinBlockEntity basin))
             return 0;
 
-        Optional<CastingRecipe> recipe = serverLevel.recipeAccess().recipeMap().byType(CDGRecipes.CASTING).stream()
+        Optional<CastingRecipe> recipe = serverLevel.recipeAccess().getRecipes().stream()
                 .map(RecipeHolder::value)
+                .filter(r -> r instanceof CastingRecipe)
+                .map(r -> (CastingRecipe) r)
                 .filter(r -> r.matches(basin, availableFluid) && r.fluidIngredient().amount() <= availableFluid.getAmount())
                 .findFirst();
 

@@ -42,12 +42,12 @@ public class BurnerBlock extends HorizontalAxisKineticBlock implements IBE<Burne
         super.createBlockStateDefinition(builder);
     }
 
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (state.getValue(LIT) && entity instanceof LivingEntity) {
-            entity.hurt(level.damageSources().campfire(), 1);
+            entity.hurtOrSimulate(level.damageSources().campfire(), 1);
         }
 
-        super.entityInside(state, level, pos, entity);
+        super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
     }
 
     @Override

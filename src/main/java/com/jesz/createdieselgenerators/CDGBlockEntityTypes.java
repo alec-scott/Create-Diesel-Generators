@@ -9,7 +9,6 @@ import com.jesz.createdieselgenerators.content.burner.BurnerRenderer;
 import com.jesz.createdieselgenerators.content.canister.CanisterBlockEntity;
 import com.jesz.createdieselgenerators.content.canister.CanisterRenderer;
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlockEntity;
-import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineInstance;
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineRenderer;
 import com.jesz.createdieselgenerators.content.diesel_engine.huge.PoweredEngineShaftBlockEntity;
 import com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDieselEngineBlockEntity;
@@ -68,7 +67,6 @@ public class CDGBlockEntityTypes {
             .register();
 
     public static final BlockEntityEntry<HugeDieselEngineBlockEntity> HUGE_DIESEL_ENGINE = REGISTRATE.blockEntity("huge_diesel_engine_block_entity", HugeDieselEngineBlockEntity::new)
-            .visual(() -> HugeDieselEngineInstance::new)
             .validBlocks(CDGBlocks.HUGE_DIESEL_ENGINE)
             .renderer(() -> HugeDieselEngineRenderer::new)
             .register();
@@ -85,7 +83,6 @@ public class CDGBlockEntityTypes {
             .register();
 
     public static final BlockEntityEntry<PumpjackBearingBlockEntity> PUMPJACK_BEARING = REGISTRATE.blockEntity("pumpjack_bearing_block_entity", PumpjackBearingBlockEntity::new)
-            .visual(() -> NoShaftBearingInstance::new)
             .validBlocks(CDGBlocks.PUMPJACK_BEARING)
             .renderer(() -> NoShaftBearingRenderer::new)
             .register();
@@ -115,7 +112,6 @@ public class CDGBlockEntityTypes {
             .register();
 
     public static final BlockEntityEntry<PumpjackCrankBlockEntity> PUMPJACK_CRANK = REGISTRATE.blockEntity("pumpjack_crank_block_entity", PumpjackCrankBlockEntity::new)
-            .visual(() -> PumpjackCrankInstance::new)
             .validBlocks(CDGBlocks.PUMPJACK_CRANK)
             .renderer(() -> PumpjackCrankRenderer::new)
             .register();

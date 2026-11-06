@@ -35,7 +35,7 @@ public class AndesiteGirderBlock extends GirderBlock {
         if (player == null)
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        if (stack.is(AllBlocks.SHAFT)) {
+        if (stack.is(AllBlocks.SHAFT.asItem())) {
             KineticBlockEntity.switchToBlockState(level, pos, CDGBlocks.ANDESITE_GIRDER_ENCASED_SHAFT.getDefaultState()
                     .setValue(WATERLOGGED, state.getValue(WATERLOGGED))
                     .setValue(TOP, state.getValue(TOP))

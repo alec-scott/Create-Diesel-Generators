@@ -1,8 +1,6 @@
 package com.jesz.createdieselgenerators.content.items;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 
 public class FurnaceBurnItem extends Item {
     int burnTime;
@@ -10,8 +8,8 @@ public class FurnaceBurnItem extends Item {
         super(properties);
         this.burnTime = burnTime;
     }
-    @Override
-    public int getBurnTime(ItemStack stack, RecipeType<?> recipeType) {
+    // PORT-NOTE(26.1): was NeoForge getBurnTime; registered through Fabric FuelValueEvents (ModEvents)
+    public int getBurnTime() {
         return burnTime;
     }
 }

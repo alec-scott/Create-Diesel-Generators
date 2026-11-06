@@ -3,9 +3,7 @@ package com.jesz.createdieselgenerators.content.pumpjack;
 import com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import com.zurrtum.create.catnip.math.VecHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -19,7 +17,7 @@ public class PumpjackCrankValueBox extends ValueBoxTransform.Sided {
     }
 
     @Override
-    public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
+    public Vec3 getLocalOffset(BlockState state) {
         Vec3 location = new Vec3(0.5, 0.5, 1);
         location = VecHelper.rotateCentered(location, AngleHelper.horizontalAngle(getSide()), Direction.Axis.Y);
         location = VecHelper.rotateCentered(location, AngleHelper.verticalAngle(getSide()), Direction.Axis.X);

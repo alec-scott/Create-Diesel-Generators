@@ -56,7 +56,8 @@ public class CanisterBlock extends Block implements IBE<CanisterBlockEntity>, Pr
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return state.getValue(ENCHANTED) ? RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.MODEL;
+        // PORT-NOTE(26.1): ENTITYBLOCK_ANIMATED is gone; the model always renders and the BER adds the glint
+        return RenderShape.MODEL;
     }
 
     @Override

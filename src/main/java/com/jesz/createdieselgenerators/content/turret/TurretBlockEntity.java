@@ -15,7 +15,6 @@ import com.zurrtum.create.content.contraptions.actors.seat.SeatEntity;
 import com.zurrtum.create.content.kinetics.base.KineticBlockEntity;
 import com.zurrtum.create.api.behaviour.BlockEntityBehaviour;
 import com.zurrtum.create.foundation.blockEntity.behaviour.filtering.ServerFilteringBehaviour;
-import com.zurrtum.create.client.foundation.utility.CreateLang;
 import com.jesz.createdieselgenerators.port.CDGSable;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import net.minecraft.core.BlockPos;
@@ -301,7 +300,7 @@ public class TurretBlockEntity extends KineticBlockEntity {
             return;
         }
         if(player instanceof ServerPlayer sp)
-            sp.connection.send(new ClientboundSetActionBarTextPacket(CreateLang.translateDirect("contraption.controls.start_controlling", Component.translatable(getBlockState().getBlock().getDescriptionId()))));
+            sp.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("create.contraption.controls.start_controlling", Component.translatable(getBlockState().getBlock().getDescriptionId()))));
         controllingPlayer = player;
         ((IEntity)controllingPlayer).setTurretPos(worldPosition);
     }

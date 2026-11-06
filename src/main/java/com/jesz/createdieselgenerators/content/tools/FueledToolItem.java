@@ -110,7 +110,7 @@ public interface FueledToolItem {
 
         @Override
         protected FluidVariant getResource(ItemVariant variant) {
-            SimpleFluidContent content = variant.getComponentMap().get(CDGDataComponents.FLUID_CONTENTS);
+            SimpleFluidContent content = variant.get(CDGDataComponents.FLUID_CONTENTS);
             if (content == null || content.isEmpty())
                 return FluidVariant.blank();
             return FluidVariant.of(content.getFluid(), content.components());
@@ -118,7 +118,7 @@ public interface FueledToolItem {
 
         @Override
         protected long getAmount(ItemVariant variant) {
-            SimpleFluidContent content = variant.getComponentMap().get(CDGDataComponents.FLUID_CONTENTS);
+            SimpleFluidContent content = variant.get(CDGDataComponents.FLUID_CONTENTS);
             return content == null ? 0 : content.getAmount();
         }
 
@@ -134,7 +134,7 @@ public interface FueledToolItem {
                 stack.set(CDGDataComponents.FLUID_CONTENTS, SimpleFluidContent.EMPTY);
             else
                 stack.set(CDGDataComponents.FLUID_CONTENTS, SimpleFluidContent.copyOf(
-                        new FluidStack(newResource.getFluid(), (int) newAmount, newResource.getComponents())));
+                        new FluidStack(newResource.getFluid(), (int) newAmount, newResource.getComponentsPatch())));
             return ItemVariant.of(stack);
         }
     }

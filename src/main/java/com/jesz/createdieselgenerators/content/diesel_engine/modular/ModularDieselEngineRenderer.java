@@ -1,49 +1,37 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-
 import com.jesz.createdieselgenerators.CDGPartialModels;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
-import com.zurrtum.create.client.content.kinetics.base.ShaftRenderer;
+import com.jesz.createdieselgenerators.client.render.EngineUpgradeRenders;
+import com.jesz.createdieselgenerators.client.render.PartsKineticRenderer;
+import com.jesz.createdieselgenerators.content.diesel_engine.normal.DieselEngineRenderer;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 import java.util.Objects;
 
 import static com.jesz.createdieselgenerators.content.diesel_engine.modular.ModularDieselEngineBlock.FACING;
 
-public class ModularDieselEngineRenderer extends ShaftRenderer<ModularDieselEngineBlockEntity> {
+/** PORT-NOTE(26.1): extract/submit (see PartsKineticRenderer). */
+public class ModularDieselEngineRenderer extends PartsKineticRenderer<ModularDieselEngineBlockEntity> {
+    private static final PartialModel[] PISTONS = {
+            CDGPartialModels.MODULAR_ENGINE_PISTONS_0, CDGPartialModels.MODULAR_ENGINE_PISTONS_1, CDGPartialModels.MODULAR_ENGINE_PISTONS_2,
+            CDGPartialModels.MODULAR_ENGINE_PISTONS_3, CDGPartialModels.MODULAR_ENGINE_PISTONS_4};
 
     public ModularDieselEngineRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
+        super(context, true);
     }
 
     @Override
-    protected void renderSafe(ModularDieselEngineBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        int angle = (int) (Math.abs(KineticBlockEntityRenderer.getAngleForBe(be, be.getBlockPos(), KineticBlockEntityRenderer.getRotationAxisOf(be))*180/Math.PI) * 3 % 360)/36;
+    protected void extractParts(ModularDieselEngineBlockEntity be, State state, float partialTicks) {
+        int frame = DieselEngineRenderer.pistonFrame(DieselEngineRenderer.angleStep(be));
 
         ModularDieselEngineBlockEntity controller = be.getControllerBE();
-        Objects.requireNonNullElse(controller, be).upgrade.render(be, partialTicks, ms, buffer, light);
+        EngineUpgradeRenders.extract(be, Objects.requireNonNullElse(controller, be).getUpgrade(), state.lightCoords, state.parts);
 
-        CachedBuffers.partial( angle == 10? CDGPartialModels.MODULAR_ENGINE_PISTONS_0 :
-                                angle == 9 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_1 :
-                                angle == 8 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_2 :
-                                angle == 7 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_3 :
-                                angle == 6 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_4 :
-                                angle == 5 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_4 :
-                                angle == 4 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_3 :
-                                angle == 3 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_2 :
-                                angle == 2 ? CDGPartialModels.MODULAR_ENGINE_PISTONS_1 :
-                                        CDGPartialModels.MODULAR_ENGINE_PISTONS_0
-                            , be.getBlockState()).center()
-                    .rotateYDegrees(be.getBlockState().getValue(FACING).toYRot()).uncenter()
-                    .light(light)
-                    .renderInto(ms, buffer.getBuffer(RenderTypes.solid()));
-
-
-        super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
+        state.parts.add(CachedBuffers.partial(PISTONS[frame], be.getBlockState()).center()
+                .rotateYDegrees(be.getBlockState().getValue(FACING).toYRot()).uncenter()
+                .light(state.lightCoords)
+                .extractRenderState());
     }
-
 }

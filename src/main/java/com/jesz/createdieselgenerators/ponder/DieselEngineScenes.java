@@ -27,7 +27,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.material.Fluid;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.function.Supplier;
 
@@ -78,7 +77,7 @@ public class DieselEngineScenes {
         Supplier<FluidStack> content = DieselEngineScenes::randomFuel;
 
         scene.world().modifyBlockEntity(util.grid().at(4, 1, 1), FluidTankBlockEntity.class, be -> be.getTankInventory()
-                .fill(content.get(), IFluidHandler.FluidAction.EXECUTE));
+                .insert(content.get()));
 
         scene.world().showSection(pumpShaft, Direction.NORTH);
         scene.world().showSection(cog, Direction.NORTH);
@@ -191,7 +190,7 @@ public class DieselEngineScenes {
         Supplier<FluidStack> content = DieselEngineScenes::randomFuel;
 
         scene.world().modifyBlockEntity(util.grid().at(4, 1, 3), FluidTankBlockEntity.class, be -> be.getTankInventory()
-                .fill(content.get(), IFluidHandler.FluidAction.EXECUTE));
+                .insert(content.get()));
         scene.idle(15);
         scene.overlay().showText(40)
                 .attachKeyFrame()
@@ -244,7 +243,7 @@ public class DieselEngineScenes {
         Supplier<FluidStack> content = DieselEngineScenes::randomFuel;
 
         scene.world().modifyBlockEntity(util.grid().at(4, 1, 3), FluidTankBlockEntity.class, be -> be.getTankInventory()
-                .fill(content.get(), IFluidHandler.FluidAction.EXECUTE));
+                .insert(content.get()));
 
         scene.idle(15);
 
@@ -303,19 +302,19 @@ public class DieselEngineScenes {
 
     public static FluidStack randomFuel() {
         if (Minecraft.getInstance().level != null) {
-            Registry<FuelType> registry = Minecraft.getInstance().level.registryAccess().registryOrThrow(CDGRegistries.FUEL_TYPE);
+            Registry<FuelType> registry = Minecraft.getInstance().level.registryAccess().lookupOrThrow(CDGRegistries.FUEL_TYPE);
             Holder<FuelType> randomType = registry.getRandom(RandomSource.create()).orElse(null);
             if (randomType == null || randomType.value().fluid().size() == 0)
-                currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000);
+                currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000 * 81);
             else {
                 Holder<Fluid> randomFluid = randomType.value().fluid().getRandomElement(RandomSource.create()).orElse(null);
                 if (randomFluid == null)
-                    currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000);
+                    currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000 * 81);
                 else
-                    currentFuel = new FluidStack(randomFluid.value(), 16000);
+                    currentFuel = new FluidStack(randomFluid.value(), 16000 * 81);
             }
         } else
-            currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000);
+            currentFuel = new FluidStack(CDGFluids.DIESEL.get(), 16000 * 81);
         return currentFuel;
     }
 }

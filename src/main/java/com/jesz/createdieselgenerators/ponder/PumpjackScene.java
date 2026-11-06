@@ -8,7 +8,7 @@ import com.jesz.createdieselgenerators.content.pumpjack.PumpjackCrankBlockEntity
 import com.zurrtum.create.AllBlocks;
 import com.zurrtum.create.AllItems;
 import com.zurrtum.create.content.fluids.pipes.FluidPipeBlock;
-import com.simibubi.create.foundation.ponder.*;
+import com.zurrtum.create.client.foundation.ponder.*;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import com.zurrtum.create.catnip.math.Pointing;
 import com.zurrtum.create.client.ponder.api.PonderPalette;
@@ -226,7 +226,7 @@ public class PumpjackScene {
         @Override
         protected void firstTick(PonderScene scene) {
             pumpjackElement = scene.resolve(pumpjackBody);
-            crankBE = scene.getWorld().getBlockEntity(crankPos, CDGBlockEntityTypes.PUMPJACK_CRANK.get()).orElse(null);
+            crankBE = scene.getLevel().getBlockEntity(crankPos, CDGBlockEntityTypes.PUMPJACK_CRANK.get()).orElse(null);
         }
 
         @Override

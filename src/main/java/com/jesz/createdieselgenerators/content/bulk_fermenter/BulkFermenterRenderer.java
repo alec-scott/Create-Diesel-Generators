@@ -1,69 +1,57 @@
 package com.jesz.createdieselgenerators.content.bulk_fermenter;
 
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-
 import com.jesz.createdieselgenerators.CDGPartialModels;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.zurrtum.create.client.AllPartialModels;
-import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import com.zurrtum.create.client.flywheel.lib.transform.TransformStack;
+import com.jesz.createdieselgenerators.client.render.PartsRenderer;
 import com.zurrtum.create.catnip.data.Iterate;
+import com.zurrtum.create.client.AllPartialModels;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
-public class BulkFermenterRenderer extends SafeBlockEntityRenderer<BulkFermenterBlockEntity> {
-    public BulkFermenterRenderer(BlockEntityRendererProvider.Context context){}
+/** PORT-NOTE(26.1): extract/submit; progress gauges of the controller (recipe duration synced, see the BE). */
+public class BulkFermenterRenderer extends PartsRenderer<BulkFermenterBlockEntity> {
+    public BulkFermenterRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
 
     @Override
-    protected void renderSafe(BulkFermenterBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer,
-                              int light, int overlay) {
+    public boolean shouldRender(BulkFermenterBlockEntity be, Vec3 cameraPosition) {
+        return be.isController() && super.shouldRender(be, cameraPosition);
+    }
+
+    @Override
+    protected void extractParts(BulkFermenterBlockEntity be, State state, float partialTicks) {
         if (!be.isController())
             return;
 
         BlockState blockState = be.getBlockState();
-        VertexConsumer vb = buffer.getBuffer(RenderTypes.cutout());
-        ms.pushPose();
-        TransformStack msr = TransformStack.of(ms);
-        msr.translate(be.getWidth() / 2f, 0.5, be.getWidth() / 2f);
-
+        float half = be.getWidth() / 2f;
         float dialPivotY = 6f / 16;
         float dialPivotZ = 8f / 16;
-        BulkFermentingRecipe r = be.currentRecipe;
-
-        float progress = be.currentRecipe == null ? 0 :
-                (float) Mth.clamp(Mth.lerp(partialTicks, be.processingTime + Math.sqrt(be.width * be.height), be.processingTime) / be.currentRecipe.getProcessingDuration(), 0, 1);
+        float progress = be.recipeDuration <= 0 || be.processingTime < 0 ? 0 :
+                (float) Mth.clamp(Mth.lerp(partialTicks, be.processingTime + Math.sqrt(be.width * be.height), be.processingTime) / be.recipeDuration, 0, 1);
 
         for (Direction d : Iterate.horizontalDirections) {
-            ms.pushPose();
-            CachedBuffers.partial(CDGPartialModels.BULK_FERMENTER_GAUGE, blockState)
+            state.parts.add(CachedBuffers.partial(CDGPartialModels.BULK_FERMENTER_GAUGE, blockState)
+                    .translate(half, 0.5, half)
                     .rotateYDegrees(d.toYRot())
                     .uncenter()
-                    .translate(be.getWidth() / 2f - 6 / 16f, 0, 0)
-                    .light(light)
-                    .renderInto(ms, vb);
-            CachedBuffers.partial(AllPartialModels.BOILER_GAUGE_DIAL, blockState)
+                    .translate(half - 6 / 16f, 0, 0)
+                    .light(state.lightCoords)
+                    .extractRenderState());
+            state.parts.add(CachedBuffers.partial(AllPartialModels.BOILER_GAUGE_DIAL, blockState)
+                    .translate(half, 0.5, half)
                     .rotateYDegrees(d.toYRot())
                     .uncenter()
-                    .translate(be.width / 2f - 6 / 16f, 0, 0)
+                    .translate(half - 6 / 16f, 0, 0)
                     .translate(0, dialPivotY, dialPivotZ)
                     .rotateXDegrees(-180 * progress + 90)
                     .translate(0, -dialPivotY, -dialPivotZ)
-                    .light(light)
-                    .renderInto(ms, vb);
-            ms.popPose();
+                    .light(state.lightCoords)
+                    .extractRenderState());
         }
-
-        ms.popPose();
     }
-
-    @Override
-    public boolean shouldRenderOffScreen(BulkFermenterBlockEntity be) {
-        return be.isController();
-    }
-
 }

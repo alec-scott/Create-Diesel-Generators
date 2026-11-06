@@ -2,9 +2,7 @@ package com.jesz.createdieselgenerators.content.diesel_engine.normal;
 
 import com.zurrtum.create.client.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.zurrtum.create.catnip.math.VecHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -22,7 +20,7 @@ public class DieselEngineValueBox extends ValueBoxTransform.Sided {
     }
 
     @Override
-    public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
+    public Vec3 getLocalOffset(BlockState state) {
         if(state.getValue(FACING) == Direction.UP)
             return VecHelper.voxelSpace(3, 8, 8);
         if(state.getValue(FACING) == Direction.DOWN)

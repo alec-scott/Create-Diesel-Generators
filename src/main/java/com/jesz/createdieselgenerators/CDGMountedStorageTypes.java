@@ -4,14 +4,13 @@ import com.jesz.createdieselgenerators.content.oil_barrel.OilBarrelMountedStorag
 import com.zurrtum.create.api.contraption.storage.fluid.MountedFluidStorageType;
 import com.jesz.createdieselgenerators.port.registrate.util.entry.RegistryEntry;
 
-import java.util.function.Supplier;
 
 import static com.jesz.createdieselgenerators.CreateDieselGenerators.REGISTRATE;
 
 public class CDGMountedStorageTypes {
     public static final RegistryEntry<MountedFluidStorageType<?>, OilBarrelMountedStorageType> OIL_BARREL = simpleFluid("oil_barrel", OilBarrelMountedStorageType::new);
 
-    private static <T extends MountedFluidStorageType<?>> RegistryEntry<MountedFluidStorageType<?>, T> simpleFluid(String name, Supplier<T> supplier) {
+    private static <T extends MountedFluidStorageType<?>> RegistryEntry<MountedFluidStorageType<?>, T> simpleFluid(String name, com.jesz.createdieselgenerators.port.registrate.util.nullness.NonNullSupplier<T> supplier) {
         return REGISTRATE.mountedFluidStorage(name, supplier).register();
     }
 

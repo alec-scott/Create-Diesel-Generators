@@ -86,7 +86,7 @@ public abstract class ProcessingToolItem<R extends CreateSingleStackRollableReci
         }
         for (ItemStack result : recipe.get().value().assemble(input, level.getRandom()))
             player.getInventory().placeItemBackInInventory(result.copy());
-        stack.hurtAndBreak(1, serverLevel, player, i -> {});
+        stack.hurtAndBreak(1, serverLevel, player instanceof net.minecraft.server.level.ServerPlayer sp ? sp : null, i -> {});
         return stack;
     }
 
@@ -100,7 +100,7 @@ public abstract class ProcessingToolItem<R extends CreateSingleStackRollableReci
                 for (int i = 0; i < 30; i++) {
                     Vec3 offset = VecHelper.offsetRandomly(entity.position().add(Math.sin(-entity.getYRot() / 180 * Math.PI) / 2, 1.3, Math.cos(-entity.getYRot() / 180 * Math.PI) / 2), level.getRandom(), .3f);
                     Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, level.getRandom(), .1f);
-                    level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, processingItem), offset.x(), offset.y(),
+                    level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, processingItem.getItem()), offset.x(), offset.y(),
                             offset.z(), motion.x(), motion.y(), motion.z());
                 }
             }

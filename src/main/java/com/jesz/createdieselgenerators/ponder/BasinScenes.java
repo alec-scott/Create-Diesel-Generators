@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import com.zurrtum.create.infrastructure.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import static com.jesz.createdieselgenerators.content.basin_lid.BasinLidBlock.OPEN;
 
@@ -69,9 +68,9 @@ public class BasinScenes {
         scene.world().setKineticSpeed(util.select().position(3, 1, 1), -16f);
         scene.idle(10);
         FluidStack content = new FluidStack(CDGFluids.ETHANOL.get()
-                .getSource(), 200);
+                .getSource(), 200 * 81);
         scene.world().modifyBlockEntity(util.grid().at(4, 0, 1), FluidTankBlockEntity.class, be -> be.getTankInventory()
-                .fill(content, IFluidHandler.FluidAction.EXECUTE));
+                .insert(content));
         scene.idle(60);
     }
 }

@@ -16,6 +16,9 @@ import java.util.List;
 public enum BulkFermenterUnpackingHandler implements UnpackingHandler {
     INSTANCE;
 
+    // PORT-NOTE(26.1): Create Fly has no UnpackingHandler.DEFAULT constant
+    private static final UnpackingHandler DEFAULT = new com.zurrtum.create.impl.unpacking.DefaultUnpackingHandler();
+
     @Override
     public boolean unpack(Level level, BlockPos pos, BlockState state, Direction side, List<ItemStack> items,
                           @Nullable PackageOrderWithCrafts orderContext, boolean simulate) {
@@ -26,7 +29,7 @@ public enum BulkFermenterUnpackingHandler implements UnpackingHandler {
         fermenter.packagerMode = true;
 
         try {
-            return UnpackingHandler.DEFAULT.unpack(level, pos, state, side, items, orderContext, simulate);
+            return DEFAULT.unpack(level, pos, state, side, items, orderContext, simulate);
         } finally {
             fermenter.packagerMode = false;
         }

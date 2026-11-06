@@ -59,7 +59,7 @@ public class SheetMetalPanelBlock extends Block implements SimpleWaterloggedBloc
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState p_60578_, BlockGetter p_60579_, BlockPos p_60580_) {
+    protected VoxelShape getOcclusionShape(BlockState p_60578_) {
         return Shapes.empty();
     }
 

@@ -1,18 +1,14 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.huge;
 
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-
+import com.jesz.createdieselgenerators.CDGBlocks;
 import com.jesz.createdieselgenerators.CDGPartialModels;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
-import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import com.zurrtum.create.client.flywheel.api.visualization.VisualizationManager;
-import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
+import com.jesz.createdieselgenerators.client.render.EngineUpgradeRenders;
+import com.jesz.createdieselgenerators.client.render.PartsRenderer;
 import com.zurrtum.create.catnip.math.AngleHelper;
 import com.zurrtum.create.client.catnip.render.CachedBuffers;
 import com.zurrtum.create.client.catnip.render.SuperByteBuffer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.zurrtum.create.client.content.kinetics.base.KineticBlockEntityRenderer;
+import com.zurrtum.create.client.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -20,58 +16,78 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static com.jesz.createdieselgenerators.content.diesel_engine.huge.HugeDieselEngineBlock.FACING;
 
-public class HugeDieselEngineRenderer extends SafeBlockEntityRenderer<HugeDieselEngineBlockEntity> {
+/**
+ * PORT-NOTE(26.1): extract/submit. The piston, linkage and connector are always drawn here (the Flywheel
+ * HugeDieselEngineInstance is not ported); {@link #getTargetAngle} was HugeDieselEngineBlockEntity.getTargetAngle.
+ */
+public class HugeDieselEngineRenderer extends PartsRenderer<HugeDieselEngineBlockEntity> {
     public HugeDieselEngineRenderer(BlockEntityRendererProvider.Context context) {
-
+        super(context);
     }
 
     @Override
-    protected void renderSafe(HugeDieselEngineBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
+    public int getViewDistance() {
+        return 128;
+    }
 
-        be.upgrade.render(be, partialTicks, ms, buffer, light);
-
-        if (VisualizationManager.supportsVisualization(be.getLevel()))
-            return;
-        Float angle = be.getTargetAngle();
-        VertexConsumer vb = buffer.getBuffer(RenderTypes.solid());
+    public static Float getTargetAngle(HugeDieselEngineBlockEntity be) {
         BlockState state = be.getBlockState();
+        if (!CDGBlocks.HUGE_DIESEL_ENGINE.has(state))
+            return null;
+
         Direction facing = state.getValue(FACING);
-        Direction.Axis facingAxis = facing.getAxis();
-        if (angle == null){
-            transformed(CDGPartialModels.ENGINE_PISTON, state, facing, false)
-                    .translate(0, 0.53475, 0)
-                    .light(light)
-                    .renderInto(ms, vb);
-            return;
-        }
-
-
         PoweredEngineShaftBlockEntity shaft = be.getShaft();
-        if(shaft == null){
-            transformed(CDGPartialModels.ENGINE_PISTON, state, facing, false)
+        Direction.Axis facingAxis = facing.getAxis();
+        if (shaft == null)
+            return null;
+
+        Direction.Axis axis = KineticBlockEntityRenderer.getRotationAxisOf(shaft);
+        float angle = KineticBlockEntityRenderer.getAngleForBe(shaft, shaft.getBlockPos(), axis);
+        if (axis == facingAxis)
+            return null;
+        if (axis.isHorizontal() && (facingAxis == Direction.Axis.X ^ facing.getAxisDirection() == Direction.AxisDirection.POSITIVE))
+            angle *= -1;
+        if (axis == Direction.Axis.X && facing == Direction.DOWN)
+            angle *= -1;
+        return angle;
+    }
+
+    @Override
+    protected void extractParts(HugeDieselEngineBlockEntity be, State state, float partialTicks) {
+        int light = state.lightCoords;
+        EngineUpgradeRenders.extract(be, be.upgrade, light, state.parts);
+
+        Float angle = getTargetAngle(be);
+        BlockState blockState = be.getBlockState();
+        Direction facing = blockState.getValue(FACING);
+        Direction.Axis facingAxis = facing.getAxis();
+        PoweredEngineShaftBlockEntity shaft = be.getShaft();
+        if (angle == null || shaft == null) {
+            state.parts.add(transformed(CDGPartialModels.ENGINE_PISTON, blockState, facing, false)
                     .translate(0, 0.53475, 0)
                     .light(light)
-                    .renderInto(ms, vb);
+                    .extractRenderState());
             return;
         }
         Direction.Axis axis = KineticBlockEntityRenderer.getRotationAxisOf(shaft);
 
         boolean roll90 = facingAxis.isHorizontal() && axis == Direction.Axis.Y || facingAxis.isVertical() && axis == Direction.Axis.Z;
         float shaftR = facing == Direction.DOWN ? -90 : facing == Direction.UP ? 90 : facing == Direction.WEST ? -90 : facing == Direction.EAST ? 90 : 0;
-        if(roll90)
+        if (roll90)
             shaftR = facing == Direction.NORTH ? 180 : facing == Direction.SOUTH ? 0 : facing == Direction.EAST ? -90 : facing == Direction.WEST ? 90 : 0;
-        angle += (float)(shaftR*Math.PI/180);
+        angle += (float) (shaftR * Math.PI / 180);
 
-        float sine = Mth.sin(angle) * (state.getValue(FACING).getAxis() == Direction.Axis.Y ? -1 : 1);
-        float sine2 = Mth.sin(angle - Mth.HALF_PI) * (state.getValue(FACING).getAxis() == Direction.Axis.Y ? -1 : 1);
+        float sign = facingAxis == Direction.Axis.Y ? -1 : 1;
+        float sine = Mth.sin(angle) * sign;
+        float sine2 = Mth.sin(angle - Mth.HALF_PI) * sign;
         float piston = ((1 - sine) / 4) + 0.4375f;
 
-        transformed(CDGPartialModels.ENGINE_PISTON, state, facing, roll90)
+        state.parts.add(transformed(CDGPartialModels.ENGINE_PISTON, blockState, facing, roll90)
                 .translate(0, piston, 0)
                 .light(light)
-                .renderInto(ms, vb);
+                .extractRenderState());
 
-        transformed(CDGPartialModels.ENGINE_PISTON_LINKAGE, state, facing, roll90)
+        state.parts.add(transformed(CDGPartialModels.ENGINE_PISTON_LINKAGE, blockState, facing, roll90)
                 .center()
                 .translate(0, 1, 0)
                 .uncenter()
@@ -80,26 +96,23 @@ public class HugeDieselEngineRenderer extends SafeBlockEntityRenderer<HugeDiesel
                 .rotateXDegrees(sine2 * 23f)
                 .translate(0, -4 / 16f, -8 / 16f)
                 .light(light)
-                .renderInto(ms, vb);
-        if(shaft.isEngineForConnectorDisplay(be.getBlockPos()))
-            transformed(CDGPartialModels.ENGINE_PISTON_CONNECTOR, state, facing, roll90)
+                .extractRenderState());
+        if (shaft.isEngineForConnectorDisplay(be.getBlockPos()))
+            state.parts.add(transformed(CDGPartialModels.ENGINE_PISTON_CONNECTOR, blockState, facing, roll90)
                     .translate(0, 2, 0)
                     .center()
                     .rotateX(-angle + Mth.HALF_PI)
                     .uncenter()
                     .light(light)
-                    .renderInto(ms, vb);
+                    .extractRenderState());
     }
-    private SuperByteBuffer transformed(PartialModel model, BlockState blockState, Direction facing, boolean roll90) {
+
+    private static SuperByteBuffer transformed(PartialModel model, BlockState blockState, Direction facing, boolean roll90) {
         return CachedBuffers.partial(model, blockState)
                 .center()
                 .rotateYDegrees(AngleHelper.horizontalAngle(facing))
                 .rotateXDegrees(AngleHelper.verticalAngle(facing) + 90)
                 .rotateYDegrees(roll90 ? -90 : 0)
                 .uncenter();
-    }
-    @Override
-    public int getViewDistance() {
-        return 128;
     }
 }
