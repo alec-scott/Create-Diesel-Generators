@@ -93,6 +93,13 @@ public class BulkFermenterBlockEntity extends SmartBlockEntity implements IMulti
     private void onItemsChanged() {
         if (level == null)
             return;
+        // PORT-NOTE(26.1): recipes run on the controller; a part only saves itself and forwards
+        BulkFermenterBlockEntity controllerBE = getControllerBE();
+        if (controllerBE != null && controllerBE != this) {
+            setChanged();
+            controllerBE.onItemsChanged();
+            return;
+        }
         if (!level.isClientSide()) {
             List<BulkFermentingRecipe> r = getMatchingRecipes();
             if (!r.contains(currentRecipe))
@@ -347,6 +354,19 @@ public class BulkFermenterBlockEntity extends SmartBlockEntity implements IMulti
 
     private void refreshCapability() {
         fluidCapability = handlerForCapability();
+        // PORT-NOTE(26.1): was invalidateCapabilities(); the Fabric storages are cached in Create Fly behaviours
+        var cachedFluids = getBehaviour(com.zurrtum.create.foundation.blockEntity.behaviour.CachedFluidInventoryBehaviour.TYPE);
+        if (cachedFluids != null)
+            cachedFluids.reset();
+        var cachedItems = getBehaviour(com.zurrtum.create.foundation.blockEntity.behaviour.CachedInventoryBehaviour.TYPE);
+        if (cachedItems != null)
+            cachedItems.reset();
+    }
+
+    /** The combined item inventory of the multiblock (rebuilt, the size may have changed). */
+    Container getItems() {
+        initCapability();
+        return itemCapability;
     }
 
     private void initCapability() {

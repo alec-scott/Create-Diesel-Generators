@@ -234,6 +234,9 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
                 sendData();
             }
         }
+        // PORT-NOTE(26.1): the client has no recipe; it counts down the synced time for the gauge
+        if (level.isClientSide() && processingTime > 0)
+            processingTime--;
         if (isController() && isBottom()) {
             int duration = currentRecipe != null ? currentRecipe.getProcessingDuration() : recipeDuration;
             progress = processingTime > -1 && duration > 0 ? (float) processingTime / duration : 0;
@@ -472,6 +475,10 @@ public class DistillationTankBlockEntity extends SmartBlockEntity implements IMu
 
     private void refreshCapability() {
         fluidCapability = handlerForCapability();
+        // PORT-NOTE(26.1): was invalidateCapabilities(); the Fabric storage is cached in a Create Fly behaviour
+        var cached = getBehaviour(com.zurrtum.create.foundation.blockEntity.behaviour.CachedFluidInventoryBehaviour.TYPE);
+        if (cached != null)
+            cached.reset();
     }
 
     private FluidInventory handlerForCapability() {

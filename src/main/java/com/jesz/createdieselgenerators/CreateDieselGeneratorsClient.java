@@ -58,6 +58,11 @@ public class CreateDieselGeneratorsClient implements ClientModInitializer {
         AllExtensions.ARM_POSE.put(CDGItems.CHEMICAL_SPRAYER.get(), HumanoidModel.ArmPose.CROSSBOW_HOLD);
         AllExtensions.ARM_POSE.put(CDGItems.CHEMICAL_SPRAYER_LIGHTER.get(), HumanoidModel.ArmPose.CROSSBOW_HOLD);
 
+        // Was PumpjackHeadMovementBehaviour.renderInContraption
+        com.zurrtum.create.api.behaviour.movement.MovementBehaviour headBehaviour = com.zurrtum.create.api.behaviour.movement.MovementBehaviour.REGISTRY.get(CDGBlocks.PUMPJACK_HEAD.get());
+        if (headBehaviour != null)
+            headBehaviour.attachRender = new com.jesz.createdieselgenerators.client.render.PumpjackHeadMovementRender();
+
         // Client hooks of common classes (FluidFX and sounds are client only)
         DieselEngineMovementBehaviour.clientTick = CDGTrainEngineSounds::tick;
         ChemicalSprayerProjectileEntity.clientFluidParticle = FluidFX::getFluidParticle;

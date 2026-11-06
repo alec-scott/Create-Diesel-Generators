@@ -79,7 +79,7 @@ public record BulkFermentingRecipe(int time, List<ProcessingOutput> results, Lis
 
     /** Checks ({@code test}) or performs one craft on the fermenter's controller inventories. */
     public boolean apply(BulkFermenterBlockEntity be, boolean test) {
-        Container items = be.itemCapability;
+        Container items = be.getItems();
         BulkFermenterFluidHandler fluids = be.tankInventory;
         if (items == null || fluids == null || be.getLevel() == null)
             return false;

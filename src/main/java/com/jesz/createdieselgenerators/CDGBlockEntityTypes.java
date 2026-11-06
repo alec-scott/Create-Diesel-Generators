@@ -123,7 +123,5 @@ public class CDGBlockEntityTypes {
             .renderer(() -> ShaftRenderer::new)
             .register();
     public static void register() {
-        // PORT-NOTE(26.1): was the Registrate .displaySource builder call
-        DisplaySource.BY_BLOCK_ENTITY.add(PUMPJACK_HOLE.get(), CDGDisplaySources.PUMPJACK_OIL_AMOUNT.get());
     }
 }

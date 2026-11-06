@@ -68,7 +68,7 @@ public class BulkFermenterFluidHandler implements FluidInventory {
             return matches(inSlot, stack);
         // Only start a new tank when no tank holds this fluid yet
         for (int i = 0; i < tankCount; i++)
-            if (i != slot && matches(getStack(i), stack))
+            if (i != slot && !getStack(i).isEmpty() && matches(getStack(i), stack))
                 return false;
         return true;
     }

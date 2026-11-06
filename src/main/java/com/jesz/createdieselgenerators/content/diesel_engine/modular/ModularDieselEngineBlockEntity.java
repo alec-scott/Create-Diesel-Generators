@@ -213,6 +213,10 @@ public class ModularDieselEngineBlockEntity extends GeneratingKineticBlockEntity
 
     void refreshCapability() {
         fluidCapability = handlerForCapability();
+        // PORT-NOTE(26.1): was invalidateCapabilities(); the Fabric storage is cached in a Create Fly behaviour
+        var cached = getBehaviour(com.zurrtum.create.foundation.blockEntity.behaviour.CachedFluidInventoryBehaviour.TYPE);
+        if (cached != null)
+            cached.reset();
     }
     private FluidInventory handlerForCapability() {
         return isController() ? (tankInventory)

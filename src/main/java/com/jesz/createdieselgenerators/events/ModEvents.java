@@ -37,6 +37,9 @@ public class ModEvents {
 
         registerCapabilities(RegisterCapabilitiesEvent.INSTANCE);
 
+        // Was the Registrate .displaySource builder call
+        com.zurrtum.create.api.behaviour.display.DisplaySource.BY_BLOCK_ENTITY.add(CDGBlockEntityTypes.PUMPJACK_HOLE.get(), com.jesz.createdieselgenerators.CDGDisplaySources.PUMPJACK_OIL_AMOUNT.get());
+
         // Was FMLCommonSetupEvent
         BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(CDGBlockEntityTypes.CANISTER.get(), new SpoutCanisterFilling());
         BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(AllBlockEntityTypes.BASIN, new BasinSpoutCasting());

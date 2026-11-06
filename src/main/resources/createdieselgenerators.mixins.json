@@ -5,7 +5,6 @@
   "plugin": "com.jesz.createdieselgenerators.CDGMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "port.SmartBlockEntityMixin",
     "port.SpawnPlacementsAccessor",
     "CopycatBlockMixin",
     "CreeperMixin",

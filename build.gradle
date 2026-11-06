@@ -35,8 +35,6 @@ sourceSets {
             exclude 'com/jesz/createdieselgenerators/compat/kubejs/**'
             exclude 'com/jesz/createdieselgenerators/compat/strut_your_stuff/**'
             exclude 'com/jesz/createdieselgenerators/compat/EveryCompatCompat.java'
-            // TEMP: JEI compat is ported after the main code compiles.
-            exclude 'com/jesz/createdieselgenerators/compat/jei/**'
         }
     }
 }
