@@ -23,7 +23,7 @@ import java.util.List;
 public class EntityFilterMenu extends AbstractFilterMenu {
 
     public AttributeFilterWhitelistMode whitelistMode;
-    List<EntityAttribute.EntityAttributeEntry> selectedAttributes;
+    public List<EntityAttribute.EntityAttributeEntry> selectedAttributes;
 
     // PORT-NOTE(26.1): Create Fly menus are created from the holder (the held filter item)
     public EntityFilterMenu(int id, Inventory inv, ItemStack contentHolder) {
