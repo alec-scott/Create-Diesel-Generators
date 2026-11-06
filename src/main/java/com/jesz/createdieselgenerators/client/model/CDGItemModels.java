@@ -15,5 +15,6 @@ public class CDGItemModels {
         register(LighterModel.ID, LighterModel.Unbaked.CODEC);
         register(HammerModel.ID, HammerModel.Unbaked.CODEC);
         register(WireCuttersModel.ID, WireCuttersModel.Unbaked.CODEC);
+        register(ChemicalSprayerModel.ID, ChemicalSprayerModel.Unbaked.CODEC);
     }
 }

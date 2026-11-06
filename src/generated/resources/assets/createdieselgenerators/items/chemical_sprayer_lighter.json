@@ -1,6 +1,6 @@
 {
   "model": {
-    "type": "minecraft:model",
+    "type": "createdieselgenerators:model/chemical_sprayer",
     "model": "createdieselgenerators:item/chemical_sprayer_lighter"
   }
 }
