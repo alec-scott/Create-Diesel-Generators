@@ -1,6 +1,7 @@
 package com.jesz.createdieselgenerators;
 
 import com.jesz.createdieselgenerators.client.CDGBlockEntityBehaviours;
+import com.jesz.createdieselgenerators.client.model.CDGItemModels;
 import com.jesz.createdieselgenerators.content.turret.TurretOperatorHatLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.minecraft.client.renderer.entity.ShulkerRenderer;
@@ -46,6 +47,7 @@ public class CreateDieselGeneratorsClient implements ClientModInitializer {
         ConfigRegistry.INSTANCE.register(CreateDieselGenerators.ID, ModConfig.Type.CLIENT, CDGConfig.CLIENT_SPEC, CreateDieselGenerators.ID + "-client.toml");
 
         CDGPartialModels.init();
+        CDGItemModels.register();
         CDGSpriteShifts.init();
         CreateRegistrate.registerBlockModels();
         CDGBlockEntityBehaviours.register();

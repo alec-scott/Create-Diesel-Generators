@@ -1,6 +1,5 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "createdieselgenerators:item/lighter"
+    "type": "createdieselgenerators:model/lighter"
   }
 }
