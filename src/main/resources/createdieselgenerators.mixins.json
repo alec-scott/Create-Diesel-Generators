@@ -20,6 +20,8 @@
     "SableAssemblyMixin"
   ],
   "client": [
+    "BasinRenderStateMixin",
+    "BasinRendererMixin",
     "LivingEntityRendererMixin"
   ],
   "injectors": {

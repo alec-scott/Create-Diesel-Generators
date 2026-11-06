@@ -6,3 +6,5 @@ accessible field net/minecraft/client/renderer/item/ItemStackRenderState activeL
 accessible field net/minecraft/client/renderer/item/ItemStackRenderState layers [Lnet/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState;
 accessible field net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState itemTransform Lnet/minecraft/client/resources/model/cuboid/ItemTransform;
 accessible field net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState localTransform Lorg/joml/Matrix4f;
+accessible field net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState blockState Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/client/renderer/item/ItemStackRenderState displayContext Lnet/minecraft/world/item/ItemDisplayContext;
