@@ -84,8 +84,10 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
   plain position without it (`compat/sable/CDGSableCompat`). `SableAssemblyMixin` is gated by `CDGMixinPlugin` (the plugin
   is now actually named in the mixin config). Aeronautics, Simulated and Offroad have no code in CDG.
 - **JEI**: `jei_mod_plugin` entrypoint `compat/jei/CDGJEI`; all seven categories in `CDGCategories` on Create Fly's
-  `CreateCategory`/`BasinCategory`. Compression molding uses Create Fly's press, heat uses its burner; the other machines
-  are scaled items, not upstream's animations.
+  `CreateCategory`/`BasinCategory`. Compression molding uses Create Fly's press and basin, heat uses its burner; the other machines are
+  picture-in-picture renderers in `client/render/gui` (`CDGGuiMachines`, registered through Fabric's
+  `PictureInPictureRendererRegistry` by the client entrypoint, no JEI reference), drawn at upstream's coordinates, with
+  upstream's slot, arrow, shadow and heat bar positions and sizes.
 - **Restored (2026-11-06)**: toolsmith lighter trade is data (`createdieselgenerators:toolsmith/2/emerald_lighter` in `villager_trade`, added through
   `data/minecraft/tags/villager_trade/toolsmith/level_2.json`, which merges with vanilla's). Distillation tank glow is the
   `level` block state property as Create Fly's tanks (`DistillationTankBlock.LIGHT_LEVEL`, `lightLevel`; variants in the
@@ -165,6 +167,13 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - Not done: upstream's `renderItem` hook (a mold as a visualised output item while none is in the inventory) has no Create Fly
   counterpart worth a mixin; the canister was not touched, so its glint is unchanged.
 
+### 2026-11-06 (JEI visuals)
+- Upstream `compat/jei`: seven categories; machine elements `BasinFermentingStationElement`, `AnimatedBulkFermenter`, `AnimatedDistillationTower`, `AnimatedSpoutCastingStation`, `AnimatedDieselEngineElement`. The engine element is referenced by nothing upstream (`git grep` finds only its own file), so it is not ported; hammer and wire cutters are drawn as items.
+- Pattern copied from Create Fly's `PressBasinRenderer` / `SpoutRenderer`: `PictureInPictureRenderer` with `BlockBakedQuadOutput`, `ModelRenderHelper`, `SinglePosVirtualBlockGetter`. Registration needs no mixin: Fabric API's `PictureInPictureRendererRegistry` (which also gives each state in a frame its own renderer, so several recipes per page do not share a texture). Commits `137aa85`, `b62f927`.
+- Geometry: the renderer's frame is Create Fly's (z flip, X -15.5, Y 22.5) with the origin at the bottom centre of upstream's first block, so local coordinates are upstream's `atLocal` (y down). Upstream rotated about the block corner, which puts that bottom centre at (x + 15, y + 1.66) on screen; this matches Create Fly's press (box 91,-5 for upstream 91,34) and was only derived, not seen. Burner: Create Fly's `BasinBlazeBurnerRenderState` at upstream y + 14, as its `BasinCategory`.
+- Layouts from upstream: heights 100 (distillation 200, tools 55), fermenting slots at x 17 (bulk 2), y 41, results y 51, heat slots y 81 (distillation 171), arrows, shadows, heat bar and label positions, icons (bulk fermenter + clock, hammer + iron sheet).
+- Compression molding is still Create Fly's `BasinCategory` (slots of its packing page) with the height set to upstream's 100.
+
 ## TODO
 
 - [x] Phase 1: build migration, shims, imports mapped, entrypoints/registration/configs/networking.
@@ -186,5 +195,5 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
 - [ ] Check in game: gauges (dial offsets were moved from the pose stack into the buffers), crank rod angles, huge engine
       piston phases without the Flywheel instance, enchanted canister glint over the model, CT sheets (`diesel_engine_big`
       assumed CROSS), `pumpjack_crank/large_rod.json` still has `neoforge:obj`.
-- [ ] JEI: layouts are estimates; machine animations (distiller, fermenter, engine) would need picture-in-picture renderers.
+- [x] JEI: upstream layouts and machine drawings restored (compile-checked only; checks in `../port-testing`). Not drawn: `AnimatedDieselEngineElement`, which no upstream category uses.
 - [ ] Sable: `SableAssemblyMixin` needs Sable present to test.
