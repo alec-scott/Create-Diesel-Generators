@@ -1,29 +1,20 @@
 {
-  "type": "create:crushing",
-  "ingredients": [
-    [
-      {
-        "tag": "create:casing"
-      },
-      {
-        "item": "create:linear_chassis"
-      },
-      {
-        "item": "create:secondary_linear_chassis"
-      },
-      {
-        "item": "create:radial_chassis"
-      }
-    ]
+  "ingredient": [
+    "#create:casing",
+    "create:linear_chassis",
+    "create:secondary_linear_chassis",
+    "create:radial_chassis"
   ],
+  "processing_time": 100,
   "results": [
     {
-      "id": "createdieselgenerators:wood_chip",
-      "count": 31
+      "count": 31,
+      "id": "createdieselgenerators:wood_chip"
     },
     {
-      "id": "createdieselgenerators:wood_chip",
-      "chance": 0.5
+      "chance": 0.5,
+      "id": "createdieselgenerators:wood_chip"
     }
-  ]
+  ],
+  "type": "create:crushing"
 }

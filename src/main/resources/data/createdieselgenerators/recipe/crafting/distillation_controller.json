@@ -1,25 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "create:andesite_alloy",
+    "C": "minecraft:clock",
+    "I": "#c:plates/iron",
+    "P": "create:fluid_pipe"
+  },
   "pattern": [
     "PCP",
     "AIA"
   ],
-  "key": {
-    "A": {
-      "item": "create:andesite_alloy"
-    },
-    "I": {
-      "tag": "c:plates/iron"
-    },
-    "C": {
-      "item": "minecraft:clock"
-    },
-    "P": {
-      "item": "create:fluid_pipe"
-    }
-  },
   "result": {
-    "id": "createdieselgenerators:distillation_controller",
-    "count": 4
-  }
+    "count": 4,
+    "id": "createdieselgenerators:distillation_controller"
+  },
+  "type": "minecraft:crafting_shaped"
 }

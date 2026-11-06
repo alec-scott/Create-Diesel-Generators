@@ -1,21 +1,16 @@
 {
-  "type": "createdieselgenerators:wire_cutting",
-  "ingredients": [
-    {
-      "tag": "c:ingots/gold"
-    }
-  ],
+  "fabric:load_conditions": {
+    "condition": "fabric:all_mods_loaded",
+    "values": [
+      "createaddition"
+    ]
+  },
+  "ingredient": "#c:ingots/gold",
   "results": [
     {
-      "id": "createaddition:gold_rod",
-      "count": 2
+      "count": 2,
+      "id": "createaddition:gold_rod"
     }
   ],
-
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "createaddition"
-    }
-  ]
+  "type": "createdieselgenerators:wire_cutting"
 }

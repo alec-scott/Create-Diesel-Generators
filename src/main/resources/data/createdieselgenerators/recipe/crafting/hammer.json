@@ -1,22 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "create:andesite_alloy",
+    "I": "#c:ingots/iron",
+    "S": "#c:rods/wooden"
+  },
   "pattern": [
     "AIA",
     "ISI",
     "SIA"
   ],
-  "key": {
-    "S": {
-      "tag": "c:rods/wooden"
-    },
-    "A": {
-      "item": "create:andesite_alloy"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    }
-  },
   "result": {
     "id": "createdieselgenerators:hammer"
-  }
+  },
+  "type": "minecraft:crafting_shaped"
 }

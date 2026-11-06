@@ -1,20 +1,15 @@
 {
-  "type": "createdieselgenerators:wire_cutting",
-  "ingredients": [
-    {
-      "tag": "c:ingots/iron"
-    }
-  ],
+  "fabric:load_conditions": {
+    "condition": "fabric:all_mods_loaded",
+    "values": [
+      "createaddition"
+    ]
+  },
+  "ingredient": "#c:ingots/iron",
   "results": [
     {
       "id": "createaddition:iron_rod"
     }
   ],
-
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "createaddition"
-    }
-  ]
+  "type": "createdieselgenerators:wire_cutting"
 }

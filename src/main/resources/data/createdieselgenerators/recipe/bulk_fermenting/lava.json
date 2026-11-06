@@ -1,16 +1,14 @@
 {
-  "type": "createdieselgenerators:bulk_fermenting",
-  "ingredients": [
+  "fluid_results": [
     {
-      "tag": "c:cobblestones"
+      "amount": 4050,
+      "id": "minecraft:lava"
     }
   ],
   "heat_requirement": "heated",
+  "ingredients": [
+    "#c:cobblestones"
+  ],
   "processing_time": 900,
-  "results": [
-    {
-      "id": "minecraft:lava",
-      "amount": 50
-    }
-  ]
+  "type": "createdieselgenerators:bulk_fermenting"
 }

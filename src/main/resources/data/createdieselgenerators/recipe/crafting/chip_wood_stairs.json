@@ -1,17 +1,15 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "createdieselgenerators:chip_wood_block"
+  },
   "pattern": [
     "A  ",
     "AA ",
     "AAA"
   ],
-  "key": {
-    "A": {
-      "item": "createdieselgenerators:chip_wood_block"
-    }
-  },
   "result": {
-    "id": "createdieselgenerators:chip_wood_stairs",
-    "count": 4
-  }
+    "count": 4,
+    "id": "createdieselgenerators:chip_wood_stairs"
+  },
+  "type": "minecraft:crafting_shaped"
 }

@@ -1,14 +1,10 @@
 {
-  "type": "create:cutting",
-  "ingredients": [
-    {
-      "tag": "c:rods/wooden"
-    }
-  ],
+  "ingredient": "#c:rods/wooden",
+  "processing_time": 50,
   "results": [
     {
-      "id": "createdieselgenerators:wood_chip",
-      "count": 1
+      "id": "createdieselgenerators:wood_chip"
     }
-  ]
+  ],
+  "type": "create:cutting"
 }

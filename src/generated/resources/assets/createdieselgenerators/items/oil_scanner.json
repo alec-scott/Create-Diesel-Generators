@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "createdieselgenerators:oil_scanner_state",
+    "cases": [
+      { "when": 1, "model": { "type": "minecraft:model", "model": "createdieselgenerators:item/oil_scanner_none" } },
+      { "when": 2, "model": { "type": "minecraft:model", "model": "createdieselgenerators:item/oil_scanner_medium" } },
+      { "when": 3, "model": { "type": "minecraft:model", "model": "createdieselgenerators:item/oil_scanner_high" } }
+    ],
+    "fallback": { "type": "minecraft:model", "model": "createdieselgenerators:item/oil_scanner" }
+  }
+}

@@ -1,33 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "#c:plates/copper",
+    "C": "create:copper_casing",
+    "G": "create:cogwheel",
+    "P": "create:precision_mechanism",
+    "S": "createdieselgenerators:chemical_sprayer_lighter"
+  },
   "pattern": [
     "PBS",
     " G ",
     "BCB"
   ],
-  "key": {
-    "G": {
-      "item": "create:cogwheel"
-    },
-    "S": {
-      "item": "createdieselgenerators:chemical_sprayer_lighter"
-    },
-    "B": {
-      "tag": "c:plates/copper"
-    },
-    "C": {
-      "item": "create:copper_casing"
-    },
-    "P": {
-      "item": "create:precision_mechanism"
-    }
-  },
   "result": {
-    "id": "createdieselgenerators:chemical_turret",
-    "nbt": {
-      "BlockEntityTag": {
-        "LighterUpgrade": true
-      }
-    }
-  }
+    "id": "createdieselgenerators:chemical_turret"
+  },
+  "type": "minecraft:crafting_shaped"
 }

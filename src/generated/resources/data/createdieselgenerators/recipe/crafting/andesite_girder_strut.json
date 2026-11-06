@@ -1,19 +1,14 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "struts"
-    }
-  ],
-  "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "fabric:load_conditions": {
+    "condition": "fabric:all_mods_loaded",
+    "values": [
+      "struts"
+    ]
+  },
   "key": {
-    "A": {
-      "item": "create:andesite_alloy"
-    },
-    "G": {
-      "item": "createdieselgenerators:andesite_girder"
-    }
+    "A": "create:andesite_alloy",
+    "G": "createdieselgenerators:andesite_girder"
   },
   "pattern": [
     "A  ",
@@ -23,5 +18,6 @@
   "result": {
     "count": 6,
     "id": "createdieselgenerators:andesite_girder_strut"
-  }
+  },
+  "type": "minecraft:crafting_shaped"
 }

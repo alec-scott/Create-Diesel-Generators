@@ -1,24 +1,19 @@
 {
-  "type": "create:crushing",
-  "ingredients": [
-    {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "minecraft:logs"
-      },
-      "subtracted": {
-        "item": "createdieselgenerators:chip_wood_beam"
-      }
-    }
-  ],
+  "ingredient": {
+    "base": "#minecraft:logs",
+    "fabric:type": "fabric:difference",
+    "subtracted": "createdieselgenerators:chip_wood_beam"
+  },
+  "processing_time": 100,
   "results": [
     {
-      "id": "createdieselgenerators:wood_chip",
-      "count": 31
+      "count": 31,
+      "id": "createdieselgenerators:wood_chip"
     },
     {
-      "id": "createdieselgenerators:wood_chip",
-      "chance": 0.5
+      "chance": 0.5,
+      "id": "createdieselgenerators:wood_chip"
     }
-  ]
+  ],
+  "type": "create:crushing"
 }

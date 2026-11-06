@@ -1,29 +1,18 @@
 {
-  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "C": "#c:storage_blocks/copper",
+    "H": "createdieselgenerators:kelp_handle",
+    "K": "minecraft:dried_kelp",
+    "M": "create:precision_mechanism",
+    "P": "create:fluid_pipe"
+  },
   "pattern": [
     "HH  ",
     "MCKP"
   ],
-  "key": {
-    "M": {
-      "item": "create:precision_mechanism"
-    },
-    "P": {
-      "item": "create:fluid_pipe"
-    },
-    "C": {
-      "tag": "c:storage_blocks/copper"
-    },
-    "H": {
-      "item": "createdieselgenerators:kelp_handle"
-    },
-    "K": {
-      "item": "minecraft:dried_kelp"
-    }
-  },
-  "accept_mirrored": true,
   "result": {
-    "id": "createdieselgenerators:chemical_sprayer",
-    "count": 1
-  }
+    "id": "createdieselgenerators:chemical_sprayer"
+  },
+  "type": "create:mechanical_crafting"
 }

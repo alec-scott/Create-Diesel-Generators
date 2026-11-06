@@ -1,18 +1,14 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "create:andesite_alloy",
+    "S": "create:shaft"
+  },
   "pattern": [
     "ASA"
   ],
-  "key": {
-    "S": {
-      "item": "create:shaft"
-    },
-    "A": {
-      "item": "create:andesite_alloy"
-    }
-  },
   "result": {
-    "id": "createdieselgenerators:andesite_girder",
-    "count": 6
-  }
+    "count": 6,
+    "id": "createdieselgenerators:andesite_girder"
+  },
+  "type": "minecraft:crafting_shaped"
 }

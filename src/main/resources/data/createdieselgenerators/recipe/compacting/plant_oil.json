@@ -1,14 +1,12 @@
 {
-  "type": "create:compacting",
-  "ingredients": [
+  "fluid_results": [
     {
-      "tag": "c:seeds"
+      "amount": 8100,
+      "id": "createdieselgenerators:plant_oil"
     }
   ],
-  "results": [
-    {
-      "id": "createdieselgenerators:plant_oil",
-      "amount": 100
-    }
-  ]
+  "ingredients": [
+    "#c:seeds"
+  ],
+  "type": "create:mixing"
 }

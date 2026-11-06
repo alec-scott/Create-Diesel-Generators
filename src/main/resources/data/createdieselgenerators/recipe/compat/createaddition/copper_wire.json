@@ -1,20 +1,15 @@
 {
-  "type": "createdieselgenerators:wire_cutting",
-  "ingredients": [
-    {
-      "tag": "c:plates/copper"
-    }
-  ],
+  "fabric:load_conditions": {
+    "condition": "fabric:all_mods_loaded",
+    "values": [
+      "createaddition"
+    ]
+  },
+  "ingredient": "#c:plates/copper",
   "results": [
     {
       "id": "createaddition:copper_wire"
     }
   ],
-
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "createaddition"
-    }
-  ]
+  "type": "createdieselgenerators:wire_cutting"
 }

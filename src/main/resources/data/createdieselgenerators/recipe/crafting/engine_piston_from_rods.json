@@ -1,33 +1,24 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": {
+    "condition": "fabric:tags_populated",
+    "registry": "minecraft:item",
+    "values": [
+      "c:rods/iron"
+    ]
+  },
+  "key": {
+    "A": "create:andesite_alloy",
+    "R": "#c:rods/iron",
+    "Z": "#c:nuggets/zinc"
+  },
   "pattern": [
     "A  ",
     " R ",
     "  Z"
   ],
-  "key": {
-    "A": {
-      "item": "create:andesite_alloy"
-    },
-    "R": {
-      "tag": "c:rods/iron"
-    },
-    "Z": {
-      "tag": "c:nuggets/zinc"
-    }
-  },
   "result": {
-    "id": "createdieselgenerators:engine_piston",
-    "count": 2
+    "count": 2,
+    "id": "createdieselgenerators:engine_piston"
   },
-
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "neoforge:rods/iron"
-      }
-    }
-  ]
+  "type": "minecraft:crafting_shaped"
 }

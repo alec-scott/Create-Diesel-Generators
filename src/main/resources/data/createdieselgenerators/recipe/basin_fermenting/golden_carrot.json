@@ -1,48 +1,40 @@
 {
-  "type": "createdieselgenerators:basin_fermenting",
-  "ingredients": [
+  "fluid_ingredients": [
     {
-      "item": "minecraft:carrot"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "type": "fluid_stack",
-      "fluid": "create:potion",
+      "amount": 20250,
       "components": {
         "minecraft:potion_contents": {
           "potion": "minecraft:awkward"
         }
       },
-      "amount": 250
+      "fluid": "create:potion",
+      "type": "fluid_stack"
     }
+  ],
+  "fluid_results": [
+    {
+      "amount": 20250,
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "minecraft:awkward"
+        }
+      },
+      "id": "create:potion"
+    }
+  ],
+  "ingredients": [
+    "minecraft:carrot",
+    "#c:nuggets/gold",
+    "#c:nuggets/gold",
+    "#c:nuggets/gold",
+    "#c:nuggets/gold",
+    "#c:nuggets/gold"
   ],
   "processing_time": 400,
   "results": [
     {
       "id": "minecraft:golden_carrot"
-    },
-    {
-      "id": "create:potion",
-      "components": {
-        "minecraft:potion_contents": {
-          "potion": "minecraft:awkward"
-        }
-      },
-      "amount": 250
     }
-  ]
+  ],
+  "type": "createdieselgenerators:basin_fermenting"
 }

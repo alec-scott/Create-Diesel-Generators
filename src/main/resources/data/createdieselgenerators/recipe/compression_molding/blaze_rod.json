@@ -1,25 +1,16 @@
 {
-  "type": "createdieselgenerators:compression_molding",
+  "heat_requirement": "heated",
   "ingredients": [
-    {
-      "item": "minecraft:blaze_powder"
-    },
-    {
-      "item": "minecraft:blaze_powder"
-    },
-    {
-      "item": "minecraft:blaze_powder"
-    },
-    {
-      "item": "minecraft:blaze_powder"
-    }
+    "minecraft:blaze_powder",
+    "minecraft:blaze_powder",
+    "minecraft:blaze_powder",
+    "minecraft:blaze_powder"
   ],
   "mold": "createdieselgenerators:lines",
-  "heat_requirement": "heated",
   "results": [
     {
-      "id": "minecraft:blaze_rod",
-      "count": 1
+      "id": "minecraft:blaze_rod"
     }
-  ]
+  ],
+  "type": "createdieselgenerators:compression_molding"
 }

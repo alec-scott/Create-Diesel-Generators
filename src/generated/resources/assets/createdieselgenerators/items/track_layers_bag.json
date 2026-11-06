@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:has_component",
+    "component": "createdieselgenerators:tracks",
+    "on_true": { "type": "minecraft:model", "model": "createdieselgenerators:item/track_layers_bag_filled" },
+    "on_false": { "type": "minecraft:model", "model": "createdieselgenerators:item/track_layers_bag" }
+  }
+}

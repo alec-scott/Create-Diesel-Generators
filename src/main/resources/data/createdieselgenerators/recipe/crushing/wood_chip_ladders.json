@@ -1,18 +1,15 @@
 {
-  "type": "create:crushing",
-  "ingredients": [
-    {
-      "item": "minecraft:ladder"
-    }
-  ],
+  "ingredient": "minecraft:ladder",
+  "processing_time": 100,
   "results": [
     {
-      "id": "createdieselgenerators:wood_chip",
-      "count": 8
+      "count": 8,
+      "id": "createdieselgenerators:wood_chip"
     },
     {
-      "id": "createdieselgenerators:wood_chip",
-      "chance": 0.5
+      "chance": 0.5,
+      "id": "createdieselgenerators:wood_chip"
     }
-  ]
+  ],
+  "type": "create:crushing"
 }
