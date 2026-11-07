@@ -218,3 +218,6 @@ It changes Jade's text for all fluids. Compiled against Jade 26.1.11 (compileOnl
 
 ## Turret and JEI textures (2026-11-07)
 Found by in-game testing. 26.1 rejects block models with sprites from the item atlas, which removed the turret's item model, body, lighter and operator hat: they now use copies under `textures/block/chemical_turret`. JEI's `bulk_fermenter_jei` and `jei_distiller` models use whole connected-texture sheets that had been split into tiles: the five sheets are back from upstream.
+
+## Recipe sync (2026-11-07)
+Serializers are now always synced instead of only when JEI is loaded, so JEI pages fill on clients of a server without JEI. Checked by joining a JEI-less test server.

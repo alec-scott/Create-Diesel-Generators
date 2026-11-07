@@ -67,15 +67,13 @@ public class CDGRecipes {
     public static void register() {
         AllRecipeSets.ALL.put(HAMMERING_SET, recipe -> recipe instanceof HammerRecipe r ? Optional.of(r.ingredient()) : Optional.empty());
         AllRecipeSets.ALL.put(WIRE_CUTTING_SET, recipe -> recipe instanceof WireCuttingRecipe r ? Optional.of(r.ingredient()) : Optional.empty());
-        // Recipe viewers read client-synced recipes (as Create Fly's RecipeCommonPlugin does for its own types)
-        if (CreateDieselGenerators.JEI_ACTIVE) {
-            RecipeSynchronization.synchronizeRecipeSerializer(BASIN_FERMENTING_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(BULK_FERMENTING_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(DISTILLATION_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(COMPRESSION_MOLDING_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(CASTING_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(WIRE_CUTTING_SERIALIZER);
-            RecipeSynchronization.synchronizeRecipeSerializer(HAMMERING_SERIALIZER);
-        }
+        // Always synced, so a dedicated server doesn't need JEI installed for its clients to see these in JEI
+        RecipeSynchronization.synchronizeRecipeSerializer(BASIN_FERMENTING_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(BULK_FERMENTING_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(DISTILLATION_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(COMPRESSION_MOLDING_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(CASTING_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(WIRE_CUTTING_SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(HAMMERING_SERIALIZER);
     }
 }
