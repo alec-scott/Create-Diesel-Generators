@@ -19,8 +19,9 @@ import net.minecraft.world.level.material.Fluids;
 
 /**
  * PORT-NOTE(26.1): upstream's item filling for all three engines. Create Fly's {@code FluidHelper.tryEmptyItemIntoBE}
- * can't be used: it only inserts when the whole amount fits, and an engine tank is smaller than a bucket. As upstream, a
- * bucket fills an empty tank up to its capacity and the rest is lost, and fluid items give what fits.
+ * can't be used: it only inserts when the whole amount fits, and the huge engine holds 100 mB. As upstream, a bucket
+ * fills an empty tank up to its capacity: 1,000 mB on normal and modular engines, 100 mB on the huge engine with the rest
+ * lost. Fluid items give what fits.
  * <p>
  * One difference: upstream returned FAIL for a bucket on a tank that already holds fluid, and the client then goes on to
  * use the bucket, spilling it in front of the engine. Here that click does nothing.
