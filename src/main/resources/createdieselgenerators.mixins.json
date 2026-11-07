@@ -22,7 +22,8 @@
   "client": [
     "BasinRenderStateMixin",
     "BasinRendererMixin",
-    "LivingEntityRendererMixin"
+    "LivingEntityRendererMixin",
+    "JadeFluidTextHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1

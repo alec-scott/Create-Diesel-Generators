@@ -24,6 +24,9 @@ public class CDGMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.equals("com.jesz.createdieselgenerators.mixins.SableAssemblyMixin") &&
                 !FabricLoader.getInstance().isModLoaded("sable"))
             return false;
+        if (mixinClassName.equals("com.jesz.createdieselgenerators.mixins.JadeFluidTextHelperMixin") &&
+                !FabricLoader.getInstance().isModLoaded("jade"))
+            return false;
         return true;
     }
 

@@ -210,3 +210,8 @@ is compile-checked only until the user runs `../port-testing/diesel-generators.m
 whole bucket to fit in a 100 mB tank and so always refused. Upstream's rules apply: gated by the server config "Engines
 filled with a bucket" (default false, as upstream), a bucket fills an empty tank and the excess is lost, fluid items give
 what fits. Deviation: a bucket on a tank already holding fluid does nothing; upstream's FAIL let the client spill it.
+
+## Jade fluid decimals (2026-11-07)
+Not an upstream feature. Jade shows part of a mB as a fraction on Fabric (553 17/27mB) and has no option for it, while Create's
+goggles show 553.48mB. `JadeFluidTextHelperMixin` (client, applied only when `jade` is loaded) makes Jade use up to two decimals.
+It changes Jade's text for all fluids. Compiled against Jade 26.1.11 (compileOnly).
