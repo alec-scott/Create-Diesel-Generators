@@ -1,6 +1,6 @@
 package com.jesz.createdieselgenerators.content.diesel_engine.modular;
 
-import com.zurrtum.create.foundation.fluid.FluidHelper;
+import com.jesz.createdieselgenerators.content.diesel_engine.EngineItemFilling;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -131,10 +131,7 @@ public class ModularDieselEngineBlock extends HorizontalKineticBlock implements 
         if(!CDGConfig.ENGINES_FILLED_WITH_ITEMS.get() || stack.isEmpty() || !(level.getBlockEntity(pos) instanceof SmartBlockEntity be))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        // PORT-NOTE(26.1): buckets and fluid items through Create Fly's FluidHelper (Fabric transfer, droplets)
-        if (FluidHelper.tryEmptyItemIntoBE(level, player, hand, stack, be))
-            return InteractionResult.SUCCESS;
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
+        return EngineItemFilling.fill(level, player, hand, stack, be);
     }
 
     @Override

@@ -204,3 +204,9 @@ Create pipe connection states next to each machine (16 checks, all pass): burner
 facings, turret, huge engine, modular engine, distillation tank, pumpjack hole. Note for repeating this: an unconnected
 pipe defaults to straight east-west, so test along north-south. Everything client-side (item models, hat, JEI drawings)
 is compile-checked only until the user runs `../port-testing/diesel-generators.md`.
+
+## Engine bucket filling (2026-11-07)
+`content/diesel_engine/EngineItemFilling` replaces `FluidHelper.tryEmptyItemIntoBE` on all three engines, which needed the
+whole bucket to fit in a 100 mB tank and so always refused. Upstream's rules apply: gated by the server config "Engines
+filled with a bucket" (default false, as upstream), a bucket fills an empty tank and the excess is lost, fluid items give
+what fits. Deviation: a bucket on a tank already holding fluid does nothing; upstream's FAIL let the client spill it.
