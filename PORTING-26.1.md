@@ -215,3 +215,6 @@ what fits. Deviation: a bucket on a tank already holding fluid does nothing; ups
 Not an upstream feature. Jade shows part of a mB as a fraction on Fabric (553 17/27mB) and has no option for it, while Create's
 goggles show 553.48mB. `JadeFluidTextHelperMixin` (client, applied only when `jade` is loaded) makes Jade use up to two decimals.
 It changes Jade's text for all fluids. Compiled against Jade 26.1.11 (compileOnly).
+
+## Turret and JEI textures (2026-11-07)
+Found by in-game testing. 26.1 rejects block models with sprites from the item atlas, which removed the turret's item model, body, lighter and operator hat: they now use copies under `textures/block/chemical_turret`. JEI's `bulk_fermenter_jei` and `jei_distiller` models use whole connected-texture sheets that had been split into tiles: the five sheets are back from upstream.
