@@ -94,7 +94,7 @@ New tools here: `add_imports.pl`, `prune_imports.pl`, `remove_method.pl`, `fix_h
   blockstate JSON omit it). Turret operator hat: `TurretOperatorHatLayer` through `LivingEntityRenderLayerRegistrationCallback`
   plus the client `LivingEntityRendererMixin` (render state data). Every Compat: `EveryCompatCompat` compiles against
   Moonlight Lib (compileOnly), called when `moonlight` is loaded.
-- **Dropped**: the KubeJS lighter skin hooks (`LighterSkinsEventJS`; KubeJS has no 26.1 build), `ContraptionMixin` (Create Fly's
+- **Dropped**: the KubeJS lighter skin hooks (`LighterSkinsEventJS`; KubeJS has no 26.1 Fabric build), `ContraptionMixin` (Create Fly's
   `captureMultiblock` already localises `Controller`), batch-placement silencing for barrels' own sound type (now
   `ItemPlacementSoundContext`).
 
